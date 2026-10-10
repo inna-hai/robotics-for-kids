@@ -1183,6 +1183,10 @@ button {
   cursor: pointer;
 }
 
+#message {
+  white-space: pre-line;
+}
+
 .game-over {
   background: #f1f5f9;
   border: 3px solid #64748b;
@@ -1212,7 +1216,7 @@ function nextItem(feedbackText = "") {
     nextMessage = "מכשול! עדיף לדלג.";
   }
 
-  document.getElementById("message").textContent = feedbackText ? feedbackText + " " + nextMessage : nextMessage;
+  document.getElementById("message").textContent = feedbackText ? feedbackText + "\\n" + nextMessage : nextMessage;
 }
 
 function chooseItem() {
@@ -1454,31 +1458,31 @@ function resetPower() {
     starter: {
       html: `<main class="adventure-app">
   <section id="startScreen" class="screen active">
-    <h1>הטירה הסודית</h1>
-    <p>מצאתם שתי דלתות. איזו דלת תפתחו?</p>
+    <h1>המפתח לטירה הסודית</h1>
+    <p>הטירה נעולה, אבל יש שתי דלתות קסומות. כל דלת מעבירה למסך אחר בסיפור.</p>
     <button onclick="showScreen('redDoorScreen')">🚪 דלת אדומה</button>
     <button onclick="showScreen('blueDoorScreen')">🚪 דלת כחולה</button>
   </section>
   <section id="redDoorScreen" class="screen">
-    <h2>חדר הדרקון</h2>
-    <p>דרקון קטן מבקש בדיחה כדי לתת לכם לעבור.</p>
-    <button onclick="showScreen('winScreen')">ספרו בדיחה</button>
+    <h2>חדר האוצר</h2>
+    <p>האוצר מנצנץ, ובתוכו מונח מפתח זהב קטן.</p>
+    <button onclick="showScreen('winScreen')">קחו את המפתח</button>
     <button onclick="showScreen('startScreen')">חזרו לטירה</button>
   </section>
   <section id="blueDoorScreen" class="screen">
     <h2>חדר המראה</h2>
-    <p>המראה שואלת: “מה הכוח המיוחד שלך?”</p>
-    <button onclick="showScreen('funnyEndScreen')">להיות יצירתיים</button>
+    <p>המראה הקסומה מאירה שביל סודי בתוך הטירה.</p>
+    <button onclick="showScreen('funnyEndScreen')">לכו בשביל הסודי</button>
     <button onclick="showScreen('startScreen')">חזרו לטירה</button>
   </section>
   <section id="winScreen" class="screen">
-    <h2>ניצחתם!</h2>
-    <p>הדרקון צחק ופתח לכם אוצר 🎉</p>
+    <h2>השער נפתח!</h2>
+    <p>המפתח מתאים בדיוק, והטירה נפתחת באור חגיגי 🎉</p>
     <button onclick="showScreen('startScreen')">שחקו שוב</button>
   </section>
   <section id="funnyEndScreen" class="screen">
-    <h2>סוף מצחיק</h2>
-    <p>המראה החליטה שאתם קוסמי רעיונות ✨</p>
+    <h2>מעבר סודי</h2>
+    <p>השביל מוביל לחדר נוצץ מלא כוכבים ורעיונות ✨</p>
     <button onclick="showScreen('startScreen')">התחילו מחדש</button>
   </section>
 </main>`,
@@ -1490,12 +1494,8 @@ function resetPower() {
 }
 
 .adventure-app {
-  background: white;
   width: min(500px, 92vw);
   margin: 42px auto;
-  padding: 30px;
-  border-radius: 30px;
-  box-shadow: 0 18px 45px #4338ca;
 }
 
 .screen {
@@ -1551,7 +1551,7 @@ function resetAdventure() {
     exercises: [
       { id: 1, minutes: '0–8', title: 'תרגול 1 — בוחרים דלת', prompt: 'הריצו ובחרו דלת אדומה או כחולה.', hint: 'בדקו איזה מסך נפתח.', check: { htmlIncludes: ['id="startScreen"', 'class="screen active"'], jsIncludes: ['function showScreen'] } },
       { id: 2, minutes: '8–18', title: 'תרגול 2 — מסך פעיל', prompt: 'מצאו איזה class גורם למסך להופיע.', hint: 'active הוא המסך שמוצג עכשיו.', check: { cssIncludes: ['.screen.active'], htmlIncludes: ['class="screen active"'] } },
-      { id: 3, minutes: '18–28', title: 'תרגול 3 — מעבר לדלת אדומה', prompt: 'מצאו את הכפתור שמעביר לחדר הדרקון.', hint: 'חפשו redDoorScreen.', check: { htmlIncludes: ['redDoorScreen'], jsIncludes: ['showScreen'] } },
+      { id: 3, minutes: '18–28', title: 'תרגול 3 — מעבר לדלת אדומה', prompt: 'מצאו את הכפתור שמעביר לחדר האוצר.', hint: 'חפשו redDoorScreen.', check: { htmlIncludes: ['redDoorScreen'], jsIncludes: ['showScreen'] } },
       { id: 4, minutes: '28–38', title: 'תרגול 4 — מעבר לדלת כחולה', prompt: 'מצאו את הכפתור שמעביר לחדר המראה.', hint: 'חפשו blueDoorScreen.', check: { htmlIncludes: ['blueDoorScreen'], jsIncludes: ['showScreen'] } },
       { id: 5, minutes: '38–50', title: 'תרגול 5 — סוף ניצחון', prompt: 'מצאו את המסך שבו הדרקון פותח אוצר.', hint: 'זה winScreen.', check: { htmlIncludes: ['id="winScreen"'] } },
       { id: 6, minutes: '50–60', title: 'תרגול 6 — סוף מצחיק', prompt: 'שנו את הטקסט בסוף המצחיק.', hint: 'שינוי בטוח: רק מילים בתוך p.', check: { htmlIncludes: ['funnyEndScreen'] } },
@@ -1573,7 +1573,7 @@ function resetAdventure() {
     ],
     bridgeBlocks: [
       { label: '🚪 שם דלת', target: 'html', find: '🚪 דלת אדומה', replace: '🚪 דלת אש', hint: 'בלוק סיפור: משנה בחירה.' },
-      { label: '🐉 חדר אחר', target: 'html', find: 'חדר הדרקון', replace: 'חדר הרובוטים', hint: 'בלוק תוכן: משנה שם מסך.' },
+      { label: '🐉 דף אחר', target: 'html', find: 'חדר האוצר', replace: 'חדר הרובוטים', hint: 'בלוק תוכן: משנה שם מסך.' },
       { label: '🎉 סוף ניצחון', target: 'html', find: 'הדרקון צחק ופתח לכם אוצר 🎉', replace: 'הרובוטים רקדו ופתחו לכם שער 🎉', hint: 'בלוק סוף: משנה תוצאה.' },
       { label: '✨ סוף מצחיק', target: 'html', find: 'המראה החליטה שאתם קוסמי רעיונות ✨', replace: 'המראה אמרה שאתם אלופי הדמיון ✨', hint: 'בלוק סוף: סוף חלופי.' },
       { label: '▶️ מעבר למסך', target: 'js', find: 'function showScreen(screenId)', replace: 'function showScreen(screenId)', hint: 'בלוק ניווט: פונקציית המעבר.' },
@@ -6049,11 +6049,21 @@ function resetAdventure() {
       ['color','צבע כוח פעיל %1','css','#dcfce7','{{COLOR}}',[['field_dropdown','COLOR',[['ירוק','#bbf7d0'],['כחול','#bfdbfe'],['צהוב','#fef08a']]]]]
     ]},
     11: { title:'בחרו הרפתקה — אפליקציית מסכים', concept:'מסכים · showScreen · choices · navigation', blocks:[
-      ['intro','הוראות פתיחה %1','html','מצאתם שתי דלתות. איזו דלת תפתחו?','{{TEXT}}',[['field_input','TEXT','בחרו דלת והתחילו הרפתקה']]],
-      ['red_door','שם דלת אדומה %1','html','דלת אדומה','{{TEXT}}',[['field_input','TEXT','דלת אש']]],
-      ['blue_door','שם דלת כחולה %1','html','דלת כחולה','{{TEXT}}',[['field_input','TEXT','דלת קרח']]],
-      ['win_text','סוף ניצחון %1','html','הדרקון צחק ופתח לכם אוצר 🎉','{{TEXT}}',[['field_input','TEXT','הרובוטים רקדו ופתחו לכם שער 🎉']]],
-      ['button_color','צבע כפתורים %1','css','#4338ca','{{COLOR}}',[['field_dropdown','COLOR',[['סגול','#4338ca'],['אדום','#be123c'],['ירוק','#15803d']]]]]
+      ['card_box','הוסף כרטיס אתר לבן','html','<main class="adventure-app">','<main class="adventure-app">',[], { hideFromToolbox: true }],
+      ['title','כותרת האתר %1','html','המפתח לטירה הסודית','{{TEXT}}',[['field_input','TEXT','כתבו כותרת כאן']]],
+      ['intro','הוראות פתיחה %1','html','הטירה נעולה, אבל יש שתי דלתות קסומות. כל דלת מעבירה למסך אחר בסיפור.','{{TEXT}}',[['field_input','TEXT','כתבו הוראות או תיאור כאן']]],
+      ['red_door','הוסף כפתור ראשון %1','html','דלת אדומה','{{TEXT}}',[['field_input','TEXT','שם הכפתור הראשון']]],
+      ['blue_door','הוסף כפתור שני %1','html','דלת כחולה','{{TEXT}}',[['field_input','TEXT','שם הכפתור השני']]],
+      ['red_continue','בלחיצה על כפתור ראשון %1','html',"showScreen('redDoorScreen')",'showScreen(\'{{SCREEN}}\')',[["field_dropdown","SCREEN",[["עוברים לדף הראשון","redDoorScreen"],["עוברים לסוף ניצחון","winScreen"],["חוזרים להתחלה","startScreen"]]]]],
+      ['blue_continue','בלחיצה על כפתור שני %1','html',"showScreen('blueDoorScreen')",'showScreen(\'{{SCREEN}}\')',[["field_dropdown","SCREEN",[["עוברים לדף השני","blueDoorScreen"],["עוברים לסוף מעניין","funnyEndScreen"],["חוזרים להתחלה","startScreen"]]]]],
+      ['single_button','הוסף כפתור יחיד %1','html','קחו את המפתח','{{TEXT}}',[['field_input','TEXT','שם הכפתור']]],
+      ['single_button_continue','בלחיצה על כפתור יחיד %1','html',"showScreen('winScreen')",'showScreen(\'{{SCREEN}}\')',[["field_dropdown","SCREEN",[["עוברים לסוף ניצחון","winScreen"],["עוברים לסוף מעניין","funnyEndScreen"],["חוזרים להתחלה","startScreen"],["עוברים לדף הראשון","redDoorScreen"],["עוברים לדף השני","blueDoorScreen"]]]]],
+      ['button_color','צבע כפתורים %1','css','background: #4338ca;','background: {{COLOR}};',[['field_dropdown','COLOR',[['סגול','#4338ca'],['אדום','#be123c'],['ירוק','#15803d'],['כחול','#2563eb'],['כתום','#f97316']]]]],
+      ['button_shape','צורת כפתורים %1','css','border-radius: 999px;','border-radius: {{RADIUS}};',[['field_dropdown','RADIUS',[['עגולים','999px'],['מעוגלים','18px'],['קצת מעוגלים','8px'],['מרובעים','0']]]]],
+      ['button_size','גודל כפתורים %1','css','padding: 14px 18px;','padding: {{SIZE}};',[['field_dropdown','SIZE',[['רגיל','10px 18px'],['גדול','12px 22px'],['קטן','8px 13px']]]]],
+      ['button_layout','מיקום הכפתורים %1','css','button {','button {\n  {{LAYOUT}}',[['field_dropdown','LAYOUT',[["בשורה","display: inline-flex;\n  align-items: center;\n  justify-content: center;"],["בטור","display: block;\n  margin: 8px auto;"]]]]],
+      ['card_color','צבע כרטיס התוכן %1','css','background: white;','background: {{CARD}};',[['field_dropdown','CARD',[['לבן','white'],['קרם','#fff7ed'],['תכלת','#eff6ff'],['ורוד בהיר','#fdf2f8']]]]],
+      ['title_color','צבע הכותרת %1','css','h1, h2 {\n  color: #4338ca;\n}','h1, h2 {\n  color: {{COLOR}};\n}',[['field_dropdown','COLOR',[['סגול','#4338ca'],['כחול','#1d4ed8'],['אדום','#be123c'],['ירוק','#15803d']]]]]
     ]},
     12: { title:'מיני־פרויקט משחק — משלבים כמה חוקים', concept:'project · game rules · balancing', blocks:[
       ['name','שם משחק %1','html','משחק הכוכבים שלי','{{TEXT}}',[['field_input','TEXT','משחק הכוכבים המשודרג']]],
@@ -6166,10 +6176,90 @@ function resetAdventure() {
     lesson.outcome = `תוצר עובד שמדגים ${spec.concept}, עם הבנה של הקשר בלוק → קוד → תוצאה.`;
     lesson.lessonFlow = makeFullReworkFlow(lesson.id, spec.concept);
     lesson.blocklyBlocks = spec.blocks.map((b, index) => {
-      const [key,message,target,find,replace,args] = b;
+      const [key,message,target,find,replace,args,extra={}] = b;
       const args0 = makeArgs(args);
-      return { type:`lesson_${lesson.id}_${key}`, label:message.replace(/ %1/g,''), message, args0, target, find, replace, highlight:replace, hint:`בלוק ${target.toUpperCase()} שמלמד ${spec.concept}.`, colour: target === 'css' ? 285 : target === 'js' ? 120 : 210 };
+      return { ...extra, type:`lesson_${lesson.id}_${key}`, label:message.replace(/ %1/g,''), message, args0, target, find, replace, highlight:replace, hint:`בלוק ${target.toUpperCase()} שמלמד ${spec.concept}.`, colour: target === 'css' ? 285 : target === 'js' ? 120 : 210 };
     });
+    if(lesson.id === 11){
+      const startBlocks = [
+        { type:'lesson_11_start_screen', label:'בנה מסך פתיחה', message:'בנה מסך פתיחה', target:'html', find:'startScreen', replace:'startScreen', highlight:'id="startScreen"', hint:'בלוק התחלה: כל הבלוקים שמחוברים מתחתיו בונים את מסך הפתיחה.', colour:24, previousStatement:false },
+        { type:'lesson_11_room_one', label:'בנה דף ראשון', message:'בנה דף ראשון', target:'html', find:'redDoorScreen', replace:'redDoorScreen', highlight:'id="redDoorScreen"', hint:'בלוק התחלה: כל הבלוקים שמחוברים מתחתיו בונים את הדף הראשון.', colour:24, previousStatement:false },
+        { type:'lesson_11_room_two', label:'בנה דף שני', message:'בנה דף שני', target:'html', find:'blueDoorScreen', replace:'blueDoorScreen', highlight:'id="blueDoorScreen"', hint:'בלוק התחלה: כל הבלוקים שמחוברים מתחתיו בונים את הדף השני.', colour:24, previousStatement:false },
+        { type:'lesson_11_win_end', label:'בנה סוף ניצחון', message:'בנה סוף ניצחון', target:'html', find:'winScreen', replace:'winScreen', highlight:'id="winScreen"', hint:'בלוק התחלה לסוף ניצחון.', colour:24, previousStatement:false },
+        { type:'lesson_11_funny_end', label:'בנה סוף מעניין', message:'בנה סוף מעניין', target:'html', find:'funnyEndScreen', replace:'funnyEndScreen', highlight:'id="funnyEndScreen"', hint:'בלוק התחלה לסוף מעניין.', colour:24, previousStatement:false }
+      ];
+      lesson.blocklyBlocks = [...startBlocks, ...lesson.blocklyBlocks];
+      const jsActionBlocks = new Set(['lesson_11_red_continue','lesson_11_blue_continue','lesson_11_single_button_continue']);
+      lesson.blocklyBlocks.forEach(block => {
+        if(jsActionBlocks.has(block.type)){
+          block.colour = 120;
+          block.hint = 'בלוק פעולה: מוסיף כפתור שמפעיל מעבר למסך אחר.';
+        }
+      });
+      const lesson11BlockOrder = new Map(lesson.blocklyBlocks.map((block, index) => [block.type, index]));
+      const lesson11Priority = new Map([
+        ['lesson_11_start_screen', 1],
+        ['lesson_11_room_one', 2],
+        ['lesson_11_room_two', 3],
+        ['lesson_11_win_end', 4],
+        ['lesson_11_funny_end', 5],
+        ['lesson_11_title', 11],
+        ['lesson_11_intro', 12],
+        ['lesson_11_red_door', 13],
+        ['lesson_11_blue_door', 14],
+        ['lesson_11_single_button', 15]
+      ]);
+      const lesson11Category = block => jsActionBlocks.has(block.type) ? 2 : block.target === 'css' ? 1 : 0;
+      lesson.blocklyBlocks = lesson.blocklyBlocks.slice().sort((a, b) => {
+        const byCategory = lesson11Category(a) - lesson11Category(b);
+        if(byCategory) return byCategory;
+        const aPriority = lesson11Priority.get(a.type);
+        const bPriority = lesson11Priority.get(b.type);
+        if(aPriority !== undefined || bPriority !== undefined) return (aPriority ?? 999) - (bPriority ?? 999);
+        return ((lesson11BlockOrder.get(a.type) || 0) - (lesson11BlockOrder.get(b.type) || 0));
+      });
+      lesson.defaultBlocklyXml = `<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="lesson_11_start_screen" x="360" y="40"></block>
+  <block type="lesson_11_room_one" x="360" y="170"></block>
+  <block type="lesson_11_room_two" x="360" y="300"></block>
+  <block type="lesson_11_win_end" x="360" y="430"></block>
+  <block type="lesson_11_funny_end" x="360" y="560"></block>
+</xml>`;
+      lesson.restoreLastGoodBlocklyXml = `<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="lesson_11_start_screen" x="360" y="40">
+    <next><block type="lesson_11_title"><field name="TEXT">הטירה הסודית</field>
+      <next><block type="lesson_11_intro"><field name="TEXT">מצאתם שתי דלתות. איזו דלת תפתחו?</field>
+      <next><block type="lesson_11_red_door"><field name="TEXT">דלת אדומה</field>
+      <next><block type="lesson_11_blue_door"><field name="TEXT">דלת כחולה</field>
+      <next><block type="lesson_11_button_color"><field name="COLOR">#4338ca</field>
+      <next><block type="lesson_11_button_shape"><field name="RADIUS">999px</field>
+      <next><block type="lesson_11_button_size"><field name="SIZE">10px 18px</field>
+      <next><block type="lesson_11_button_layout"><field name="LAYOUT">display: inline-flex;
+  align-items: center;
+  justify-content: center;</field>
+      <next><block type="lesson_11_card_color"><field name="CARD">white</field>
+      <next><block type="lesson_11_title_color"><field name="COLOR">#4338ca</field>
+      <next><block type="lesson_11_red_continue"><field name="SCREEN">redDoorScreen</field>
+      <next><block type="lesson_11_blue_continue"><field name="SCREEN">blueDoorScreen</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next>
+  </block>
+  <block type="lesson_11_room_one" x="360" y="520">
+    <next><block type="lesson_11_title"><field name="TEXT">חדר האוצר</field>
+      <next><block type="lesson_11_intro"><field name="TEXT">האוצר מנצנץ, ובתוכו מונח מפתח זהב קטן.</field>
+      <next><block type="lesson_11_red_door"><field name="TEXT">קחו את המפתח</field>
+      <next><block type="lesson_11_blue_door"><field name="TEXT">חזרו לטירה</field>
+      <next><block type="lesson_11_card_color"><field name="CARD">white</field>
+      <next><block type="lesson_11_button_color"><field name="COLOR">#4338ca</field>
+      <next><block type="lesson_11_button_layout"><field name="LAYOUT">display: inline-flex;
+  align-items: center;
+  justify-content: center;</field>
+      <next><block type="lesson_11_red_continue"><field name="SCREEN">winScreen</field>
+      <next><block type="lesson_11_blue_continue"><field name="SCREEN">startScreen</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next>
+  </block>
+  <block type="lesson_11_room_two" x="40" y="520"></block>
+  <block type="lesson_11_win_end" x="40" y="720"></block>
+  <block type="lesson_11_funny_end" x="40" y="850"></block>
+</xml>`;
+    }
     lesson.exercises = makeFullReworkExercises(lesson, spec);
     if(lesson.id === 8){
       const timeBlock = lesson.blocklyBlocks.find(block => block.type === 'lesson_8_time');
@@ -7749,6 +7839,85 @@ function resetAdventure() {
   }
   sanitizeAnswerGuidanceV227();
 
+  function finalizeLesson11ForEntranceDurationV412(){
+    const lesson = lessons.find(item => Number(item.id) === 11);
+    if(!lesson?.exercises) return;
+    lesson.durationMinutes = 90;
+    lesson.lessonFlow = [
+      { minutes:'0–8', title:'פתיחה: בודקים את פרויקט ההרפתקה', teacher:'מציגים את דגם המטרה ומסבירים שהאתר ייבנה מבלוקים בלבד.', students:'מזהים כותרת, פסקת פתיחה ושני כפתורי בחירה.' },
+      { minutes:'8–24', title:'בונים תוכן בסיסי', teacher:'מובילים הוספת כותרת, פתיחה וכפתורי בחירה דרך בלוקים.', students:'משלימים את תרגילי הבנייה הראשונים ובודקים בתצוגה.' },
+      { minutes:'24–40', title:'מעצבים את כפתורי הבחירה', teacher:'מחברים בין בלוקי עיצוב לבין שינוי חזותי ברור.', students:'משנים פריסה, צבע, צורה וגודל.' },
+      { minutes:'40–55', title:'מעצבים את העמוד', teacher:'מראים אילו בלוקים משפיעים על רקע, כרטיס וכותרת.', students:'בודקים שכל שינוי נראה בתצוגה החיה.' },
+      { minutes:'55–69', title:'בלוק הופך לשורת קוד', teacher:'פותחים את הקוד שנוצר ומראים איך לחיצה על בלוק מסמנת שורה מתאימה.', students:'מחברים בין בלוק לבין HTML/CSS שנוצר ממנו.' },
+      { minutes:'69–83', title:'קוראים תפקיד של קוד', teacher:'מתרגלים התאמה בין שורות קוד לבין מה שרואים בדף.', students:'פותרים התאמות ומזהים מילים מרכזיות.' },
+      { minutes:'83–90', title:'איפה משנים ודיבאג קצר', teacher:'מסיימים בבחירת מקום שינוי ותיקון טעות חסרה בשם פעולה.', students:'בודקים איפה חסרה אות ומסכמים מה HTML/CSS/JS עשו.' }
+    ];
+    const times = { 1:'0–8', 2:'8–16', 3:'16–24', 4:'24–32', 5:'32–40', 6:'40–48', 7:'48–55', 8:'55–62', 9:'62–69', 10:'69–76', 11:'76–83', 12:'83–90' };
+    lesson.exercises.forEach(ex => {
+      if(times[Number(ex.id)]){
+        ex.minutes = times[Number(ex.id)];
+        delete ex.optional;
+        delete ex.extension;
+      }
+      ex.title = String(ex.title || '').replace(/^בונוס\s*—\s*/, `תרגיל ${ex.id} — `).replace(/^אתגר\s*—\s*/, `תרגיל ${ex.id} — `);
+    });
+  }
+  finalizeLesson11ForEntranceDurationV412();
+
+  function addLesson11TargetAndStudentPreviewSplitV417(){
+    const lesson = lessons.find(item => Number(item.id) === 11);
+    if(!lesson) return;
+    const compactTargetCss = `
+      html, body { width:100%; height:100%; min-height:0; overflow:hidden; }
+      body { margin:0; height:100vh; min-height:0; display:flex; align-items:center; justify-content:center; padding:clamp(10px, 1.8vw, 18px); background:transparent; box-sizing:border-box; }
+      .adventure-app { width:100%; height:100%; min-height:0; margin:0 auto; padding:40px 34px 34px; border-radius:34px; box-shadow:0 20px 48px rgba(49,46,129,.28); background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-sizing:border-box; }
+      .screen { min-height:0; width:100%; }
+      .screen.active { display:block; }
+      h1 { font-size:clamp(1.75rem, 4.4vw, 2.55rem); margin:.05rem 0 .72rem; }
+      h2 { font-size:clamp(1.25rem, 3vw, 1.75rem); margin:.15rem 0 .55rem; }
+      p { margin:.35rem 0 .9rem; font-size:clamp(.92rem, 2.15vw, 1.06rem); }
+      button { margin:3px 4px; padding:8px 13px; font-size:.82rem; line-height:1.12; max-width:46%; white-space:nowrap; }
+    `;
+    lesson.targetModel = {
+      html: lesson.starter?.html || '',
+      css: `${lesson.starter?.css || ''}\n${compactTargetCss}`,
+      js: lesson.starter?.js || '',
+      label: 'דגם מטרה — אפליקציית מסכים עובדת'
+    };
+    const ex12 = lesson.exercises?.find(item => Number(item.id) === 12);
+    if(ex12){
+      ex12.title = 'תרגיל 12 — מושגים של אפליקציית מסכים';
+      ex12.prompt = 'התאימו מילים או סימני קוד מתוך אתר ההרפתקה לתפקיד שלהן. זה תרגול של מעבר בין מסכים, לא חזרה על מושגי משחק כלליים.';
+      ex12.hint = 'חפשו בקוד מה מזהה מסך, מה מציג מסך פתוח, ומה מעביר למסך אחר.';
+      ex12.upgradeTag = 'lesson11-screen-code-words-v417';
+      ex12.matchBox = {
+        title: 'מילות קוד מתוך אפליקציית מסכים',
+        note: 'בחרו את התפקיד המתאים לכל שורה מתוך אתר ההרפתקה.',
+        options: [
+          { value:'show', label:'מעביר את האתר למסך אחר' },
+          { value:'id', label:'שם/זיהוי של מסך מסוים' },
+          { value:'active', label:'מסמן איזה מסך מוצג עכשיו' }
+        ],
+        items: [
+          { id:'11-screen-show', code:'showScreen("winScreen")', answer:'show' },
+          { id:'11-screen-id', code:'id="blueDoorScreen"', answer:'id' },
+          { id:'11-screen-active', code:'class="screen active"', answer:'active' }
+        ]
+      };
+      ex12.check = {
+        ...(ex12.check || {}),
+        matchAnswers: {
+          '11-screen-show':'show',
+          '11-screen-id':'id',
+          '11-screen-active':'active'
+        },
+        matchFeedback:'כמעט. חשבו: איזו שורה מעבירה מסך, איזו נותנת שם למסך, ואיזו אומרת שהמסך פתוח עכשיו.'
+      };
+    }
+  }
+  addLesson11TargetAndStudentPreviewSplitV417();
+
+
   function stabilizeLesson1CodeWordExerciseV227(){
     const lesson = lessons.find(item => Number(item.id) === 1);
     const exercise = lesson?.exercises?.find(item => Number(item.id) === 8);
@@ -7921,6 +8090,1062 @@ function resetAdventure() {
     }
   }
   integrateWebCodePr110Lesson9And10RefinementsV229();
+
+
+  function applyLesson11FinalCodeReadingPreviewV422(){
+    const lesson = lessons.find(item => Number(item.id) === 11);
+    if(!lesson) return;
+    const latest = {
+  "id": 11,
+  "title": "דלת אחת — מעבר בין שני מסכים",
+  "concept": "מסך פתיחה · כפתור מעבר · דף יעד אחד",
+  "durationMinutes": 90,
+  "story": "סיפור קטן וברור: מסך פתיחה עם מפתח, וכפתור שמעביר לדף שבו הטירה נפתחת.",
+  "mission": "לבנות אפליקציית שני מסכים: מסך פתיחה, כפתור אחד, ודף יעד אחד.",
+  "outcome": "אתר קטן עם מעבר ברור ממסך פתיחה לדף נוסף, בלי עומס של מסלולים מרובים.",
+  "starter": {
+    "html": "<main class=\"adventure-app\">\n  <section id=\"startScreen\" class=\"screen active\">\n    <h1>הטירה הסודית</h1>\n    <p>הטירה נעולה, צריך לפתוח אותה עם המפתח.</p>\n    <button onclick=\"showScreen('redDoorScreen')\">קחו את המפתח</button>\n  </section>\n  <section id=\"redDoorScreen\" class=\"screen\">\n    <h2>הטירה נפתחה!</h2>\n    <p>כל הכבוד! הצלחתם לפתוח את הדלת!</p>\n    <button onclick=\"showScreen('startScreen')\">חזרו למסך הפתיחה</button>\n  </section>\n</main>",
+    "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #312e81, #f97316);\n}\n\n.adventure-app {\n  background: white;\n  width: min(500px, 92vw);\n  margin: 42px auto;\n}\n\n.screen {\n  display: none;\n  min-height: 260px;\n}\n\n.screen.active {\n  display: block;\n}\n\nh1, h2 {\n  color: #4338ca;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #4338ca;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}",
+    "js": "let currentScreen = \"startScreen\";\n\nfunction showScreen(screenId) {\n  currentScreen = screenId;\n  document.querySelectorAll(\".screen\").forEach(function (screen) {\n    screen.classList.remove(\"active\");\n  });\n  document.getElementById(screenId).classList.add(\"active\");\n}\n\nfunction resetAdventure() {\n  showScreen(\"startScreen\");\n}"
+  },
+  "lessonFlow": [
+    {
+      "minutes": "0–8",
+      "title": "פתיחה: בודקים את פרויקט ההרפתקה",
+      "teacher": "מציגים את דגם המטרה ומסבירים שהאתר ייבנה מבלוקים בלבד.",
+      "students": "מזהים כותרת, פסקת פתיחה ושני כפתורי בחירה."
+    },
+    {
+      "minutes": "8–24",
+      "title": "בונים תוכן בסיסי",
+      "teacher": "מובילים הוספת כותרת, פתיחה וכפתורי בחירה דרך בלוקים.",
+      "students": "משלימים את תרגילי הבנייה הראשונים ובודקים בתצוגה."
+    },
+    {
+      "minutes": "24–40",
+      "title": "מעצבים את כפתורי הבחירה",
+      "teacher": "מחברים בין בלוקי עיצוב לבין שינוי חזותי ברור.",
+      "students": "משנים פריסה, צבע, צורה וגודל."
+    },
+    {
+      "minutes": "40–55",
+      "title": "מעצבים את העמוד",
+      "teacher": "מראים אילו בלוקים משפיעים על רקע, כרטיס וכותרת.",
+      "students": "בודקים שכל שינוי נראה בתצוגה החיה."
+    },
+    {
+      "minutes": "55–69",
+      "title": "בלוק הופך לשורת קוד",
+      "teacher": "פותחים את הקוד שנוצר ומראים איך לחיצה על בלוק מסמנת שורה מתאימה.",
+      "students": "מחברים בין בלוק לבין HTML/CSS שנוצר ממנו."
+    },
+    {
+      "minutes": "69–83",
+      "title": "קוראים תפקיד של קוד",
+      "teacher": "מתרגלים התאמה בין שורות קוד לבין מה שרואים בדף.",
+      "students": "פותרים התאמות ומזהים מילים מרכזיות."
+    },
+    {
+      "minutes": "83–90",
+      "title": "איפה משנים ודיבאג קצר",
+      "teacher": "מסיימים בבחירת מקום שינוי ותיקון טעות חסרה בשם פעולה.",
+      "students": "בודקים איפה חסרה אות ומסכמים מה HTML/CSS/JS עשו."
+    }
+  ],
+  "exercises": [
+    {
+      "id": 1,
+      "minutes": "0–8",
+      "title": "תרגיל 1 — בניית מסך הפתיחה",
+      "prompt": "גררו את הבלוק “בנה מסך פתיחה”, וחברו אליו את בלוקי התוכן של מסך הפתיחה: כותרת, טקסט וכפתור, ושנו את הטקסט לפי תצוגת דגם המטרה.",
+      "hint": "השוו את מסך הפתיחה לדגם המטרה: בדקו שיש בו כותרת, טקסט פתיחה וכפתור אחד, ושהתוכן נראה תואם לדגם.",
+      "check": {
+        "blockTypes": [
+          "lesson_11_start_screen",
+          "lesson_11_title",
+          "lesson_11_intro",
+          "lesson_11_red_door"
+        ],
+        "lesson11SequenceBlockTypes": [
+          {
+            "start": "lesson_11_start_screen",
+            "types": [
+              "lesson_11_title",
+              "lesson_11_intro",
+              "lesson_11_red_door"
+            ]
+          }
+        ],
+        "htmlIncludes": [
+          "<section id=\"startScreen\"",
+          "<h1>הטירה הסודית</h1>",
+          "<p>הטירה נעולה, צריך לפתוח אותה עם המפתח.</p>",
+          ">קחו את המפתח</button>"
+        ],
+        "htmlExcludes": [
+          "דלת כחולה",
+          "__NO_AUTO_DOOR_ICON__"
+        ],
+        "blockFeedback": "כמעט. בתוך “בנה מסך פתיחה” צריכים להיות כותרת, טקסט וכפתור.",
+        "sequenceFeedback": "כמעט. חברו את הכותרת, הטקסט והכפתור בתוך “בנה מסך פתיחה”.",
+        "excludeFeedback": "כמעט. במסך הפתיחה צריך להיות כפתור אחד בלבד עם הטקסט “קחו את המפתח”."
+      }
+    },
+    {
+      "id": 2,
+      "minutes": "8–16",
+      "title": "תרגיל 2 — עיצוב מסך הפתיחה",
+      "prompt": "הוסיפו למסך הפתיחה בלוקי עיצוב כך שייראה כמו דגם המטרה: כרטיס לבן, כותרת סגולה וכפתור קטן ועגול.",
+      "hint": "המשיכו את אותו רצף של “בנה מסך פתיחה”: אחרי בלוקי התוכן חברו גם את בלוקי העיצוב, בלי לפתוח בלוק ראשי נוסף.",
+      "check": {
+        "blockTypes": [
+          "lesson_11_card_color",
+          "lesson_11_title_color",
+          "lesson_11_button_color",
+          "lesson_11_button_shape",
+          "lesson_11_button_size"
+        ],
+        "lesson11SequenceBlockTypes": [
+          {
+            "start": "lesson_11_start_screen",
+            "types": [
+              "lesson_11_title",
+              "lesson_11_intro",
+              "lesson_11_red_door",
+              "lesson_11_card_color",
+              "lesson_11_title_color",
+              "lesson_11_button_color",
+              "lesson_11_button_shape",
+              "lesson_11_button_size"
+            ]
+          }
+        ],
+        "exactBlockTypeCounts": {
+          "lesson_11_start_screen": 1
+        },
+        "cssIncludes": [
+          "background: white",
+          "color: #4338ca",
+          "background: #4338ca",
+          "border-radius: 999px",
+          "padding:8px 13px"
+        ],
+        "cssFeedback": "כמעט. הבלוקים מחוברים נכון, אבל אחת מבחירות העיצוב עדיין לא מתאימה לדגם המטרה. בדקו צבעים, צורת כפתור וגודל כפתור.",
+        "blockFeedback": "כמעט. חסר אחד מבלוקי העיצוב של מסך הפתיחה.",
+        "sequenceFeedback": "כמעט. בלוקי העיצוב צריכים להיות המשך של אותו רצף “בנה מסך פתיחה”, לא תחת בלוק ראשי נוסף."
+      }
+    },
+    {
+      "id": 3,
+      "minutes": "16–24",
+      "title": "תרגיל 3 — מעבר בכפתור",
+      "prompt": "חברו לכפתור את הבלוק “בלחיצה על הכפתור”, ובחרו בו “עוברים לדף הבא”.",
+      "hint": "הבלוק “בלחיצה על הכפתור” צריך להיות בתוך “בנה מסך פתיחה”.",
+      "check": {
+        "blockTypes": [
+          "lesson_11_red_continue"
+        ],
+        "lesson11SequenceBlockTypes": [
+          {
+            "start": "lesson_11_start_screen",
+            "types": [
+              "lesson_11_red_continue"
+            ]
+          }
+        ],
+        "htmlIncludes": [
+          "onclick=\"showScreen('redDoorScreen')\""
+        ],
+        "blockFeedback": "כמעט. חסר בלוק “בלחיצה על הכפתור” שמוביל לדף הבא.",
+        "sequenceFeedback": "כמעט. בלוק המעבר לדף הבא צריך להיות מחובר בתוך “בנה מסך פתיחה”."
+      }
+    },
+    {
+      "id": 4,
+      "minutes": "24–32",
+      "title": "תרגיל 4 — בניית דף המעבר",
+      "prompt": "גררו את הבלוק “בנה דף מעבר”, וחברו אליו את בלוקי ה־HTML של דף המעבר: כותרת וטקסט הצלחה, ושנו את הטקסט לפי תצוגת דגם המטרה.",
+      "hint": "בדף המעבר צריכים להיות כותרת וטקסט הצלחה. את העיצוב ואת כפתור החזרה נוסיף בתרגילים הבאים.",
+      "check": {
+        "blockTypes": [
+          "lesson_11_room_one",
+          "lesson_11_title",
+          "lesson_11_intro"
+        ],
+        "lesson11SequenceBlockTypes": [
+          {
+            "start": "lesson_11_room_one",
+            "types": [
+              "lesson_11_title",
+              "lesson_11_intro"
+            ]
+          }
+        ],
+        "htmlIncludes": [
+          "<section id=\"redDoorScreen\"",
+          "<h2>הטירה נפתחה!</h2>",
+          "<p>כל הכבוד! הצלחתם לפתוח את הדלת!</p>"
+        ],
+        "blockFeedback": "כמעט. בנו את דף המעבר והוסיפו לו כותרת וטקסט הצלחה.",
+        "sequenceFeedback": "כמעט. הכותרת וטקסט ההצלחה צריכים להיות מחוברים בתוך “בנה דף מעבר”."
+      }
+    },
+    {
+      "id": 5,
+      "minutes": "32–40",
+      "title": "תרגיל 5 — עיצוב דף המעבר",
+      "prompt": "הוסיפו לדף המעבר בלוקי CSS כך שגם הדף השני ייראה כמו הדגם: כרטיס לבן, כותרת סגולה וכפתור קטן ועגול.",
+      "hint": "המשיכו את אותו רצף של “בנה דף מעבר”: אחרי בלוקי ה־HTML חברו גם את בלוקי העיצוב, בלי לפתוח בלוק ראשי נוסף.",
+      "check": {
+        "blockTypes": [
+          "lesson_11_card_color",
+          "lesson_11_title_color",
+          "lesson_11_button_color",
+          "lesson_11_button_shape",
+          "lesson_11_button_size"
+        ],
+        "lesson11SequenceBlockTypes": [
+          {
+            "start": "lesson_11_room_one",
+            "types": [
+              "lesson_11_title",
+              "lesson_11_intro",
+              "lesson_11_card_color",
+              "lesson_11_title_color",
+              "lesson_11_button_color",
+              "lesson_11_button_shape",
+              "lesson_11_button_size"
+            ]
+          }
+        ],
+        "exactBlockTypeCounts": {
+          "lesson_11_room_one": 1
+        },
+        "cssIncludes": [
+          "background: white",
+          "color: #4338ca",
+          "background: #4338ca",
+          "border-radius: 999px",
+          "padding:8px 13px"
+        ],
+        "cssFeedback": "כמעט. הבלוקים מחוברים נכון, אבל אחת מבחירות העיצוב עדיין לא מתאימה לדגם המטרה. בדקו צבעים, צורת כפתור וגודל כפתור.",
+        "blockFeedback": "כמעט. חסר אחד מבלוקי העיצוב של דף המעבר.",
+        "sequenceFeedback": "כמעט. בלוקי העיצוב צריכים להיות המשך של אותו רצף “בנה דף מעבר”, לא תחת בלוק ראשי נוסף."
+      }
+    },
+    {
+      "id": 6,
+      "minutes": "40–48",
+      "title": "תרגיל 6 — חזרה למסך הפתיחה",
+      "prompt": "הוסיפו לדף המעבר כפתור “חזרו למסך הפתיחה”, וחברו לו בלוק “בלחיצה על הכפתור” עם האפשרות “חוזרים למסך הפתיחה”.",
+      "hint": "זה השלב האחרון בדף המעבר: מוסיפים כפתור חזרה ובלוק פעולה שמחזיר למסך הפתיחה.",
+      "check": {
+        "blockTypes": [
+          "lesson_11_room_one",
+          "lesson_11_red_door",
+          "lesson_11_red_continue"
+        ],
+        "lesson11SequenceBlockTypes": [
+          {
+            "start": "lesson_11_room_one",
+            "types": [
+              "lesson_11_title",
+              "lesson_11_intro",
+              "lesson_11_card_color",
+              "lesson_11_title_color",
+              "lesson_11_button_color",
+              "lesson_11_button_shape",
+              "lesson_11_button_size",
+              "lesson_11_red_door",
+              "lesson_11_red_continue"
+            ]
+          }
+        ],
+        "exactBlockTypeCounts": {
+          "lesson_11_room_one": 1
+        },
+        "htmlIncludes": [
+          "<section id=\"startScreen\"",
+          "<section id=\"redDoorScreen\"",
+          "onclick=\"showScreen('redDoorScreen')\"",
+          "onclick=\"showScreen('startScreen')\"",
+          ">קחו את המפתח</button>",
+          ">חזרו למסך הפתיחה</button>",
+          "הטירה נפתחה!",
+          "כל הכבוד! הצלחתם לפתוח את הדלת!"
+        ],
+        "htmlExcludes": [
+          "דלת כחולה",
+          "blueDoorScreen",
+          "funnyEndScreen",
+          "__NO_AUTO_DOOR_ICON__"
+        ],
+        "blockFeedback": "כמעט. בדף המעבר צריך להיות כפתור “חזרו למסך הפתיחה” ובלוק פעולה שמחזיר למסך הפתיחה.",
+        "sequenceFeedback": "כמעט. כפתור החזרה ובלוק הפעולה צריכים להיות המשך של אותו רצף “בנה דף מעבר”, בלי לפתוח בלוק ראשי נוסף.",
+        "excludeFeedback": "כמעט. בשיעור הזה צריך מסלול אחד בלבד — בלי דלת כחולה ובלי סימן אוטומטי בכפתור."
+      }
+    },
+    {
+      "id": 7,
+      "minutes": "48–62",
+      "title": "כניסה לקוד 1 — קוראים שורה שנוצרה מבלוק",
+      "prompt": "בחרו בלוק מחובר מתוך “בנה דף מעבר” — בלוק תוכן, עיצוב או פעולה. פתחו “לראות קוד שנוצר”, לחצו על הבלוק, כתבו באיזו שפה נמצאת השורה שסומנה, ואז כתבו מילה מתוך אותה שורה.",
+      "hint": "מסתכלים על הלשונית שסומנה — HTML, CSS או JavaScript — ואז מעתיקים ביד מילה קצרה מתוך השורה המסומנת.",
+      "check": {
+        "requiresCodePeek": true,
+        "requiresCodeSelectionTabs": [
+          "html",
+          "css",
+          "js"
+        ],
+        "requiresCodeSelectionBlockTypes": [
+          "lesson_11_title",
+          "lesson_11_intro",
+          "lesson_11_card_color",
+          "lesson_11_title_color",
+          "lesson_11_button_color",
+          "lesson_11_button_shape",
+          "lesson_11_button_size",
+          "lesson_11_red_door",
+          "lesson_11_red_continue"
+        ],
+        "requiresSelectedCodeTypeField": "code-type",
+        "codeTypeFeedback": "כמעט. בתיבה הראשונה כתבו את שם השפה לפי הלשונית שבה השורה מסומנת: HTML, CSS או JavaScript.",
+        "requiresCodeLineAnswer": {
+          "answerField": "code-word",
+          "tabs": [
+            "html",
+            "css",
+            "js"
+          ],
+          "blockTypes": [
+            "lesson_11_title",
+            "lesson_11_intro",
+            "lesson_11_card_color",
+            "lesson_11_title_color",
+            "lesson_11_button_color",
+            "lesson_11_button_shape",
+            "lesson_11_button_size",
+            "lesson_11_red_door",
+            "lesson_11_red_continue"
+          ],
+          "allowAnyWordFromSelectedLine": true,
+          "requiredSnippets": [
+            "h2",
+            "p",
+            "section",
+            "id",
+            "button",
+            "onclick",
+            "showScreen",
+            "background",
+            "color",
+            "border-radius",
+            "padding",
+            "white",
+            "4338ca",
+            "redDoorScreen",
+            "startScreen",
+            "הטירה",
+            "נפתחה",
+            "כל",
+            "הכבוד"
+          ]
+        },
+        "codePeekFeedback": "כמעט. קודם פתחו את “לראות קוד שנוצר”.",
+        "codeSelectionFeedback": "כמעט. לחצו על בלוק מחובר מתוך “בנה דף מעבר” כדי לסמן את השורה שהוא יצר בקוד.",
+        "codeLineAnswerFeedback": "כמעט. בתיבה השנייה כתבו מילה מתוך השורה שסומנה, לא מילה כללית מבחוץ."
+      },
+      "answerBoxes": [
+        {
+          "id": "code-type",
+          "label": "באיזו שפה נמצאת השורה שסומנה?",
+          "placeholder": "HTML / CSS / JavaScript"
+        },
+        {
+          "id": "code-word",
+          "label": "מילה מתוך השורה שסומנה",
+          "placeholder": "הקלידו מילה מהשורה"
+        }
+      ],
+      "answerBoxTitle": "זהו באיזו שפה הקוד ואז כתבו מילה ממנו",
+      "answerBoxNote": "המטרה היא לקרוא את הקוד שנוצר מהבלוק: קודם מזהים שפה, ואז מילה אחת מתוך השורה."
+    },
+    {
+      "id": 8,
+      "minutes": "62–76",
+      "title": "כניסה לקוד 2 — ה־CSS שעיצב את הדף",
+      "prompt": "לחצו על אחד מבלוקי העיצוב שמחוברים לדף המעבר. פתחו “לראות קוד שנוצר”, לחצו על הבלוק, ואז כתבו מילה מתוך שורת ה־CSS שסומנה.",
+      "hint": "בלוקי עיצוב יוצרים שורות CSS. העתיקו מילה קצרה מתוך השורה המסומנת, כמו color, background, border-radius או padding.",
+      "check": {
+        "requiresCodePeek": true,
+        "requiresCodeSelectionTab": "css",
+        "requiresCodeSelectionBlockTypes": [
+          "lesson_11_card_color",
+          "lesson_11_title_color",
+          "lesson_11_button_color",
+          "lesson_11_button_shape",
+          "lesson_11_button_size"
+        ],
+        "requiresCodeLineAnswer": {
+          "answerField": "code-word",
+          "tabs": [
+            "css"
+          ],
+          "blockTypes": [
+            "lesson_11_card_color",
+            "lesson_11_title_color",
+            "lesson_11_button_color",
+            "lesson_11_button_shape",
+            "lesson_11_button_size"
+          ],
+          "allowAnyWordFromSelectedLine": true,
+          "requiredSnippets": [
+            "color",
+            "background",
+            "border-radius",
+            "padding",
+            "white",
+            "4338ca",
+            "999px",
+            "13px"
+          ]
+        },
+        "codePeekFeedback": "כמעט. קודם פתחו את “לראות קוד שנוצר”.",
+        "codeSelectionFeedback": "כמעט. לחצו על בלוק עיצוב מחובר כדי לסמן את שורת ה־CSS שלו.",
+        "codeLineAnswerFeedback": "כמעט. בתיבה השנייה כתבו מילה מתוך שורת ה־CSS שסומנה."
+      },
+      "answerBoxes": [
+        {
+          "id": "code-word",
+          "label": "מילה מתוך השורה שסומנה",
+          "placeholder": "הקלידו מילה מהשורה"
+        }
+      ],
+      "answerBoxTitle": "כתבו מילה מתוך שורת ה־CSS שסומנה",
+      "answerBoxNote": "המטרה היא לקרוא את שורת ה־CSS שנוצרה מהבלוק ולכתוב מילה אחת שמופיעה בה."
+    },
+    {
+      "id": 9,
+      "minutes": "76–90",
+      "title": "כניסה לקוד 3 — פעולת מעבר מסך",
+      "prompt": "לחצו על בלוק “בלחיצה על הכפתור” שמחובר לדף המעבר. פתחו “לראות קוד שנוצר”, לחצו על הבלוק, ואז כתבו מילה מתוך השורה שסומנה.",
+      "hint": "הבלוק מסמן את שורת הפעולה של הכפתור. העתיקו מילה קצרה מתוך השורה המסומנת, כמו button, onclick, showScreen או שם המסך.",
+      "check": {
+        "requiresCodePeek": true,
+        "requiresCodeSelectionTabs": [
+          "html",
+          "js"
+        ],
+        "requiresCodeSelectionBlockTypes": [
+          "lesson_11_red_continue"
+        ],
+        "requiresCodeLineAnswer": {
+          "answerField": "code-word",
+          "tabs": [
+            "html",
+            "js"
+          ],
+          "blockTypes": [
+            "lesson_11_red_continue"
+          ],
+          "allowAnyWordFromSelectedLine": true,
+          "requiredSnippets": [
+            "button",
+            "onclick",
+            "showScreen",
+            "redDoorScreen",
+            "startScreen",
+            "חזרו",
+            "מסך",
+            "פתיחה",
+            "קחו",
+            "מפתח",
+            "function",
+            "screenId",
+            "currentScreen",
+            "document",
+            "getElementById",
+            "classList",
+            "active"
+          ]
+        },
+        "codePeekFeedback": "כמעט. קודם פתחו את “לראות קוד שנוצר”.",
+        "codeSelectionFeedback": "כמעט. לחצו על בלוק “בלחיצה על הכפתור” שמחובר לאחד המסכים.",
+        "codeLineAnswerFeedback": "כמעט. בתיבה כתבו מילה שמופיעה בתוך השורה שסומנה."
+      },
+      "answerBoxes": [
+        {
+          "id": "code-word",
+          "label": "מילה מתוך השורה שסומנה",
+          "placeholder": "הקלידו מילה מהשורה"
+        }
+      ],
+      "answerBoxTitle": "כתבו מילה מתוך השורה שסומנה",
+      "answerBoxNote": "המטרה היא לקרוא את השורה שנוצרה מהבלוק ולכתוב מילה אחת שמופיעה בה."
+    }
+  ],
+  "aiHelper": [
+    "הציעו רעיונות לשתי דלתות ושני סופים מצחיקים.",
+    "עזרו לילד לתכנן מפת סיפור עם 5 מסכים.",
+    "הסבירו showScreen כמו מעבר חדרים בטירה.",
+    "עזרו למצוא למה כפתור לא עובר למסך הנכון."
+  ],
+  "vocabulary": [
+    [
+      "screen",
+      "מסך אחד באפליקציה או בסיפור"
+    ],
+    [
+      "active",
+      "המסך שמוצג עכשיו"
+    ],
+    [
+      "showScreen",
+      "פונקציה שמעבירה למסך אחר"
+    ],
+    [
+      "navigation",
+      "מעבר בין מסכים"
+    ],
+    [
+      "currentScreen",
+      "המסך שהאפליקציה זוכרת כרגע"
+    ]
+  ],
+  "bridgeBlocks": [],
+  "mode": "Real Blockly full rework — מסך פתיחה · כפתור מעבר · דף יעד אחד",
+  "blocklyLessonBuilder": true,
+  "realBlocklyBuilder": true,
+  "progressionStage": "בלוקים אמיתיים לפני כתיבת קוד עצמאי + אתגרי הרחבה",
+  "blocklyBlocks": [
+    {
+      "type": "lesson_11_start_screen",
+      "label": "בנה מסך פתיחה",
+      "message": "בנה מסך פתיחה",
+      "target": "html",
+      "find": "startScreen",
+      "replace": "startScreen",
+      "highlight": "id=\"startScreen\"",
+      "hint": "בלוק התחלה: כל הבלוקים שמחוברים מתחתיו בונים את מסך הפתיחה.",
+      "colour": 24,
+      "previousStatement": false
+    },
+    {
+      "type": "lesson_11_room_one",
+      "label": "בנה דף מעבר",
+      "message": "בנה דף מעבר",
+      "target": "html",
+      "find": "redDoorScreen",
+      "replace": "redDoorScreen",
+      "highlight": "id=\"redDoorScreen\"",
+      "hint": "בלוק התחלה: כל הבלוקים שמחוברים מתחתיו בונים את דף המעבר.",
+      "colour": 24,
+      "previousStatement": false
+    },
+    {
+      "type": "lesson_11_room_two",
+      "label": "בנה דף שני",
+      "message": "בנה דף שני",
+      "target": "html",
+      "find": "blueDoorScreen",
+      "replace": "blueDoorScreen",
+      "highlight": "id=\"blueDoorScreen\"",
+      "hint": "בלוק התחלה: כל הבלוקים שמחוברים מתחתיו בונים את הדף השני.",
+      "colour": 24,
+      "previousStatement": false,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_win_end",
+      "label": "בנה סוף ניצחון",
+      "message": "בנה סוף ניצחון",
+      "target": "html",
+      "find": "winScreen",
+      "replace": "winScreen",
+      "highlight": "id=\"winScreen\"",
+      "hint": "בלוק התחלה לסוף ניצחון.",
+      "colour": 24,
+      "previousStatement": false,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_funny_end",
+      "label": "בנה סוף מעניין",
+      "message": "בנה סוף מעניין",
+      "target": "html",
+      "find": "funnyEndScreen",
+      "replace": "funnyEndScreen",
+      "highlight": "id=\"funnyEndScreen\"",
+      "hint": "בלוק התחלה לסוף מעניין.",
+      "colour": 24,
+      "previousStatement": false,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_title",
+      "label": "כותרת האתר",
+      "message": "כותרת האתר %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "TEXT",
+          "text": "כתבו כותרת כאן"
+        }
+      ],
+      "target": "html",
+      "find": "הטירה הסודית",
+      "replace": "{{TEXT}}",
+      "highlight": "{{TEXT}}",
+      "hint": "בלוק HTML שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 210
+    },
+    {
+      "type": "lesson_11_intro",
+      "label": "הוראות פתיחה",
+      "message": "הוראות פתיחה %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "TEXT",
+          "text": "כתבו הוראות או תיאור כאן"
+        }
+      ],
+      "target": "html",
+      "find": "הטירה נעולה, צריך לפתוח אותה עם המפתח.",
+      "replace": "{{TEXT}}",
+      "highlight": "{{TEXT}}",
+      "hint": "בלוק HTML שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 210
+    },
+    {
+      "type": "lesson_11_red_door",
+      "label": "הוסף כפתור",
+      "message": "הוסף כפתור %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "TEXT",
+          "text": "שם הכפתור הראשון"
+        }
+      ],
+      "target": "html",
+      "find": "קחו את המפתח",
+      "replace": "{{TEXT}}",
+      "highlight": "{{TEXT}}",
+      "hint": "בלוק שמוסיף כפתור למסך הנוכחי. את המעבר לדף אחר מוסיפים בנפרד עם בלוק “בלחיצה על הכפתור”.",
+      "colour": 210
+    },
+    {
+      "type": "lesson_11_blue_door",
+      "label": "הוסף כפתור שני",
+      "message": "הוסף כפתור שני %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "TEXT",
+          "text": "שם הכפתור השני"
+        }
+      ],
+      "target": "html",
+      "find": "דלת כחולה",
+      "replace": "{{TEXT}}",
+      "highlight": "{{TEXT}}",
+      "hint": "בלוק HTML שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 210,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_single_button",
+      "label": "הוסף כפתור יחיד",
+      "message": "הוסף כפתור יחיד %1",
+      "args0": [
+        {
+          "type": "field_input",
+          "name": "TEXT",
+          "text": "שם הכפתור"
+        }
+      ],
+      "target": "html",
+      "find": "קחו את המפתח",
+      "replace": "{{TEXT}}",
+      "highlight": "{{TEXT}}",
+      "hint": "בלוק HTML שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 210,
+      "hideFromToolbox": true
+    },
+    {
+      "hideFromToolbox": true,
+      "type": "lesson_11_card_box",
+      "label": "הוסף כרטיס אתר לבן",
+      "message": "הוסף כרטיס אתר לבן",
+      "args0": [],
+      "target": "html",
+      "find": "<main class=\"adventure-app\">",
+      "replace": "<main class=\"adventure-app\">",
+      "highlight": "<main class=\"adventure-app\">",
+      "hint": "בלוק HTML שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 210
+    },
+    {
+      "type": "lesson_11_emoji",
+      "label": "הוסף אימוג׳י",
+      "message": "הוסף אימוג׳י %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "EMOJI",
+          "options": [
+            [
+              "🎉",
+              "🎉"
+            ],
+            [
+              "✨",
+              "✨"
+            ],
+            [
+              "🔑",
+              "🔑"
+            ],
+            [
+              "🚪",
+              "🚪"
+            ],
+            [
+              "🏰",
+              "🏰"
+            ],
+            [
+              "😊",
+              "😊"
+            ]
+          ]
+        }
+      ],
+      "target": "html",
+      "find": "🎉",
+      "replace": "{{EMOJI}}",
+      "highlight": "{{EMOJI}}",
+      "hint": "בלוק HTML שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 210,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_button_color",
+      "label": "צבע כפתור",
+      "message": "צבע כפתור %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "COLOR",
+          "options": [
+            [
+              "סגול",
+              "#4338ca"
+            ],
+            [
+              "אדום",
+              "#be123c"
+            ],
+            [
+              "ירוק",
+              "#15803d"
+            ],
+            [
+              "כחול",
+              "#2563eb"
+            ],
+            [
+              "כתום",
+              "#f97316"
+            ]
+          ]
+        }
+      ],
+      "target": "css",
+      "find": "background: #4338ca;",
+      "replace": "background: {{COLOR}};",
+      "highlight": "background: {{COLOR}};",
+      "hint": "בלוק CSS שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 285
+    },
+    {
+      "type": "lesson_11_button_shape",
+      "label": "צורת כפתור",
+      "message": "צורת כפתור %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "RADIUS",
+          "options": [
+            [
+              "עגולים",
+              "999px"
+            ],
+            [
+              "מעוגלים",
+              "18px"
+            ],
+            [
+              "קצת מעוגלים",
+              "8px"
+            ],
+            [
+              "מרובעים",
+              "0"
+            ]
+          ]
+        }
+      ],
+      "target": "css",
+      "find": "border-radius: 999px;",
+      "replace": "border-radius: {{RADIUS}};",
+      "highlight": "border-radius: {{RADIUS}};",
+      "hint": "בלוק CSS שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 285
+    },
+    {
+      "type": "lesson_11_button_size",
+      "label": "גודל כפתור",
+      "message": "גודל כפתור %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "SIZE",
+          "options": [
+            [
+              "רגיל",
+              "10px 18px"
+            ],
+            [
+              "גדול",
+              "12px 22px"
+            ],
+            [
+              "קטן",
+              "8px 13px"
+            ]
+          ]
+        }
+      ],
+      "target": "css",
+      "find": "padding: 14px 18px;",
+      "replace": "padding: {{SIZE}};",
+      "highlight": "padding: {{SIZE}};",
+      "hint": "בלוק CSS שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 285
+    },
+    {
+      "type": "lesson_11_button_layout",
+      "label": "מיקום הכפתור",
+      "message": "מיקום הכפתור %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "LAYOUT",
+          "options": [
+            [
+              "בשורה",
+              "display: inline-flex;\n  align-items: center;\n  justify-content: center;"
+            ],
+            [
+              "בטור",
+              "display: block;\n  margin: 8px auto;"
+            ]
+          ]
+        }
+      ],
+      "target": "css",
+      "find": "button {",
+      "replace": "button {\n  {{LAYOUT}}",
+      "highlight": "button {\n  {{LAYOUT}}",
+      "hint": "בלוק CSS שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 285,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_card_color",
+      "label": "צבע כרטיס התוכן",
+      "message": "צבע כרטיס התוכן %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "CARD",
+          "options": [
+            [
+              "לבן",
+              "white"
+            ],
+            [
+              "קרם",
+              "#fff7ed"
+            ],
+            [
+              "תכלת",
+              "#eff6ff"
+            ],
+            [
+              "ורוד בהיר",
+              "#fdf2f8"
+            ]
+          ]
+        }
+      ],
+      "target": "css",
+      "find": "background: white;",
+      "replace": "background: {{CARD}};",
+      "highlight": "background: {{CARD}};",
+      "hint": "בלוק CSS שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 285
+    },
+    {
+      "type": "lesson_11_title_color",
+      "label": "צבע הכותרת",
+      "message": "צבע הכותרת %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "COLOR",
+          "options": [
+            [
+              "סגול",
+              "#4338ca"
+            ],
+            [
+              "כחול",
+              "#1d4ed8"
+            ],
+            [
+              "אדום",
+              "#be123c"
+            ],
+            [
+              "ירוק",
+              "#15803d"
+            ]
+          ]
+        }
+      ],
+      "target": "css",
+      "find": "h1, h2 {\n  color: #4338ca;\n}",
+      "replace": "h1, h2 {\n  color: {{COLOR}};\n}",
+      "highlight": "h1, h2 {\n  color: {{COLOR}};\n}",
+      "hint": "בלוק CSS שמלמד מסך פתיחה · כפתור מעבר · דף יעד אחד.",
+      "colour": 285
+    },
+    {
+      "type": "lesson_11_red_continue",
+      "label": "בלחיצה על הכפתור",
+      "message": "בלחיצה על הכפתור %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "SCREEN",
+          "options": [
+            [
+              "עוברים לדף הבא",
+              "redDoorScreen"
+            ],
+            [
+              "חוזרים למסך הפתיחה",
+              "startScreen"
+            ]
+          ]
+        }
+      ],
+      "target": "html",
+      "find": "showScreen('redDoorScreen')",
+      "replace": "showScreen('{{SCREEN}}')",
+      "highlight": "showScreen('{{SCREEN}}')",
+      "hint": "מגדיר שהכפתור במסך הפתיחה מעביר לדף שבו הטירה נפתחה.",
+      "colour": 120
+    },
+    {
+      "type": "lesson_11_blue_continue",
+      "label": "בלחיצה על כפתור שני",
+      "message": "בלחיצה על כפתור שני %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "SCREEN",
+          "options": [
+            [
+              "עוברים לדף השני",
+              "blueDoorScreen"
+            ],
+            [
+              "עוברים לסוף מעניין",
+              "funnyEndScreen"
+            ],
+            [
+              "חוזרים להתחלה",
+              "startScreen"
+            ]
+          ]
+        }
+      ],
+      "target": "html",
+      "find": "showScreen('blueDoorScreen')",
+      "replace": "showScreen('{{SCREEN}}')",
+      "highlight": "showScreen('{{SCREEN}}')",
+      "hint": "בלוק פעולה: מוסיף כפתור שמפעיל מעבר למסך אחר.",
+      "colour": 120,
+      "hideFromToolbox": true
+    },
+    {
+      "type": "lesson_11_single_button_continue",
+      "label": "בלחיצה על כפתור יחיד",
+      "message": "בלחיצה על כפתור יחיד %1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "SCREEN",
+          "options": [
+            [
+              "עוברים לסוף ניצחון",
+              "winScreen"
+            ],
+            [
+              "עוברים לסוף מעניין",
+              "funnyEndScreen"
+            ],
+            [
+              "חוזרים להתחלה",
+              "startScreen"
+            ],
+            [
+              "עוברים לדף המעבר",
+              "redDoorScreen"
+            ],
+            [
+              "עוברים לדף השני",
+              "blueDoorScreen"
+            ]
+          ]
+        }
+      ],
+      "target": "html",
+      "find": "showScreen('winScreen')",
+      "replace": "showScreen('{{SCREEN}}')",
+      "highlight": "showScreen('{{SCREEN}}')",
+      "hint": "בלוק פעולה: מוסיף כפתור שמפעיל מעבר למסך אחר.",
+      "colour": 120,
+      "hideFromToolbox": true
+    }
+  ],
+  "defaultBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\">\n  <block type=\"lesson_11_start_screen\" x=\"360\" y=\"40\"></block>\n  <block type=\"lesson_11_room_one\" x=\"360\" y=\"210\"></block>\n</xml>",
+  "restoreLastGoodBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\">\n  <block type=\"lesson_11_start_screen\" x=\"360\" y=\"40\">\n    <next><block type=\"lesson_11_title\"><field name=\"TEXT\">הטירה הסודית</field>\n      <next><block type=\"lesson_11_intro\"><field name=\"TEXT\">הטירה נעולה, צריך לפתוח אותה עם המפתח.</field>\n      <next><block type=\"lesson_11_red_door\"><field name=\"TEXT\">קחו את המפתח</field>\n      <next><block type=\"lesson_11_red_continue\"><field name=\"SCREEN\">redDoorScreen</field>\n      <next><block type=\"lesson_11_button_color\"><field name=\"COLOR\">#4338ca</field>\n      <next><block type=\"lesson_11_button_shape\"><field name=\"RADIUS\">999px</field>\n      <next><block type=\"lesson_11_button_size\"><field name=\"SIZE\">8px 13px</field>\n      <next><block type=\"lesson_11_button_layout\"><field name=\"LAYOUT\">display: inline-flex;\n  align-items: center;\n  justify-content: center;</field>\n      <next><block type=\"lesson_11_card_color\"><field name=\"CARD\">white</field>\n      <next><block type=\"lesson_11_title_color\"><field name=\"COLOR\">#4338ca</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next>\n  </block>\n  <block type=\"lesson_11_room_one\" x=\"360\" y=\"520\">\n    <next><block type=\"lesson_11_title\"><field name=\"TEXT\">הטירה נפתחה!</field>\n      <next><block type=\"lesson_11_intro\"><field name=\"TEXT\">כל הכבוד! הצלחתם לפתוח את הדלת!</field>\n      <next><block type=\"lesson_11_red_door\"><field name=\"TEXT\">חזרו למסך הפתיחה</field>\n      <next><block type=\"lesson_11_red_continue\"><field name=\"SCREEN\">startScreen</field>\n      <next><block type=\"lesson_11_card_color\"><field name=\"CARD\">white</field>\n      <next><block type=\"lesson_11_title_color\"><field name=\"COLOR\">#4338ca</field>\n      <next><block type=\"lesson_11_button_color\"><field name=\"COLOR\">#4338ca</field>\n      <next><block type=\"lesson_11_button_shape\"><field name=\"RADIUS\">999px</field>\n      <next><block type=\"lesson_11_button_size\"><field name=\"SIZE\">8px 13px</field></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next></block></next>\n  </block>\n</xml>",
+  "targetModel": {
+    "html": "<main class=\"adventure-app\">\n  <section id=\"startScreen\" class=\"screen active\">\n    <h1>הטירה הסודית</h1>\n    <p>הטירה נעולה, צריך לפתוח אותה עם המפתח.</p>\n    <button onclick=\"showScreen('redDoorScreen')\">קחו את המפתח</button>\n  </section>\n  <section id=\"redDoorScreen\" class=\"screen\">\n    <h2>הטירה נפתחה!</h2>\n    <p>כל הכבוד! הצלחתם לפתוח את הדלת!</p>\n    <button onclick=\"showScreen('startScreen')\">חזרו למסך הפתיחה</button>\n  </section>\n</main>",
+    "css": "body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #312e81, #f97316);\n}\n\n.adventure-app {\n  background: white;\n  width: min(500px, 92vw);\n  margin: 42px auto;\n}\n\n.screen {\n  display: none;\n  min-height: 260px;\n}\n\n.screen.active {\n  display: block;\n}\n\nh1, h2 {\n  color: #4338ca;\n}\n\nbutton {\n  margin: 8px;\n  padding: 14px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #4338ca;\n  color: white;\n  font-weight: bold;\n  cursor: pointer;\n}\n\n      html, body { width:100%; height:100%; min-height:0; overflow:hidden; }\n      body { margin:0; height:100vh; min-height:0; display:flex; align-items:center; justify-content:center; padding:clamp(10px, 1.8vw, 18px); background:transparent; box-sizing:border-box; }\n      .adventure-app { width:100%; height:100%; min-height:0; margin:0 auto; padding:40px 34px 34px; border-radius:34px; box-shadow:0 20px 48px rgba(49,46,129,.28); background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-sizing:border-box; }\n      .screen { min-height:0; width:100%; }\n      .screen.active { display:block; }\n      h1 { font-size:clamp(1.75rem, 4.4vw, 2.55rem); margin:.05rem 0 .72rem; }\n      h2 { font-size:clamp(1.25rem, 3vw, 1.75rem); margin:.15rem 0 .55rem; }\n      p { margin:.35rem 0 .9rem; font-size:clamp(.92rem, 2.15vw, 1.06rem); }\n      button { margin:3px 4px; padding:8px 13px; font-size:.82rem; line-height:1.12; max-width:100%; white-space:nowrap; width:auto; min-width:max-content; box-sizing:border-box; }\n      #startScreen { white-space:nowrap; }\n      #startScreen h1, #startScreen p { white-space:normal; }\n      #startScreen button { display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; margin:3px 2px; padding:7px 11px; font-size:.78rem; max-width:none; }\n    ",
+    "js": "let currentScreen = \"startScreen\";\n\nfunction showScreen(screenId) {\n  currentScreen = screenId;\n  document.querySelectorAll(\".screen\").forEach(function (screen) {\n    screen.classList.remove(\"active\");\n  });\n  document.getElementById(screenId).classList.add(\"active\");\n}\n\nfunction resetAdventure() {\n  showScreen(\"startScreen\");\n}",
+    "label": "דגם מטרה — אפליקציית מסכים עובדת"
+  }
+};
+    Object.assign(lesson, latest);
+  }
+  applyLesson11FinalCodeReadingPreviewV422();
 
 
   window.WEBCODE_LESSONS = lessons;

@@ -31,8 +31,12 @@ for (const lesson of lessons) {
     const range = parseRange(exercise.minutes);
     return range && range.start < range.end && range.end <= 90;
   }), `lesson ${lesson.id} required exercises must use valid ranges within 90 minutes`);
-  assert.ok(extensions.length > 0, `lesson ${lesson.id} must preserve later material as optional extensions`);
-  assert.ok(extensions.every(exercise => exercise.extension && exercise.minutes === 'הרחבה לפי זמן'), `lesson ${lesson.id} extensions must be explicitly marked and must not claim required class minutes`);
+  if (lesson.id !== 11) {
+    assert.ok(extensions.length > 0, `lesson ${lesson.id} must preserve later material as optional extensions`);
+    assert.ok(extensions.every(exercise => exercise.extension && exercise.minutes === 'הרחבה לפי זמן'), `lesson ${lesson.id} extensions must be explicitly marked and must not claim required class minutes`);
+  } else {
+    assert.equal(extensions.length, 0, 'lesson 11 uses the approved compact 9-exercise custom flow without optional extensions');
+  }
 }
 
 const hub = read('webcode.html');
