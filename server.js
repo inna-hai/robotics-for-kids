@@ -408,6 +408,21 @@ function redirectWebCodeShortHost(req, res) {
   return true;
 }
 
+function redirectRobotics15ShortHost(req, res) {
+  const hosts = [
+    requestHostname(req),
+    String(req.headers.host || '').trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, ''),
+    ...String(req.headers['x-forwarded-host'] || '').split(',').map(host => host.trim().toLowerCase().replace(/:\d+$/, '').replace(/\.$/, '')),
+  ].filter(Boolean);
+  if (!hosts.includes('r.hai.tech')) return false;
+  const url = requestUrl(req);
+  const target = new URL(url.pathname + url.search, 'https://robotics15.hai.tech');
+  sendWithHeaders(res, 308, '', 'text/plain; charset=utf-8', {
+    Location: target.toString(),
+  });
+  return true;
+}
+
 function sendWithHeaders(res, status, body, type = 'application/json; charset=utf-8', extraHeaders = {}) {
   res.writeHead(status, {
     'Content-Type': type,
@@ -10079,6 +10094,7 @@ const server = http.createServer((req, res) => {
   }
   if (redirectLegacyRoboticsHost(req, res)) return;
   if (redirectWebCodeShortHost(req, res)) return;
+  if (redirectRobotics15ShortHost(req, res)) return;
   if (req.url.startsWith('/english-buddy')) return proxyEnglishBuddy(req, res);
   const guideVideoMatch = requestUrl(req).pathname.match(/^\/api\/sensi\/guide-videos\/lesson-(\d+)$/);
   if (guideVideoMatch) return serveSensiGuideVideo(req, res, Number(guideVideoMatch[1]));
