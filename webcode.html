@@ -171,6 +171,10 @@
       el.textContent = text || '';
       el.classList.toggle('bad', Boolean(bad));
     }
+    function refreshUserBadge(){
+      window.dispatchEvent(new CustomEvent('hai:user-badge-refresh'));
+      window.HaiUserBadgeRefresh?.();
+    }
     renderMarkerChoices();
     document.getElementById('webcodeStudentForm')?.addEventListener('submit', async event => {
       event.preventDefault();
@@ -275,6 +279,7 @@
       const data = await response.json().catch(() => ({}));
       if(!response.ok) throw new Error(data.error || 'נדרשת כניסת מורה.');
       renderTeacherHome(data);
+      refreshUserBadge();
       return data;
     }
     document.getElementById('webcodeClassCourse')?.addEventListener('change', renderTeacherClasses);

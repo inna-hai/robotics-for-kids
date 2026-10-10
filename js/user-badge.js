@@ -186,6 +186,9 @@
     }
   }
 
+  window.HaiUserBadgeRefresh = load;
+  window.addEventListener?.('hai:user-badge-refresh', load);
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
   else load();
 })();

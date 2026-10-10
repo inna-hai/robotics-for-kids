@@ -196,8 +196,11 @@ assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*left:auto
 assert.match(read('js/user-badge.js'), /#\$\{BADGE_ID\}\.teacher\{[^}]*max-width:min\(260px/, 'teacher badge should stay compact');
 assert.match(read('js/user-badge.js'), /data-hai-logout/, 'connected user badge should expose a logout menu item');
 assert.match(read('js/user-badge.js'), /\/api\/classroom\/logout/, 'classroom badge logout should clear the classroom session');
+assert.match(read('js/user-badge.js'), /HaiUserBadgeRefresh = load/, 'teacher login pages need to refresh the badge after same-page login');
+assert.match(read('quick-classroom.html'), /hai:user-badge-refresh/, 'quick classroom must refresh the badge after teacher login');
+assert.match(read('webcode.html'), /hai:user-badge-refresh/, 'WebCode teacher login must refresh the badge after same-page login');
 const server = read('server.js');
-assert.match(server, /user-badge\.js\?v=20261009-user-logout-menu-1/);
+assert.match(server, /user-badge\.js\?v=20261010-teacher-refresh-1/);
 assert.match(server, /classroom-session\.js\?v=20261009-webcode-quick-class-1/);
 assert.match(server, /const baseOutput = injectUserBadge\(html\);/, 'the unified badge must load even when the subscription gate is disabled');
 assert.doesNotMatch(server, /SUBSCRIPTION_GATE_ENABLED \? injectUserBadge\(html\)/);

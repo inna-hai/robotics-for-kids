@@ -157,6 +157,10 @@
       el.textContent = text || '';
       el.classList.toggle('bad', Boolean(bad));
     }
+    function refreshUserBadge(){
+      window.dispatchEvent(new CustomEvent('hai:user-badge-refresh'));
+      window.HaiUserBadgeRefresh?.();
+    }
     function showTeacherTab(mode){
       const register = mode !== 'login';
       document.getElementById('registerForm').hidden = !register;
@@ -222,6 +226,7 @@
       const data = await response.json().catch(() => ({}));
       if(!response.ok) throw new Error(data.error || 'נדרשת כניסת מורה.');
       renderTeacherHome(data);
+      refreshUserBadge();
       return data;
     }
     function rememberFutureArchitectsStudent(loginData){
