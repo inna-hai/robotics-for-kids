@@ -104,6 +104,12 @@
     status.classList.toggle('bad', Boolean(bad));
   }
 
+  function rememberFutureArchitectsStudent(loginData) {
+    if (loginData?.classroom?.course?.id !== 'future-architects') return;
+    if (!loginData?.student?.id || !loginData?.classroom?.id) return;
+    sessionStorage.setItem('futureArchitects.classroomStorageScope.v1', `student:${loginData.classroom.id}:${loginData.student.id}`);
+  }
+
   function bindForm(root, markerName) {
     const form = root.querySelector('[data-qce-form]');
     form?.addEventListener('submit', async event => {
@@ -117,6 +123,7 @@
           markerColor: marker.color,
           markerShape: marker.shape,
         });
+        rememberFutureArchitectsStudent(loginData);
         location.assign(loginData.startUrl || course.courseUrl);
       } catch (error) {
         setStatus(root, error.message || 'לא הצלחנו להיכנס לכיתה.', true);

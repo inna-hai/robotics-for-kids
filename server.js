@@ -7325,6 +7325,41 @@ async function handleClassroomApi(req, res) {
     return send(res, 200, JSON.stringify({ ok: true, progress: result.rows.map(classroomProgressPublic) }));
   }
 
+  if (req.method === 'GET' && action === 'portfolio') {
+    const courseId = cleanText(url.searchParams.get('courseId'), 80);
+    const lessonId = cleanText(url.searchParams.get('lessonId'), 80);
+    const artifactId = cleanText(url.searchParams.get('artifactId'), 80);
+    const result = withSummerDb(db => db.transaction(() => {
+      const student = requireCurrentClassroomStudent(db, req);
+      if (!student) return { denied: true };
+      if (courseId && !CLASSROOM_COURSES.has(courseId)) return { invalidCourse: true };
+      const clauses = ['student_id = ?'];
+      const params = [student.id];
+      if (courseId) {
+        clauses.push('course_id = ?');
+        params.push(courseId);
+      }
+      if (lessonId) {
+        clauses.push('lesson_id = ?');
+        params.push(lessonId);
+      }
+      if (artifactId) {
+        clauses.push('artifact_id = ?');
+        params.push(artifactId);
+      }
+      return {
+        rows: db.prepare(`
+          SELECT * FROM classroom_portfolio_entries
+          WHERE ${clauses.join(' AND ')}
+          ORDER BY CAST(lesson_id AS INTEGER), lesson_id, updated_at DESC
+        `).all(...params),
+      };
+    }).immediate());
+    if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה לכיתה.' }));
+    if (result.invalidCourse) return send(res, 400, JSON.stringify({ error: 'הקורס אינו מוכר.' }));
+    return send(res, 200, JSON.stringify({ ok: true, portfolio: result.rows.map(classroomPortfolioPublic) }));
+  }
+
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 
   try {

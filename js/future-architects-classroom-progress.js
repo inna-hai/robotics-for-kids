@@ -70,6 +70,7 @@
     const fields = [];
     for (const [key, raw] of Object.entries(value)) {
       if (key === 'current') continue;
+      if (String(key).startsWith('__classroom')) continue;
       const label = prefix ? `${prefix} / ${cleanLabel(key)}` : cleanLabel(key);
       if (raw === null || raw === undefined || raw === '') continue;
       if (typeof raw === 'string' || typeof raw === 'number' || typeof raw === 'boolean') {
@@ -106,7 +107,10 @@
     return response.json();
   }
 
-  function sendPortfolio() {
+  async function sendPortfolio() {
+    if (window.FutureArchitectsStorage?.ready) {
+      await window.FutureArchitectsStorage.ready;
+    }
     const state = localState();
     const fields = flattenFields(state).filter(field => String(field.value || '').trim());
     if (!fields.length) return;
@@ -127,7 +131,15 @@
     const signature = JSON.stringify({ lessonId, fields });
     if (signature === lastPortfolioSignature) return;
     lastPortfolioSignature = signature;
-    postPortfolio(detail).catch(() => {});
+    postPortfolio(detail).then((data) => {
+      if (!data?.portfolio?.updatedAt) return;
+      try {
+        localStorage.setItem(`futureArchitects.lesson${lessonId}.progress.v1`, JSON.stringify({
+          ...state,
+          __classroomPortfolioUpdatedAt: data.portfolio.updatedAt,
+        }));
+      } catch {}
+    }).catch(() => {});
   }
 
   function scheduleProgress() {

@@ -217,6 +217,11 @@
       renderTeacherHome(data);
       return data;
     }
+    function rememberFutureArchitectsStudent(loginData){
+      if(loginData?.classroom?.course?.id !== 'future-architects') return;
+      if(!loginData?.student?.id || !loginData?.classroom?.id) return;
+      sessionStorage.setItem('futureArchitects.classroomStorageScope.v1', `student:${loginData.classroom.id}:${loginData.student.id}`);
+    }
 
     renderMarkerChoices();
     document.getElementById('registerTab').addEventListener('click', () => showTeacherTab('register'));
@@ -234,6 +239,7 @@
           markerColor: marker.color,
           markerShape: marker.shape,
         });
+        rememberFutureArchitectsStudent(loginData);
         location.assign(loginData.startUrl || 'webcode.html');
       } catch(error) {
         setStatus('studentStatus', error.message || 'לא הצלחנו להיכנס לכיתה.', true);

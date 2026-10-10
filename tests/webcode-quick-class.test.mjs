@@ -27,6 +27,7 @@ const futureArchitects = read('future-architects.html');
 const futureArchitectsLesson = read('future-architects-lesson.html');
 const futureArchitectsLesson20 = read('future-architects-lesson-20.html');
 const futureArchitectsProgress = read('js/future-architects-classroom-progress.js');
+const futureArchitectsStorage = read('js/future-architects-storage.js');
 const teacher = read('webcode-teacher.html');
 const server = read('server.js');
 const sisiPlayPages = [
@@ -84,9 +85,14 @@ assert.match(webcodePlay, /js\/classroom-session\.js/, 'WebCode play should save
 assert.match(pythonTurtle, /js\/classroom-session\.js/, 'Python Turtle should save classroom progress after quick-classroom student login');
 assert.match(minecraftPlay, /js\/classroom-session\.js/, 'Minecraft play should save classroom progress after quick-classroom student login');
 assert.match(futureArchitectsLesson, /js\/classroom-session\.js/, 'Future Architects lessons should save classroom progress after quick-classroom student login');
+assert.match(futureArchitectsLesson, /js\/future-architects-storage\.js/, 'Future Architects lessons should scope local state before loading saved work');
 assert.match(futureArchitectsLesson, /js\/future-architects-classroom-progress\.js/, 'Future Architects lesson 1 should report lesson progress to the classroom session');
 assert.match(futureArchitectsLesson20, /js\/future-architects-classroom-progress\.js/, 'Future Architects lesson 20 should report lesson progress to the classroom session');
 assert.match(futureArchitectsProgress, /hai:classroom-progress/, 'Future Architects helper should dispatch classroom progress events');
+assert.match(futureArchitectsProgress, /FutureArchitectsStorage\?\.ready/, 'Future Architects portfolio saving should wait for classroom state sync');
+assert.match(futureArchitectsProgress, /startsWith\('__classroom'\)/, 'Future Architects portfolio should not expose internal classroom sync metadata');
+assert.match(futureArchitectsStorage, /student:\$\{me\.classroom\.id\}:\$\{me\.student\.id\}/, 'Future Architects local state should be scoped to classroom student identity');
+assert.match(futureArchitectsStorage, /\/api\/classroom\/portfolio/, 'Future Architects state should be restored from classroom portfolio in the DB');
 assert.match(server, /future-architects/, 'server should know the Future Architects course id');
 for (const [path, html] of sisiPlayPages) {
   assert.match(html, /js\/classroom-session\.js/, `${path} should save Sisi classroom progress after quick-classroom student login`);
@@ -249,6 +255,10 @@ try {
       state: { studentName: 'דנה', openingThought: 'עיר חכמה שעוזרת לילדים להגיע לבית הספר בבטחה' },
     },
   }, futureStudent.cookie);
+  const futurePortfolio = await fetch(`http://127.0.0.1:${port}/api/classroom/portfolio?courseId=future-architects&lessonId=1&artifactId=lesson-state`, {
+    headers: { Cookie: futureStudent.cookie },
+  }).then(response => response.json());
+  assert.equal(futurePortfolio.portfolio[0].data.state.openingThought, 'עיר חכמה שעוזרת לילדים להגיע לבית הספר בבטחה', 'Future Architects student should reload their own portfolio state from DB');
 
   const futureTeacherUrl = new URL(`http://127.0.0.1:${port}${futureClass.data.classroom.teacherUrl}`);
   const futureDashboard = await fetch(`http://127.0.0.1:${port}/api/webcode/quick-class/${futureTeacherUrl.searchParams.get('classroom')}`, {
