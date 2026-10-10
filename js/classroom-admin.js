@@ -1,7 +1,7 @@
 (() => {
   const courseLabels = {
     'sensi-city': 'סנסי בעיר החכמה', sisi: 'סיסי', 'python-turtle': 'Python Turtle',
-    webcode: 'Web Code', minecraft: 'Minecraft', 'craftom-agent': 'אקדמיית ה-Agent',
+    webcode: 'Web Code', minecraft: 'Minecraft', 'future-architects': 'אדריכלי המחר', 'craftom-agent': 'אקדמיית ה-Agent',
   };
   const auth = document.getElementById('admin-auth');
   const dashboard = document.getElementById('admin-dashboard');

@@ -81,6 +81,8 @@
     function bindStep(){document.querySelectorAll('input,textarea,select').forEach(el=>el.addEventListener('input',()=>{if(el.name&&ideas.some(([id])=>id===el.name)){state.classifications[el.name]={...(state.classifications[el.name]||{}),category:el.value}}else if(el.dataset.reason){state.classifications[el.dataset.reason]={...(state.classifications[el.dataset.reason]||{}),reason:el.value}}else if(el.type==='checkbox'){state[el.id]=el.checked}else{state[el.id]=el.value}const f=document.getElementById('liveFeedback');if(f){f.textContent=feedbackFor(el.value, el.id==='problem'?'problem':'idea');f.classList.toggle('success',(el.value||'').trim().length>24)}save()}));document.querySelectorAll('[data-select-idea]').forEach(btn=>btn.addEventListener('click',()=>{const idea=ideas.find(([id])=>id===btn.dataset.selectIdea);if(!idea)return;const [id,,title]=idea;const c=state.classifications?.[id]||{};const categoryMap={today:'קיים היום',future:'אולי בעתיד',imaginary:'דמיוני כרגע'};state.selectedTitle=title;state.selectedCategory=categoryMap[c.category]||'';save();go(2)}));const next=document.getElementById('nextBtn');if(next)next.onclick=tryNext;const reset=document.getElementById('resetBtn');if(reset)reset.onclick=()=>{if(confirm('לאפס את העבודה האישית בדפדפן הזה?')){localStorage.removeItem(STORAGE_KEY);state=load();current=0;render()}}}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

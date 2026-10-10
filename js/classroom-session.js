@@ -6,6 +6,7 @@
     if (/webcode/.test(pathname)) return 'webcode';
     if (/minecraft/.test(pathname)) return 'minecraft';
     if (/sensi-city|smart-city/.test(pathname)) return 'sensi-city';
+    if (/future-architects/.test(pathname)) return 'future-architects';
     if (/^(sisi|space|music|ocean|park|garden|factory|kitchen|cinema|detective|dino|art|weather|mail|escape|finale)(-|\.|\/)/.test(pathname)) return 'sisi';
     return '';
   })();
@@ -24,6 +25,12 @@
     if (courseId === 'sisi') {
       const basename = pathname.split('/').pop().replace(/\.html$/, '').replace(/-(play|lab)$/, '');
       return basename === 'sisi' ? 'course' : basename.slice(0, 80);
+    }
+    if (courseId === 'future-architects') {
+      const basename = pathname.split('/').pop().replace(/\.html$/, '');
+      const lessonMatch = basename.match(/^future-architects-lesson(?:-(\d+))?$/);
+      if (lessonMatch) return lessonMatch[1] || '1';
+      return 'course';
     }
     return 'course';
   }

@@ -53,6 +53,8 @@
     function update(el){if(el.dataset.ready){state.readyCheck=state.readyCheck||{};state.readyCheck[el.dataset.ready]=el.checked}else if(el.dataset.audienceRule){state.audienceRules=state.audienceRules||{};state.audienceRules[el.dataset.audienceRule]=el.checked}else if(el.dataset.presentationCheck){state.presentationCheck=state.presentationCheck||{};state.presentationCheck[el.dataset.presentationCheck]=el.checked}else if(el.dataset.reflection){state.reflection=state.reflection||{};state.reflection[el.dataset.reflection]=el.value}else{state[el.id]=el.type==='checkbox'?el.checked:el.value}save()}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

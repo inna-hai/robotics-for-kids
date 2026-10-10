@@ -89,6 +89,8 @@
     function update(el){if(el.dataset.note){state.notes[el.dataset.note]={...(state.notes[el.dataset.note]||{}),[el.dataset.field]:el.value}}else if(el.dataset.interest){state.interests[el.dataset.interest]=el.checked}else{state[el.id]=el.value}const f=document.getElementById('liveFeedback');if(f){f.textContent=feedback(el.value);f.classList.toggle('success',(el.value||'').trim().length>24)}save();if(el.dataset.interest&&current===3)render()}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

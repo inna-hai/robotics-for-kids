@@ -27,8 +27,9 @@ const SUBSCRIPTION_GATE_OPEN_HOSTS = new Set(
     .map(host => host.trim().toLowerCase().replace(/\.$/, ''))
     .filter(Boolean)
 );
-const CLASSROOM_COURSE_IDS = ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent'];
+const CLASSROOM_COURSE_IDS = ['sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent', 'future-architects'];
 const CLASSROOM_COURSES = new Set(CLASSROOM_COURSE_IDS);
+const CLASSROOM_COURSE_SQL_LIST = CLASSROOM_COURSE_IDS.map(courseId => `'${courseId}'`).join(', ');
 const CLASSROOM_LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const CLASSROOM_LOGIN_MAX_FAILURES = 10;
 const configuredClassroomLoginMaxKeys = Number(process.env.ROBOTICS_CLASSROOM_LOGIN_MAX_KEYS || 1000);
@@ -486,6 +487,66 @@ function addSqliteColumn(db, sql) {
       && /^duplicate column name:/i.test(String(error.message || ''));
     if (!duplicateColumn) throw error;
   }
+}
+
+function createTeacherCoursesTable(db) {
+  db.prepare(`
+    CREATE TABLE teacher_courses (
+      teacher_id TEXT NOT NULL REFERENCES classroom_teachers(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL CHECK (course_id IN (${CLASSROOM_COURSE_SQL_LIST})),
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (teacher_id, course_id)
+    )
+  `).run();
+}
+
+function createClassroomCoursesTable(db) {
+  db.prepare(`
+    CREATE TABLE classroom_courses (
+      classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL CHECK (course_id IN (${CLASSROOM_COURSE_SQL_LIST})),
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (classroom_id, course_id)
+    )
+  `).run();
+}
+
+function migrateClassroomCourseChecks(db) {
+  const migrationKey = 'classroom-course-checks-future-architects-v1';
+  if (db.prepare('SELECT 1 FROM classroom_migrations WHERE migration_key = ?').get(migrationKey)) return;
+  const allowed = new Set(CLASSROOM_COURSE_IDS);
+  const rebuildTable = (tableName, legacyName, createTable, columns) => {
+    const table = db.prepare('SELECT sql FROM sqlite_master WHERE type = ? AND name = ?').get('table', tableName);
+    if (!table || String(table.sql || '').includes("'future-architects'")) return;
+    db.prepare(`ALTER TABLE ${tableName} RENAME TO ${legacyName}`).run();
+    createTable(db);
+    const legacyRows = db.prepare(`SELECT ${columns.join(', ')} FROM ${legacyName}`).all();
+    const insert = db.prepare(`
+      INSERT OR IGNORE INTO ${tableName} (${columns.join(', ')})
+      VALUES (${columns.map(() => '?').join(', ')})
+    `);
+    for (const row of legacyRows) {
+      if (!allowed.has(row.course_id)) continue;
+      insert.run(...columns.map(column => row[column]));
+    }
+    db.prepare(`DROP TABLE ${legacyName}`).run();
+  };
+  rebuildTable(
+    'teacher_courses',
+    'teacher_courses_before_future_architects',
+    createTeacherCoursesTable,
+    ['teacher_id', 'course_id', 'created_at'],
+  );
+  rebuildTable(
+    'classroom_courses',
+    'classroom_courses_before_future_architects',
+    createClassroomCoursesTable,
+    ['classroom_id', 'course_id', 'created_at'],
+  );
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_teacher_courses_teacher ON teacher_courses(teacher_id)').run();
+  db.prepare('CREATE INDEX IF NOT EXISTS idx_classroom_courses_classroom ON classroom_courses(classroom_id)').run();
+  db.prepare('INSERT INTO classroom_migrations (migration_key, applied_at) VALUES (?, ?)')
+    .run(migrationKey, new Date().toISOString());
 }
 
 function migrateAndVerifyClassroomAdminSessions(db) {
@@ -1115,7 +1176,7 @@ function openSummerDb() {
 
     CREATE TABLE IF NOT EXISTS teacher_courses (
       teacher_id TEXT NOT NULL REFERENCES classroom_teachers(id) ON DELETE CASCADE,
-      course_id TEXT NOT NULL CHECK (course_id IN ('sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent')),
+      course_id TEXT NOT NULL CHECK (course_id IN (${CLASSROOM_COURSE_SQL_LIST})),
       created_at TEXT NOT NULL,
       PRIMARY KEY (teacher_id, course_id)
     );
@@ -1131,7 +1192,7 @@ function openSummerDb() {
 
     CREATE TABLE IF NOT EXISTS classroom_courses (
       classroom_id TEXT NOT NULL REFERENCES classrooms(id) ON DELETE CASCADE,
-      course_id TEXT NOT NULL CHECK (course_id IN ('sensi-city', 'sisi', 'python-turtle', 'webcode', 'minecraft', 'craftom-agent')),
+      course_id TEXT NOT NULL CHECK (course_id IN (${CLASSROOM_COURSE_SQL_LIST})),
       created_at TEXT NOT NULL,
       PRIMARY KEY (classroom_id, course_id)
     );
@@ -1384,6 +1445,7 @@ function openSummerDb() {
   verifyClassroomCredentialSchema(db);
   });
   migrateCredentialSchema.immediate();
+  db.transaction(() => migrateClassroomCourseChecks(db)).immediate();
   db.transaction(() => cleanupExpiredMinecraftVerificationRequests(db)).immediate();
   try { db.prepare('ALTER TABLE student_progress ADD COLUMN child_id TEXT REFERENCES summer_children(id) ON DELETE CASCADE').run(); } catch {}
   try { db.prepare('ALTER TABLE classroom_students ADD COLUMN minecraft_player_name TEXT').run(); } catch {}
@@ -3117,13 +3179,14 @@ function createClassroomStudentWithLoginCode(db, classroomId, name) {
 const WEBCODE_QUICK_TEACHER_EMAIL = 'webcode-quick-teacher@hai.tech.local';
 const WEBCODE_MARKER_COLORS = new Set(['blue', 'green', 'yellow', 'pink', 'purple', 'orange']);
 const WEBCODE_MARKER_SHAPES = new Set(['circle', 'star', 'square', 'heart', 'triangle', 'diamond']);
-const QUICK_CLASS_COURSE_IDS = ['webcode', 'python-turtle', 'sensi-city', 'sisi', 'minecraft'];
+const QUICK_CLASS_COURSE_IDS = ['webcode', 'python-turtle', 'sensi-city', 'sisi', 'minecraft', 'future-architects'];
 const QUICK_CLASS_COURSE_CATALOG = {
   webcode: { id: 'webcode', label: 'WebCode', startUrl: 'webcode.html' },
   'python-turtle': { id: 'python-turtle', label: 'Python Turtle', startUrl: 'python-turtle.html?lesson=1' },
   'sensi-city': { id: 'sensi-city', label: 'סנסי בעיר החכמה', startUrl: 'sensi-city.html?lesson=1' },
   sisi: { id: 'sisi', label: 'סיסי', startUrl: 'sisi.html' },
   minecraft: { id: 'minecraft', label: 'מיינקראפט לקטנים', startUrl: 'minecraft.html' },
+  'future-architects': { id: 'future-architects', label: 'אדריכלי המחר', startUrl: 'future-architects.html' },
 };
 
 function quickClassCourse(courseId) {
@@ -9494,6 +9557,7 @@ function classroomCourseForPath(pathname) {
   if (basename === 'webcode' || basename === 'webcode-share' || basename.startsWith('webcode-play')) return 'webcode';
   if (basename === 'minecraft' || basename.startsWith('minecraft-play')) return 'minecraft';
   if (basename === 'sensi-city' || basename === 'smart-city') return 'sensi-city';
+  if (basename === 'future-architects' || /^future-architects-lesson(?:-\d+)?$/.test(basename)) return 'future-architects';
   const sisiLessons = ['sisi', 'space', 'music', 'ocean', 'detective', 'kitchen', 'dino', 'art', 'weather', 'factory', 'garden', 'park', 'mail', 'cinema', 'escape', 'finale'];
   if (sisiLessons.some(name => basename === name || basename === `${name}-play` || basename === `${name}-lab`)) return 'sisi';
   return null;
@@ -9508,6 +9572,7 @@ function classroomTeacherCourseForPath(pathname) {
   if (basename === 'python-turtle-slides' || /^python-turtle-lesson-(?:[1-9]|[12][0-9]|30)-slides$/.test(basename)) return 'python-turtle';
   if (basename === 'webcode-slides') return 'webcode';
   if (basename === 'minecraft-teachers' || basename === 'minecraft-slides') return 'minecraft';
+  if (/^future-architects-slides(?:-\d+)?$/.test(basename)) return 'future-architects';
   if (basename === 'craftom-minecraft-slides') return 'craftom-agent';
   if (basename === 'kugel-teacher' || basename === 'agent-academy-teacher') return 'craftom-agent';
   return null;

@@ -54,6 +54,8 @@
     function update(el){if(el.dataset.candidate){state.candidates[Number(el.dataset.candidate)][el.dataset.field]=el.value}else if(el.dataset.score){state.candidates[Number(el.dataset.score)].scores[Number(el.dataset.scoreIndex)]=Number(el.value)}else if(el.type==='checkbox'){state[el.id]=el.checked}else{state[el.id]=el.value}save()}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

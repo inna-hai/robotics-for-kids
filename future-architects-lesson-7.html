@@ -53,6 +53,8 @@
     function update(el){if(el.dataset.list){state[el.dataset.list]=state[el.dataset.list]||[];state[el.dataset.list][Number(el.dataset.listIndex)]=el.value}else if(el.dataset.fit){state.fit=state.fit||{};state.fit[el.dataset.fit]=el.checked}else if(el.type==='checkbox'){state[el.id]=el.checked}else{state[el.id]=el.value}save()}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

@@ -31,6 +31,12 @@
       courseUrl: 'minecraft.html',
       teacherUrl: 'quick-classroom.html?course=minecraft',
     },
+    'future-architects': {
+      label: 'אדריכלי המחר',
+      guestUrl: 'future-architects-lesson.html',
+      courseUrl: 'future-architects.html',
+      teacherUrl: 'quick-classroom.html?course=future-architects',
+    },
   };
   const courseId = script?.dataset.course || document.body?.dataset.quickClassroomCourse || '';
   const mode = script?.dataset.mode || document.body?.dataset.quickClassroomMode || 'panel';

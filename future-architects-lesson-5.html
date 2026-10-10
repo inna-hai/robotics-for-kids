@@ -55,6 +55,8 @@
     function update(el){if(el.dataset.questionIndex!==undefined){state.questions=state.questions||['','','','',''];state.questions[Number(el.dataset.questionIndex)]=el.value}else if(el.dataset.qualityIndex!==undefined){const i=el.dataset.qualityIndex;state.quality=state.quality||{};state.quality[i]={...(state.quality[i]||{}),[el.dataset.qualityField]:el.checked}}else if(el.dataset.priorityIndex!==undefined){state.priority=state.priority||{};state.priority[el.dataset.priorityIndex]=el.checked}else if(el.dataset.type){state.selectedTypes=state.selectedTypes||{};state.selectedTypes[el.dataset.type]=el.checked}else if(el.type==='checkbox'){state[el.id]=el.checked}else{state[el.id]=el.value}const f=document.getElementById('liveFeedback');if(f){f.textContent=feedback(el.value);f.classList.toggle('success',(el.value||'').trim().length>24)}save()}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>

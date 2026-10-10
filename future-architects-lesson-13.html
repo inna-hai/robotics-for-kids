@@ -53,6 +53,8 @@
     function update(el){if(el.dataset.image){state.images[Number(el.dataset.image)][el.dataset.field]=el.value}else if(el.dataset.scoreImage){const img=state.images[Number(el.dataset.scoreImage)];img.score=img.score||{};img.score[el.dataset.scoreKey]=el.checked}else if(el.dataset.improvement){state.improvements[Number(el.dataset.improvement)]=el.value}else if(el.type==='checkbox'){state[el.id]=el.checked}else{state[el.id]=el.value}save()}
     render();
   </script>
+  <script src="js/classroom-session.js?v=20261010-future-architects"></script>
+  <script src="js/future-architects-classroom-progress.js?v=20261010-future-architects"></script>
   <script src="/js/feedback-widget.js?v=20260711-feedback"></script>
 </body>
 </html>
