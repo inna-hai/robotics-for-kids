@@ -300,8 +300,7 @@
       font-weight: 900;
       font-size: .92rem;
     }
-    .entry-form input,
-    .entry-form select {
+    .entry-form input {
       width: 100%;
       min-height: 42px;
       border: 2px solid #dbeafe;
@@ -310,6 +309,47 @@
       font: 800 .95rem Rubik, Arial, sans-serif;
       background: #fff;
     }
+    .home-marker-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 7px;
+    }
+    .home-marker-option {
+      position: relative;
+      min-width: 0;
+    }
+    .home-marker-option input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .home-marker-chip {
+      min-height: 42px;
+      border: 2px solid #dbeafe;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      font-size: 1.18rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .home-marker-option input:checked + .home-marker-chip {
+      border-color: #ea580c;
+      box-shadow: 0 0 0 3px #ffedd5;
+      background: #fff7ed;
+    }
+    .home-marker-option input:focus-visible + .home-marker-chip {
+      outline: 3px solid #bfdbfe;
+      outline-offset: 2px;
+    }
+    .home-marker-blue { color: #2563eb; }
+    .home-marker-green { color: #16a34a; }
+    .home-marker-yellow { color: #ca8a04; }
+    .home-marker-pink { color: #db2777; }
+    .home-marker-purple { color: #7c3aed; }
+    .home-marker-orange { color: #ea580c; }
     .entry-status {
       min-height: 22px;
       color: #1e3a8a;
@@ -385,14 +425,32 @@
                   <input id="homeStudentName" autocomplete="name" placeholder="שם פרטי או כינוי" required>
                 </label>
                 <label>הסימון שלי
-                  <select id="homeStudentMarker">
-                    <option value="blue:circle">עיגול כחול</option>
-                    <option value="green:star">כוכב ירוק</option>
-                    <option value="yellow:square">ריבוע צהוב</option>
-                    <option value="pink:heart">לב ורוד</option>
-                    <option value="purple:triangle">משולש סגול</option>
-                    <option value="orange:diamond">יהלום כתום</option>
-                  </select>
+                  <div class="home-marker-grid" id="homeStudentMarker" role="radiogroup" aria-label="הסימון שלי">
+                    <label class="home-marker-option" title="עיגול כחול">
+                      <input type="radio" name="homeStudentMarker" data-color="blue" data-shape="circle" checked>
+                      <span class="home-marker-chip home-marker-blue" aria-hidden="true">●</span>
+                    </label>
+                    <label class="home-marker-option" title="כוכב ירוק">
+                      <input type="radio" name="homeStudentMarker" data-color="green" data-shape="star">
+                      <span class="home-marker-chip home-marker-green" aria-hidden="true">★</span>
+                    </label>
+                    <label class="home-marker-option" title="ריבוע צהוב">
+                      <input type="radio" name="homeStudentMarker" data-color="yellow" data-shape="square">
+                      <span class="home-marker-chip home-marker-yellow" aria-hidden="true">■</span>
+                    </label>
+                    <label class="home-marker-option" title="לב ורוד">
+                      <input type="radio" name="homeStudentMarker" data-color="pink" data-shape="heart">
+                      <span class="home-marker-chip home-marker-pink" aria-hidden="true">♥</span>
+                    </label>
+                    <label class="home-marker-option" title="משולש סגול">
+                      <input type="radio" name="homeStudentMarker" data-color="purple" data-shape="triangle">
+                      <span class="home-marker-chip home-marker-purple" aria-hidden="true">▲</span>
+                    </label>
+                    <label class="home-marker-option" title="יהלום כתום">
+                      <input type="radio" name="homeStudentMarker" data-color="orange" data-shape="diamond">
+                      <span class="home-marker-chip home-marker-orange" aria-hidden="true">◆</span>
+                    </label>
+                  </div>
                 </label>
               </div>
               <div class="actions">
@@ -729,10 +787,17 @@
       if(!response.ok) throw new Error(data.error || 'לא הצלחנו להיכנס לכיתה.');
       return data;
     }
+    function selectedHomeStudentMarker(){
+      const checked = document.querySelector('input[name="homeStudentMarker"]:checked');
+      return {
+        markerColor: checked?.dataset.color || 'blue',
+        markerShape: checked?.dataset.shape || 'circle',
+      };
+    }
     document.getElementById('homeStudentLogin')?.addEventListener('submit', async event => {
       event.preventDefault();
       setHomeStudentStatus('נכנסים לכיתה...');
-      const [markerColor, markerShape] = document.getElementById('homeStudentMarker').value.split(':');
+      const { markerColor, markerShape } = selectedHomeStudentMarker();
       try {
         const loginData = await postHomeStudentLogin({
           classCode: document.getElementById('homeClassCode').value,
