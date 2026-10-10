@@ -54,6 +54,7 @@ assert.match(sisi, /data-course="sisi" data-mode="panel"/, 'Sisi course page sho
 assert.match(minecraft, /data-course="minecraft" data-mode="panel"/, 'Minecraft course page should expose embedded classroom login');
 assert.match(pythonTurtle, /data-course="python-turtle" data-mode="gate"/, 'Python Turtle app screen should require a classroom decision at entry');
 assert.match(sensiCity, /data-course="sensi-city" data-mode="gate"/, 'Sensi app screen should require a classroom decision at entry');
+assert.match(sensiCity, /js\/classroom-session\.js/, 'Sensi should save classroom progress after quick-classroom student login');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
 assert.doesNotMatch(teacher, /!classroomId\s*\|\|\s*!token/, 'teacher dashboard should allow authenticated teacher links without a token');
