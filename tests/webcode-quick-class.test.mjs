@@ -15,6 +15,12 @@ function read(path) {
 
 const webcode = read('webcode.html');
 const quickClassroom = read('quick-classroom.html');
+const quickClassroomEmbed = read('js/quick-classroom-embed.js');
+const quickClassroomEmbedCss = read('css/quick-classroom-embed.css');
+const sisi = read('sisi.html');
+const minecraft = read('minecraft.html');
+const pythonTurtle = read('python-turtle.html');
+const sensiCity = read('sensi-city.html');
 const teacher = read('webcode-teacher.html');
 const server = read('server.js');
 
@@ -34,7 +40,19 @@ assert.match(webcode, /webcodeTeacherClasses\.filter/, 'WebCode teacher home sho
 assert.match(webcode, /webcodeClassCourse'\)\?\.addEventListener\('change', renderTeacherClasses\)/, 'WebCode course selector should refresh the class list');
 assert.match(quickClassroom, /teacherClasses\.filter/, 'general quick classroom should filter listed classes by selected course');
 assert.match(quickClassroom, /classCourse'\)\.addEventListener\('change', renderTeacherClasses\)/, 'general quick classroom selector should refresh the class list');
+assert.match(quickClassroom, /requestedCourseId/, 'general quick classroom should accept a course preselection query');
 assert.match(webcode, /\/api\/webcode\/student-login/, 'WebCode student login should call the quick WebCode endpoint');
+assert.match(quickClassroomEmbed, /\/api\/webcode\/student-login/, 'shared course entry should use the quick classroom student login endpoint');
+assert.match(quickClassroomEmbed, /quick-classroom\.html\?course=sisi/, 'shared course entry should deep-link teachers to Sisi class creation');
+assert.match(quickClassroomEmbed, /quick-classroom\.html\?course=python-turtle/, 'shared course entry should deep-link teachers to Python class creation');
+assert.match(quickClassroomEmbed, /quick-classroom\.html\?course=sensi-city/, 'shared course entry should deep-link teachers to Sensi class creation');
+assert.match(quickClassroomEmbed, /quick-classroom\.html\?course=minecraft/, 'shared course entry should deep-link teachers to Minecraft class creation');
+assert.match(quickClassroomEmbedCss, /\.qce-panel/, 'shared course entry should include a full panel mode');
+assert.match(quickClassroomEmbedCss, /\.qce-dock/, 'shared course entry should include a dock mode for app-like learning screens');
+assert.match(sisi, /data-course="sisi" data-mode="panel"/, 'Sisi course page should expose embedded classroom login');
+assert.match(minecraft, /data-course="minecraft" data-mode="panel"/, 'Minecraft course page should expose embedded classroom login');
+assert.match(pythonTurtle, /data-course="python-turtle" data-mode="dock"/, 'Python Turtle app screen should expose classroom login dock');
+assert.match(sensiCity, /data-course="sensi-city" data-mode="dock"/, 'Sensi app screen should expose classroom login dock');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
 assert.doesNotMatch(teacher, /!classroomId\s*\|\|\s*!token/, 'teacher dashboard should allow authenticated teacher links without a token');

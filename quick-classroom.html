@@ -97,6 +97,7 @@
   </main>
 
   <script>
+    const requestedCourseId = new URLSearchParams(location.search).get('course') || '';
     const markerColors = [
       ['blue', 'כחול', 'marker-blue'],
       ['green', 'ירוק', 'marker-green'],
@@ -168,7 +169,9 @@
         ? allowed.map(course => `<option value="${course.id}">${formatMixedText(course.label)}</option>`).join('')
         : '<option value="">אין לומדות פתוחות לחשבון הזה</option>';
       select.disabled = !allowed.length;
+      const requested = requestedCourseId && allowed.some(course => course.id === requestedCourseId) ? requestedCourseId : '';
       if(previous && allowed.some(course => course.id === previous)) select.value = previous;
+      else if(requested) select.value = requested;
     }
     function renderTeacherHome(data){
       document.getElementById('teacherAuth').hidden = true;
