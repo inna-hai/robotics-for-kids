@@ -17,12 +17,31 @@ const webcode = read('webcode.html');
 const quickClassroom = read('quick-classroom.html');
 const quickClassroomEmbed = read('js/quick-classroom-embed.js');
 const quickClassroomEmbedCss = read('css/quick-classroom-embed.css');
+const webcodePlay = read('webcode-play.html');
 const sisi = read('sisi.html');
 const minecraft = read('minecraft.html');
+const minecraftPlay = read('minecraft-play.html');
 const pythonTurtle = read('python-turtle.html');
 const sensiCity = read('sensi-city.html');
 const teacher = read('webcode-teacher.html');
 const server = read('server.js');
+const sisiPlayPages = [
+  'space-play.html',
+  'music-play.html',
+  'ocean-play.html',
+  'park-play.html',
+  'garden-play.html',
+  'factory-play.html',
+  'kitchen-play.html',
+  'cinema-play.html',
+  'detective-play.html',
+  'dino-play.html',
+  'art-play.html',
+  'weather-play.html',
+  'mail-play.html',
+  'escape-play.html',
+  'finale-play.html',
+].map(path => [path, read(path)]);
 
 assert.match(webcode, /אני תלמיד\/ה בכיתה/, 'WebCode should expose a student class login path');
 assert.match(webcode, /כניסה כאורח|להמשיך מהמקום האחרון|להתחיל שיעור 1/, 'WebCode should keep the guest/local path');
@@ -55,6 +74,12 @@ assert.match(minecraft, /data-course="minecraft" data-mode="panel"/, 'Minecraft 
 assert.match(pythonTurtle, /data-course="python-turtle" data-mode="gate"/, 'Python Turtle app screen should require a classroom decision at entry');
 assert.match(sensiCity, /data-course="sensi-city" data-mode="gate"/, 'Sensi app screen should require a classroom decision at entry');
 assert.match(sensiCity, /js\/classroom-session\.js/, 'Sensi should save classroom progress after quick-classroom student login');
+assert.match(webcodePlay, /js\/classroom-session\.js/, 'WebCode play should save classroom progress after quick-classroom student login');
+assert.match(pythonTurtle, /js\/classroom-session\.js/, 'Python Turtle should save classroom progress after quick-classroom student login');
+assert.match(minecraftPlay, /js\/classroom-session\.js/, 'Minecraft play should save classroom progress after quick-classroom student login');
+for (const [path, html] of sisiPlayPages) {
+  assert.match(html, /js\/classroom-session\.js/, `${path} should save Sisi classroom progress after quick-classroom student login`);
+}
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
 assert.doesNotMatch(teacher, /!classroomId\s*\|\|\s*!token/, 'teacher dashboard should allow authenticated teacher links without a token');
