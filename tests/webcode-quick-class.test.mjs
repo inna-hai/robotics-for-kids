@@ -49,10 +49,11 @@ assert.match(quickClassroomEmbed, /quick-classroom\.html\?course=sensi-city/, 's
 assert.match(quickClassroomEmbed, /quick-classroom\.html\?course=minecraft/, 'shared course entry should deep-link teachers to Minecraft class creation');
 assert.match(quickClassroomEmbedCss, /\.qce-panel/, 'shared course entry should include a full panel mode');
 assert.match(quickClassroomEmbedCss, /\.qce-dock/, 'shared course entry should include a dock mode for app-like learning screens');
+assert.match(quickClassroomEmbedCss, /\.qce-gate/, 'shared course entry should include a gate mode for full-screen learning apps');
 assert.match(sisi, /data-course="sisi" data-mode="panel"/, 'Sisi course page should expose embedded classroom login');
 assert.match(minecraft, /data-course="minecraft" data-mode="panel"/, 'Minecraft course page should expose embedded classroom login');
-assert.match(pythonTurtle, /data-course="python-turtle" data-mode="dock"/, 'Python Turtle app screen should expose classroom login dock');
-assert.match(sensiCity, /data-course="sensi-city" data-mode="dock"/, 'Sensi app screen should expose classroom login dock');
+assert.match(pythonTurtle, /data-course="python-turtle" data-mode="gate"/, 'Python Turtle app screen should require a classroom decision at entry');
+assert.match(sensiCity, /data-course="sensi-city" data-mode="gate"/, 'Sensi app screen should require a classroom decision at entry');
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
 assert.doesNotMatch(teacher, /!classroomId\s*\|\|\s*!token/, 'teacher dashboard should allow authenticated teacher links without a token');

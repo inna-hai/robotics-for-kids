@@ -150,15 +150,16 @@
     </section>`;
   }
 
-  function dockHtml() {
-    return `<div class="quick-classroom-embed qce-dock" data-quick-classroom-embed>
+  function dockHtml({ gated = false } = {}) {
+    return `<div class="quick-classroom-embed ${gated ? 'qce-gate' : 'qce-dock'}" data-quick-classroom-embed>
+      ${gated ? '<div class="qce-gate-backdrop" aria-hidden="true"></div>' : ''}
       <button class="qce-dock-toggle" type="button" aria-expanded="false">כניסת כיתה</button>
-      <section class="qce-dock-panel" hidden aria-label="כניסה לכיתה עבור ${escapeHtml(course.label)}">
+      <section class="qce-dock-panel" ${gated ? '' : 'hidden'} aria-label="כניסה לכיתה עבור ${escapeHtml(course.label)}">
         <div class="qce-dock-head">
           <div><span class="qce-eyebrow">כניסה לכיתה</span><h2>${escapeHtml(course.label)}</h2></div>
-          <button class="qce-close" type="button" aria-label="סגירה">×</button>
+          <button class="qce-close" type="button" aria-label="סגירה" ${gated ? 'hidden' : ''}>×</button>
         </div>
-        <p>תלמידים נכנסים עם קוד כיתה ושם. מורות פותחות או מנהלות כיתות ללומדה הזאת.</p>
+        <p>${gated ? 'כדי שההתקדמות תישמר למורה, נכנסים עם קוד כיתה ושם. אפשר להמשיך בלי כיתה רק כאורח.' : 'תלמידים נכנסים עם קוד כיתה ושם. מורות פותחות או מנהלות כיתות ללומדה הזאת.'}</p>
         <form class="qce-form" data-qce-form>
           <label>קוד כיתה
             <input data-qce-class-code inputmode="numeric" autocomplete="off" placeholder="למשל 4827" required>
@@ -174,7 +175,7 @@
         </form>
         <div class="qce-actions">
           <a class="qce-btn qce-secondary" href="${course.teacherUrl}">מורה / פתיחת כיתה</a>
-          <a class="qce-btn qce-ghost" href="${course.guestUrl}">כניסה בלי כיתה</a>
+          <button class="qce-btn qce-ghost" type="button" data-qce-guest>להמשיך בלי כיתה</button>
         </div>
       </section>
     </div>`;
@@ -189,24 +190,43 @@
     }
   }
 
-  function insertDock(root) {
+  function insertDock(root, { gated = false } = {}) {
     document.body.append(root);
     const toggle = root.querySelector('.qce-dock-toggle');
     const panel = root.querySelector('.qce-dock-panel');
     const close = root.querySelector('.qce-close');
+    const guest = root.querySelector('[data-qce-guest]');
     const setOpen = open => {
       panel.hidden = !open;
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      root.classList.toggle('is-open', open);
     };
     toggle.addEventListener('click', () => setOpen(panel.hidden));
-    close.addEventListener('click', () => setOpen(false));
+    close?.addEventListener('click', () => setOpen(false));
+    guest?.addEventListener('click', () => {
+      sessionStorage.setItem(`haiTechQuickClassGuest:${courseId}`, '1');
+      setOpen(false);
+    });
+    if (gated) {
+      setOpen(true);
+      if (sessionStorage.getItem(`haiTechQuickClassGuest:${courseId}`) === '1') {
+        setOpen(false);
+      } else {
+        fetch('/api/classroom/me', { credentials: 'same-origin' })
+          .then(response => response.ok ? response.json() : null)
+          .then(me => {
+            if (me?.role === 'student' || me?.role === 'teacher') setOpen(false);
+          })
+          .catch(() => {});
+      }
+    }
   }
 
   const wrapper = document.createElement('div');
-  wrapper.innerHTML = mode === 'dock' ? dockHtml() : panelHtml();
+  wrapper.innerHTML = mode === 'dock' || mode === 'gate' ? dockHtml({ gated: mode === 'gate' }) : panelHtml();
   const root = wrapper.firstElementChild;
   if (!root) return;
-  if (mode === 'dock') insertDock(root);
+  if (mode === 'dock' || mode === 'gate') insertDock(root, { gated: mode === 'gate' });
   else insertPanel(root);
-  bindForm(root, mode === 'dock' ? `qce-dock-marker-${courseId}` : `qce-marker-${courseId}`);
+  bindForm(root, mode === 'dock' || mode === 'gate' ? `qce-dock-marker-${courseId}` : `qce-marker-${courseId}`);
 })();
