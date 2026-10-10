@@ -6,7 +6,7 @@
   <title>מסך מורה</title>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#0f172a;background:radial-gradient(circle at 18% 8%,rgba(251,146,60,.22),transparent 28%),radial-gradient(circle at 86% 0,rgba(103,232,249,.22),transparent 30%),linear-gradient(135deg,#f8fafc,#eff6ff)}.shell{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:24px 0 46px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;background:white;border:1px solid #dbeafe;border-radius:24px;padding:18px 20px;box-shadow:0 18px 42px rgba(15,23,42,.1)}h1{margin:0;color:#1e3a8a;font-size:clamp(1.7rem,4vw,3rem)}#className{margin-top:6px;color:#0f172a;font-size:clamp(1.6rem,3.2vw,2.8rem);line-height:1.05;font-weight:900}.code-card{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin:18px 0;background:#111827;color:white;border-radius:26px;padding:22px;box-shadow:0 20px 55px rgba(15,23,42,.18)}.code{font-size:clamp(2.6rem,8vw,5.2rem);font-weight:900;letter-spacing:.08em;color:#fb923c}.code-card p{margin:0;color:#dbeafe;font-weight:800;line-height:1.55}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:12px 18px;text-decoration:none;font:900 1rem Rubik,Arial,sans-serif;cursor:pointer;background:linear-gradient(135deg,#fb923c,#67e8f9);color:#07111f}.btn.secondary{background:white;color:#1e3a8a;border:1px solid #bfdbfe}.panel{background:white;border:1px solid #dbeafe;border-radius:24px;padding:18px;box-shadow:0 16px 38px rgba(15,23,42,.08)}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel-head h2{margin:0;color:#1e3a8a}.status{font-weight:900;color:#475569}.students{display:grid;gap:10px}.student{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:13px}.marker{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#eff6ff;font-size:1.3rem;font-weight:900}.student-name{font-weight:900;font-size:1.05rem}.student-progress{color:#475569;font-weight:800}.badge{background:#dcfce7;color:#166534;border-radius:999px;padding:7px 10px;font-weight:900;white-space:nowrap}.empty{background:#f8fafc;border:2px dashed #bfdbfe;color:#475569;border-radius:20px;padding:24px;text-align:center;font-weight:900}.bad{color:#b91c1c}.blue{color:#2563eb}.green{color:#16a34a}.yellow{color:#ca8a04}.pink{color:#db2777}.purple{color:#7c3aed}.orange{color:#ea580c}@media(max-width:760px){.topbar,.panel-head,.code-card{display:grid;grid-template-columns:1fr}.student{grid-template-columns:auto 1fr}.badge{grid-column:1/-1;width:max-content}.actions .btn{width:100%}}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Rubik,Arial,sans-serif;direction:rtl;color:#0f172a;background:radial-gradient(circle at 18% 8%,rgba(251,146,60,.22),transparent 28%),radial-gradient(circle at 86% 0,rgba(103,232,249,.22),transparent 30%),linear-gradient(135deg,#f8fafc,#eff6ff)}.shell{width:min(1120px,calc(100% - 28px));margin:0 auto;padding:24px 0 46px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;background:white;border:1px solid #dbeafe;border-radius:24px;padding:18px 20px;box-shadow:0 18px 42px rgba(15,23,42,.1)}h1{margin:0;color:#1e3a8a;font-size:clamp(1.7rem,4vw,3rem)}#className{margin-top:6px;color:#0f172a;font-size:clamp(1.6rem,3.2vw,2.8rem);line-height:1.05;font-weight:900}.code-card{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin:18px 0;background:#111827;color:white;border-radius:26px;padding:22px;box-shadow:0 20px 55px rgba(15,23,42,.18)}.code{font-size:clamp(2.6rem,8vw,5.2rem);font-weight:900;letter-spacing:.08em;color:#fb923c}.code-card p{margin:0;color:#dbeafe;font-weight:800;line-height:1.55}.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:999px;padding:12px 18px;text-decoration:none;font:900 1rem Rubik,Arial,sans-serif;cursor:pointer;background:linear-gradient(135deg,#fb923c,#67e8f9);color:#07111f}.btn.secondary{background:white;color:#1e3a8a;border:1px solid #bfdbfe}.panel{background:white;border:1px solid #dbeafe;border-radius:24px;padding:18px;box-shadow:0 16px 38px rgba(15,23,42,.08)}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.panel-head h2{margin:0;color:#1e3a8a}.status{font-weight:900;color:#475569}.students{display:grid;gap:10px}.student{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:18px;padding:13px}.marker{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#eff6ff;font-size:1.3rem;font-weight:900}.student-name{font-weight:900;font-size:1.05rem}.student-progress{color:#475569;font-weight:800}.badge{background:#dcfce7;color:#166534;border-radius:999px;padding:7px 10px;font-weight:900;white-space:nowrap}.student-details{grid-column:1/-1;border-top:1px solid #e2e8f0;padding-top:10px}.student-details summary{cursor:pointer;width:max-content;border-radius:999px;background:#eef2ff;color:#1e3a8a;padding:8px 12px;font-weight:900}.portfolio-list{display:grid;gap:12px;margin-top:12px}.portfolio-card{border:1px solid #dbeafe;border-radius:16px;background:white;padding:12px}.portfolio-card h3{margin:0 0 8px;color:#1e3a8a}.portfolio-fields{display:grid;gap:7px}.portfolio-field{display:grid;gap:3px;border-radius:12px;background:#f8fafc;padding:9px}.portfolio-field b{color:#334155}.portfolio-field span{white-space:pre-wrap;color:#475569;font-weight:700}.empty{background:#f8fafc;border:2px dashed #bfdbfe;color:#475569;border-radius:20px;padding:24px;text-align:center;font-weight:900}.bad{color:#b91c1c}.blue{color:#2563eb}.green{color:#16a34a}.yellow{color:#ca8a04}.pink{color:#db2777}.purple{color:#7c3aed}.orange{color:#ea580c}@media(max-width:760px){.topbar,.panel-head,.code-card{display:grid;grid-template-columns:1fr}.student{grid-template-columns:auto 1fr}.badge{grid-column:1/-1;width:max-content}.actions .btn{width:100%}}
   </style>
 </head>
 <body>
@@ -45,8 +45,30 @@
     function studentProgressSummary(progress){
       const completed = (progress || []).filter(row => row.status === 'completed' && String(row.activityId || '').startsWith('exercise-')).length;
       const lessons = new Set((progress || []).filter(row => row.status === 'completed').map(row => row.lessonId)).size;
-      if(!completed) return 'עדיין אין תרגילים שהושלמו';
+      if(!completed){
+        const rows = progress || [];
+        if(!rows.length) return 'עדיין אין התקדמות שמורה';
+        const maxScore = Math.max(...rows.map(row => Number(row.score || 0)));
+        const touchedLessons = new Set(rows.map(row => row.lessonId)).size;
+        return `${touchedLessons} מפגשים עם פעילות · ${maxScore}% התקדמות מרבית`;
+      }
       return `${completed} תרגילים הושלמו · ${lessons} שיעורים עם התקדמות`;
+    }
+    function portfolioHtml(portfolio){
+      const entries = portfolio || [];
+      if(!entries.length) return '';
+      return `<details class="student-details">
+        <summary>פרטים נוספים</summary>
+        <div class="portfolio-list">${entries.map(entry => {
+          const fields = entry.data?.fields || [];
+          return `<section class="portfolio-card">
+            <h3>${esc(entry.title || `מפגש ${entry.lessonId}`)}</h3>
+            <div class="portfolio-fields">${fields.length ? fields.map(field => `
+              <div class="portfolio-field"><b>${esc(field.label)}</b><span>${esc(field.value)}</span></div>
+            `).join('') : '<div class="empty">אין עדיין תשובות שמורות למפגש הזה.</div>'}</div>
+          </section>`;
+        }).join('')}</div>
+      </details>`;
     }
     async function loadClass(){
       if(!classroomId){
@@ -74,6 +96,7 @@
             <div class="marker ${color}" aria-hidden="true">${shapes[marker.shape] || '●'}</div>
             <div><div class="student-name">${esc(student.name)}</div><div class="student-progress">${esc(studentProgressSummary(student.progress))}</div></div>
             <div class="badge">${student.progress?.length || 0} רשומות</div>
+            ${portfolioHtml(student.portfolio)}
           </article>`;
         }).join('');
       }

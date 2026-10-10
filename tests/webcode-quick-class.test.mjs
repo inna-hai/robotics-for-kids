@@ -92,6 +92,7 @@ for (const [path, html] of sisiPlayPages) {
   assert.match(html, /js\/classroom-session\.js/, `${path} should save Sisi classroom progress after quick-classroom student login`);
 }
 assert.match(teacher, /כתבי את הקוד על הלוח/, 'teacher dashboard should show the class-code flow');
+assert.match(teacher, /פרטים נוספים/, 'teacher dashboard should expose student portfolio details');
 assert.match(teacher, /setInterval\(\(\) => loadClass\(\)\.catch\(\(\) => \{\}\), 60000\)/, 'teacher dashboard should refresh once a minute');
 assert.doesNotMatch(teacher, /!classroomId\s*\|\|\s*!token/, 'teacher dashboard should allow authenticated teacher links without a token');
 assert.match(server, /createWebCodeTeacherAccount/, 'server should create WebCode teacher accounts before classes');
@@ -235,6 +236,19 @@ try {
     status: 'completed',
     score: 20,
   }, futureStudent.cookie);
+  await post('/api/classroom/portfolio', {
+    courseId: 'future-architects',
+    lessonId: '1',
+    artifactId: 'lesson-state',
+    title: 'מפגש 1: ברוכים הבאים לעתיד',
+    data: {
+      fields: [
+        { label: 'שם / כינוי', value: 'דנה' },
+        { label: 'מחשבה ראשונה', value: 'עיר חכמה שעוזרת לילדים להגיע לבית הספר בבטחה' },
+      ],
+      state: { studentName: 'דנה', openingThought: 'עיר חכמה שעוזרת לילדים להגיע לבית הספר בבטחה' },
+    },
+  }, futureStudent.cookie);
 
   const futureTeacherUrl = new URL(`http://127.0.0.1:${port}${futureClass.data.classroom.teacherUrl}`);
   const futureDashboard = await fetch(`http://127.0.0.1:${port}/api/webcode/quick-class/${futureTeacherUrl.searchParams.get('classroom')}`, {
@@ -242,6 +256,7 @@ try {
   }).then(response => response.json());
   assert.equal(futureDashboard.classroom.course.id, 'future-architects');
   assert.ok(futureDashboard.students[0].progress.some(row => row.courseId === 'future-architects'), 'Future Architects dashboard should show saved progress');
+  assert.equal(futureDashboard.students[0].portfolio[0].data.fields[1].value, 'עיר חכמה שעוזרת לילדים להגיע לבית הספר בבטחה', 'Future Architects dashboard should show portfolio answers');
 
   const loginTeacher = await post('/api/webcode/teacher-login', {
     email: 'hani@example.test',

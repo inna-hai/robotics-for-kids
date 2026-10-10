@@ -1266,6 +1266,19 @@ function openSummerDb() {
       UNIQUE(student_id, course_id, lesson_id, activity_id)
     );
 
+    CREATE TABLE IF NOT EXISTS classroom_portfolio_entries (
+      id TEXT PRIMARY KEY,
+      student_id TEXT NOT NULL REFERENCES classroom_students(id) ON DELETE CASCADE,
+      course_id TEXT NOT NULL,
+      lesson_id TEXT NOT NULL,
+      artifact_id TEXT NOT NULL,
+      title TEXT NOT NULL DEFAULT '',
+      data_json TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      UNIQUE(student_id, course_id, lesson_id, artifact_id)
+    );
+
     CREATE TABLE IF NOT EXISTS webcode_quick_class_tokens (
       classroom_id TEXT PRIMARY KEY REFERENCES classrooms(id) ON DELETE CASCADE,
       token_hash TEXT NOT NULL UNIQUE,
@@ -1394,6 +1407,7 @@ function openSummerDb() {
     CREATE INDEX IF NOT EXISTS idx_classroom_minecraft_identities_status ON classroom_minecraft_identities(status, verified_at);
     CREATE INDEX IF NOT EXISTS idx_classroom_student_sessions_token ON classroom_student_sessions(token_hash);
     CREATE INDEX IF NOT EXISTS idx_classroom_progress_student ON classroom_progress(student_id);
+    CREATE INDEX IF NOT EXISTS idx_classroom_portfolio_student ON classroom_portfolio_entries(student_id, course_id, lesson_id);
     CREATE INDEX IF NOT EXISTS idx_webcode_quick_class_tokens_token ON webcode_quick_class_tokens(token_hash);
     CREATE INDEX IF NOT EXISTS idx_webcode_quick_student_profiles_marker ON webcode_quick_student_profiles(marker_color, marker_shape);
     CREATE INDEX IF NOT EXISTS idx_kugel_student_runs_classroom ON kugel_student_runs(classroom_id);
@@ -3428,6 +3442,24 @@ function classroomProgressPublic(row) {
     attempts: row.attempts || 0,
     startedAt: row.started_at,
     completedAt: row.completed_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function classroomPortfolioPublic(row) {
+  let data = {};
+  try {
+    data = JSON.parse(row.data_json || '{}') || {};
+  } catch {
+    data = {};
+  }
+  return {
+    courseId: row.course_id,
+    lessonId: row.lesson_id,
+    artifactId: row.artifact_id,
+    title: row.title || '',
+    data,
+    createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
 }
@@ -7297,6 +7329,53 @@ async function handleClassroomApi(req, res) {
 
   try {
     const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    if (action === 'portfolio') {
+      const courseId = cleanText(body.courseId, 80);
+      const lessonId = cleanText(body.lessonId, 80);
+      const artifactId = cleanText(body.artifactId, 80) || 'lesson-state';
+      const title = cleanText(body.title, 160);
+      const data = body.data && typeof body.data === 'object' ? body.data : {};
+      let dataJson = JSON.stringify(data);
+      if (dataJson.length > 50000) {
+        dataJson = JSON.stringify({
+          title,
+          tooLarge: true,
+          message: 'תיק העבודה היה גדול מדי לשמירה מלאה.',
+          savedAt: new Date().toISOString(),
+        });
+      }
+      const result = withSummerDb(db => db.transaction(() => {
+        const student = requireCurrentClassroomStudent(db, req);
+        if (!student) return { denied: true };
+        if (!CLASSROOM_COURSES.has(courseId) || !lessonId || !artifactId) return { invalid: true };
+        if (!classroomHasCourse(db, student.classroom_id, courseId)) return { forbidden: true };
+        const now = new Date().toISOString();
+        const existing = db.prepare(`
+          SELECT id FROM classroom_portfolio_entries
+          WHERE student_id = ? AND course_id = ? AND lesson_id = ? AND artifact_id = ?
+        `).get(student.id, courseId, lessonId, artifactId);
+        if (existing) {
+          db.prepare(`
+            UPDATE classroom_portfolio_entries
+            SET title = ?, data_json = ?, updated_at = ?
+            WHERE id = ?
+          `).run(title, dataJson, now, existing.id);
+          return { row: db.prepare('SELECT * FROM classroom_portfolio_entries WHERE id = ?').get(existing.id) };
+        }
+        const id = crypto.randomUUID();
+        db.prepare(`
+          INSERT INTO classroom_portfolio_entries (
+            id, student_id, course_id, lesson_id, artifact_id, title, data_json, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(id, student.id, courseId, lessonId, artifactId, title, dataJson, now, now);
+        return { row: db.prepare('SELECT * FROM classroom_portfolio_entries WHERE id = ?').get(id) };
+      }).immediate());
+      if (result.denied) return send(res, 401, JSON.stringify({ error: 'נדרשת כניסת תלמיד/ה לכיתה.' }));
+      if (result.invalid) return send(res, 400, JSON.stringify({ error: 'חסרים פרטי תיק עבודות.' }));
+      if (result.forbidden) return send(res, 403, JSON.stringify({ error: 'הלומדה אינה פתוחה לכיתה הזו.' }));
+      return send(res, 200, JSON.stringify({ ok: true, portfolio: classroomPortfolioPublic(result.row) }));
+    }
+
     if (action === 'classes' && segments[3] && segments[4] === 'kugel-server' && segments.length === 6) {
       const command = segments[5];
       const context = requireTeacherAlwaysOnKugelClass(req, segments[3]);
@@ -9703,7 +9782,7 @@ async function handleWebCodeApi(req, res) {
       `).all(classroom.id);
       const progressRows = db.prepare(`
         SELECT cp.student_id, cp.course_id, cp.lesson_id, cp.activity_id, cp.status, cp.score, cp.attempts,
-          cp.started_at, cp.completed_at, cp.updated_at
+          cp.metadata_json, cp.started_at, cp.completed_at, cp.updated_at
         FROM classroom_progress cp
         WHERE cp.course_id = ?
           AND cp.student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
@@ -9712,6 +9791,20 @@ async function handleWebCodeApi(req, res) {
       for (const row of progressRows) {
         if (!byStudent.has(row.student_id)) byStudent.set(row.student_id, []);
         byStudent.get(row.student_id).push(classroomProgressPublic(row));
+      }
+      const portfolioByStudent = new Map();
+      if (courseId === 'future-architects') {
+        const portfolioRows = db.prepare(`
+          SELECT p.*
+          FROM classroom_portfolio_entries p
+          WHERE p.course_id = ?
+            AND p.student_id IN (SELECT id FROM classroom_students WHERE classroom_id = ?)
+          ORDER BY CAST(p.lesson_id AS INTEGER), p.lesson_id, p.updated_at DESC
+        `).all(courseId, classroom.id);
+        for (const row of portfolioRows) {
+          if (!portfolioByStudent.has(row.student_id)) portfolioByStudent.set(row.student_id, []);
+          portfolioByStudent.get(row.student_id).push(classroomPortfolioPublic(row));
+        }
       }
       return {
         classroom: {
@@ -9725,6 +9818,7 @@ async function handleWebCodeApi(req, res) {
         students: students.map(student => ({
           ...webcodeQuickStudentPublic(student),
           progress: byStudent.get(student.id) || [],
+          portfolio: portfolioByStudent.get(student.id) || [],
         })),
       };
     }).immediate());
