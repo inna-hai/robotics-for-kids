@@ -9826,7 +9826,7 @@ function classroomSessionBootstrap(req, pathname) {
 function injectClassroomSession(html, req, pathname) {
   if (!html.includes('</body>') || html.includes('js/classroom-platform.js')) return html;
   const bootstrap = JSON.stringify(classroomSessionBootstrap(req, pathname)).replace(/</g, '\\u003c');
-  const snippet = `  <script>window.__HAI_CLASSROOM_BOOTSTRAP=${bootstrap};</script>\n  <script src="/js/classroom-session.js?v=20261010-db-state-1"></script>\n`;
+  const snippet = `  <script>window.__HAI_CLASSROOM_BOOTSTRAP=${bootstrap};</script>\n  <script src="/js/classroom-session.js?v=20261010-logout-entry-1"></script>\n`;
   const withoutExistingSession = html.replace(/\s*<script\s+src=["'][^"']*js\/classroom-session\.js[^"']*["']\s*><\/script>\s*/g, '\n');
   if (withoutExistingSession.includes('</head>')) return withoutExistingSession.replace('</head>', `${snippet}</head>`);
   return replaceLastHtmlTag(withoutExistingSession, '</body>', `${snippet}</body>`);

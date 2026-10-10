@@ -185,7 +185,7 @@
       button.textContent = 'מתנתקים…';
       try {
         await request('/api/classroom/logout', {});
-        location.assign('classroom-entry.html');
+        location.assign(logoutRedirectUrl());
       } catch {
         button.disabled = false;
         button.textContent = 'התנתקות';
@@ -224,6 +224,11 @@
       (document.head || document.body)?.append(style);
     }
     document.body?.append(button);
+  }
+
+  function logoutRedirectUrl() {
+    if (courseId === 'craftom-agent') return 'classroom-entry.html';
+    return `quick-classroom.html?course=${encodeURIComponent(courseId)}`;
   }
 
 

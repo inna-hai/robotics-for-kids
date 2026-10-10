@@ -214,9 +214,10 @@ assert.ok(sessionClient.includes('/api/classroom/progress'));
 assert.ok(sessionClient.includes('hai:classroom-progress'));
 assert.ok(sessionClient.includes('classroom-student-floating-logout'), 'student pages should get a shared floating logout button');
 assert.ok(sessionClient.includes('/api/classroom/logout'), 'shared student logout should clear the classroom session');
-assert.ok(sessionClient.includes("location.assign('classroom-entry.html')"), 'student logout should return to the classroom entry page');
+assert.ok(sessionClient.includes('quick-classroom.html?course='), 'quick-course student logout should return to the quick classroom entry page');
+assert.match(sessionClient, /if \(courseId === 'craftom-agent'\) return 'classroom-entry\.html'/, 'Agent Academy logout should keep the dedicated classroom entry route');
 assert.ok(server.includes('injectClassroomSession'));
-assert.ok(server.includes('classroom-session.js?v=20261008-academy-student-progress-1'), 'injected classroom session script should cache-bust the shared student session features');
+assert.ok(server.includes('classroom-session.js?v=20261010-logout-entry-1'), 'injected classroom session script should cache-bust the shared student session features');
 assert.ok(server.includes('function previewDemoStudentLogin'));
 assert.ok(server.includes('function requireCurrentTeacherClassroom'));
 assert.ok((server.match(/requireCurrentTeacherClassroom\(db, req, teacher\.id, classroomId\)/g) || []).length >= 3,
@@ -240,12 +241,26 @@ assert.ok(styles.includes('.generic-course-progress'), 'generic non-Minecraft pr
 const progressRequests = [];
 const classroomWindow = { addEventListener() {} };
 const classroomLocation = { pathname: '/space.html', search: '', assign() {} };
+class FakeStorage {
+  constructor() { this.items = new Map(); }
+  get length() { return this.items.size; }
+  key(index) { return Array.from(this.items.keys())[index] || null; }
+  getItem(key) { return this.items.get(String(key)) || null; }
+  setItem(key, value) { this.items.set(String(key), String(value)); }
+  removeItem(key) { this.items.delete(String(key)); }
+}
+const classroomStorage = new FakeStorage();
 const classroomContext = {
   window: classroomWindow,
   location: classroomLocation,
   URLSearchParams,
+  Storage: FakeStorage,
+  localStorage: classroomStorage,
+  setTimeout,
+  clearTimeout,
   document: {
     body: { append() {} },
+    getElementById() { return null; },
     createElement() { return { setAttribute() {}, style: {}, textContent: '' }; },
   },
   fetch: async (path, options = {}) => {
