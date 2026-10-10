@@ -2082,7 +2082,7 @@ async function handleStudentProgress(req, res) {
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 
   try {
-    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    const body = JSON.parse(await readBody(req, 256 * 1024) || '{}');
     const courseId = cleanText(body.courseId, 80);
     const lessonId = cleanText(body.lessonId, 80);
     const activityId = cleanText(body.activityId, 80);
@@ -2190,7 +2190,7 @@ async function handleSummerAuth(req, res) {
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 
   try {
-    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    const body = JSON.parse(await readBody(req, 256 * 1024) || '{}');
 
     if (action === 'logout') {
       const token = getSummerTokenFromRequest(req);
@@ -3433,6 +3433,12 @@ function webcodeQuickStudentPublic(row) {
 }
 
 function classroomProgressPublic(row) {
+  let metadata = {};
+  try {
+    metadata = JSON.parse(row.metadata_json || '{}') || {};
+  } catch {
+    metadata = {};
+  }
   return {
     courseId: row.course_id,
     lessonId: row.lesson_id,
@@ -3440,6 +3446,7 @@ function classroomProgressPublic(row) {
     status: row.status,
     score: row.score || 0,
     attempts: row.attempts || 0,
+    metadata,
     startedAt: row.started_at,
     completedAt: row.completed_at,
     updatedAt: row.updated_at,
@@ -7363,7 +7370,7 @@ async function handleClassroomApi(req, res) {
   if (req.method !== 'POST') return send(res, 405, JSON.stringify({ error: 'Method not allowed' }));
 
   try {
-    const body = JSON.parse(await readBody(req, 64 * 1024) || '{}');
+    const body = JSON.parse(await readBody(req, 256 * 1024) || '{}');
     if (action === 'portfolio') {
       const courseId = cleanText(body.courseId, 80);
       const lessonId = cleanText(body.lessonId, 80);
@@ -8180,7 +8187,7 @@ async function handleClassroomApi(req, res) {
       const status = body.status === 'completed' ? 'completed' : 'started';
       const score = Math.max(0, Math.min(100, Number(body.score || 0)));
       const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : {};
-      const metadataJson = JSON.stringify(metadata).slice(0, 4000);
+      const metadataJson = JSON.stringify(metadata).slice(0, 100000);
       const result = withSummerDb(db => db.transaction(() => {
         const student = requireCurrentClassroomStudent(db, req);
         if (!student) return { denied: true };
@@ -9791,9 +9798,38 @@ function injectUserBadge(html) {
   return replaceLastHtmlTag(injectHeadAssets(html), '</body>', '  <script src="/js/user-badge.js?v=20261010-teacher-refresh-1"></script>\n</body>');
 }
 
-function injectClassroomSession(html) {
-  if (!html.includes('</body>') || html.includes('js/classroom-session.js') || html.includes('js/classroom-platform.js')) return html;
-  return replaceLastHtmlTag(html, '</body>', '  <script src="/js/classroom-session.js?v=20261009-webcode-quick-class-1"></script>\n</body>');
+function classroomSessionBootstrap(req, pathname) {
+  const student = getClassroomStudentFromRequest(req);
+  if (!student) return { role: 'guest' };
+  const courseId = classroomCourseForPath(pathname);
+  if (!courseId || !CLASSROOM_COURSES.has(courseId)) {
+    return { role: 'student', student: { id: student.id, name: student.name }, courseId: '' };
+  }
+  const progress = withSummerDb(db => {
+    if (!classroomHasCourse(db, student.classroom_id, courseId)) return [];
+    return db.prepare(`
+      SELECT * FROM classroom_progress
+      WHERE student_id = ? AND course_id = ? AND activity_id LIKE 'state:%'
+      ORDER BY updated_at DESC
+      LIMIT 250
+    `).all(student.id, courseId).map(classroomProgressPublic);
+  });
+  return {
+    role: 'student',
+    courseId,
+    student: { id: student.id, name: student.name },
+    classroom: { id: student.classroom_id, name: student.classroom_name },
+    progress,
+  };
+}
+
+function injectClassroomSession(html, req, pathname) {
+  if (!html.includes('</body>') || html.includes('js/classroom-platform.js')) return html;
+  const bootstrap = JSON.stringify(classroomSessionBootstrap(req, pathname)).replace(/</g, '\\u003c');
+  const snippet = `  <script>window.__HAI_CLASSROOM_BOOTSTRAP=${bootstrap};</script>\n  <script src="/js/classroom-session.js?v=20261010-db-state-1"></script>\n`;
+  const withoutExistingSession = html.replace(/\s*<script\s+src=["'][^"']*js\/classroom-session\.js[^"']*["']\s*><\/script>\s*/g, '\n');
+  if (withoutExistingSession.includes('</head>')) return withoutExistingSession.replace('</head>', `${snippet}</head>`);
+  return replaceLastHtmlTag(withoutExistingSession, '</body>', `${snippet}</body>`);
 }
 
 async function handleWebCodeApi(req, res) {
@@ -10234,7 +10270,7 @@ function serveStatic(req, res) {
       fs.readFile(filePath, 'utf8', (readErr, html) => {
         if (readErr) return send(res, 500, 'Server error', 'text/plain; charset=utf-8');
         const baseOutput = injectUserBadge(html);
-        const output = injectClassroomSession(baseOutput);
+        const output = injectClassroomSession(baseOutput, req, pathname);
         send(res, 200, output, 'text/html; charset=utf-8');
       });
       return;

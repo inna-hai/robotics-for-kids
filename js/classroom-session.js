@@ -13,10 +13,58 @@
 
   if (!courseId) return;
 
-  let classroomStudent = null;
-  let classroomIdentityLoaded = false;
+  const bootstrap = window.__HAI_CLASSROOM_BOOTSTRAP || {};
+  let classroomStudent = bootstrap.role === 'student' && bootstrap.courseId === courseId ? bootstrap.student : null;
+  let classroomIdentityLoaded = Boolean(bootstrap.role);
   const pendingProgress = [];
   const logoutButtonId = 'classroom-student-floating-logout';
+  const nativeGetItem = Storage.prototype.getItem;
+  const nativeSetItem = Storage.prototype.setItem;
+  const nativeRemoveItem = Storage.prototype.removeItem;
+  const storageTimers = new Map();
+  let restoringFromServer = false;
+
+  function storagePrefixes() {
+    if (courseId === 'webcode') return ['webcodeLessonState:', 'webcodeScoreState:', 'webcodeLastLocation:'];
+    if (courseId === 'python-turtle') return ['pythonTurtle', 'python-turtle', 'turtle', 'pyTurtle'];
+    if (courseId === 'sensi-city') return ['sensi', 'smart-city'];
+    if (courseId === 'minecraft') return ['minecraft'];
+    if (courseId === 'sisi') return ['sisi-progress:', 'sisi-mission-', 'sisi-course-'];
+    if (courseId === 'future-architects') return ['future-architects', 'omer-future-craftom-student-'];
+    return [];
+  }
+
+  function ownsStorageKey(key) {
+    const text = String(key || '');
+    if (!text || text === 'haiTechSummerToken') return false;
+    return storagePrefixes().some(prefix => text.startsWith(prefix));
+  }
+
+  function clearCourseStorage() {
+    const keys = [];
+    try {
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (ownsStorageKey(key)) keys.push(key);
+      }
+      keys.forEach(key => nativeRemoveItem.call(localStorage, key));
+    } catch {}
+  }
+
+  function restoreStorageSnapshots(rows = []) {
+    if (!classroomStudent || !Array.isArray(rows)) return;
+    restoringFromServer = true;
+    clearCourseStorage();
+    const seen = new Set();
+    rows.forEach(row => {
+      const metadata = row?.metadata || {};
+      const key = metadata.storageKey;
+      if (!ownsStorageKey(key) || seen.has(key)) return;
+      seen.add(key);
+      try { nativeSetItem.call(localStorage, key, String(metadata.storageValue || '')); } catch {}
+    });
+    restoringFromServer = false;
+  }
 
   function currentLessonId() {
     const params = new URLSearchParams(location.search);
@@ -62,6 +110,59 @@
     };
     return request('/api/classroom/progress', payload);
   }
+
+  function hashText(text) {
+    let hash = 2166136261;
+    String(text || '').split('').forEach(char => {
+      hash ^= char.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    });
+    return (hash >>> 0).toString(36);
+  }
+
+  function snapshotStorage(key, value) {
+    if (restoringFromServer || !classroomStudent || !ownsStorageKey(key)) return;
+    const storageValue = String(value || '');
+    if (storageValue.length > 60000) return;
+    clearTimeout(storageTimers.get(key));
+    storageTimers.set(key, setTimeout(() => {
+      storageTimers.delete(key);
+      save({
+        lessonId: currentLessonId(),
+        activityId: `state:${hashText(key)}`,
+        status: 'started',
+        metadata: {
+          kind: 'storage-state',
+          storageKey: key,
+          storageValue,
+          path: `${pathname}${location.search}`,
+        },
+      }).catch(() => {});
+    }, 450));
+  }
+
+  function collectOwnedStorage() {
+    const snapshot = {};
+    let total = 0;
+    try {
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const key = localStorage.key(i);
+        if (!ownsStorageKey(key)) continue;
+        const value = nativeGetItem.call(localStorage, key) || '';
+        total += key.length + value.length;
+        if (total > 55000) break;
+        snapshot[key] = value;
+      }
+    } catch {}
+    return snapshot;
+  }
+
+  const originalSetItem = Storage.prototype.setItem;
+  Storage.prototype.setItem = function setItemWithClassroomSnapshot(key, value) {
+    const result = originalSetItem.call(this, key, value);
+    if (this === localStorage) snapshotStorage(key, value);
+    return result;
+  };
 
   async function list({ courseId: requestedCourseId, lessonId } = {}) {
     const params = new URLSearchParams();
@@ -128,8 +229,16 @@
 
   window.ClassroomProgress = { list, save, courseId, get lessonId() { return currentLessonId(); } };
   window.addEventListener('hai:classroom-progress', (event) => {
-    save(event.detail || {}).catch(() => {});
+    const detail = event.detail || {};
+    if (!detail.metadata) detail.metadata = {};
+    detail.metadata.path = detail.metadata.path || `${pathname}${location.search}`;
+    if (detail.status === 'completed' && !detail.metadata.solutionSnapshot) {
+      detail.metadata.solutionSnapshot = collectOwnedStorage();
+    }
+    save(detail).catch(() => {});
   });
+
+  restoreStorageSnapshots(bootstrap.progress || []);
 
   request('/api/classroom/me').then((me) => {
     classroomIdentityLoaded = true;

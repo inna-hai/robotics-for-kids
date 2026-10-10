@@ -201,7 +201,7 @@ assert.match(read('quick-classroom.html'), /hai:user-badge-refresh/, 'quick clas
 assert.match(read('webcode.html'), /hai:user-badge-refresh/, 'WebCode teacher login must refresh the badge after same-page login');
 const server = read('server.js');
 assert.match(server, /user-badge\.js\?v=20261010-teacher-refresh-1/);
-assert.match(server, /classroom-session\.js\?v=20261009-webcode-quick-class-1/);
+assert.match(server, /classroom-session\.js\?v=20261010-db-state-1/);
 assert.match(server, /const baseOutput = injectUserBadge\(html\);/, 'the unified badge must load even when the subscription gate is disabled');
 assert.doesNotMatch(server, /SUBSCRIPTION_GATE_ENABLED \? injectUserBadge\(html\)/);
 
