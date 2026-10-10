@@ -50,15 +50,21 @@
       font-size: 1.18rem;
       font-weight: 900;
     }
-    .mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
+    .brand-logo {
+      width: 154px;
+      height: 56px;
+      border-radius: 16px;
       display: grid;
       place-items: center;
-      background: #22c55e;
-      color: #052e16;
-      font-size: 1.55rem;
+      background: rgba(255, 255, 255, .96);
+      padding: 7px 10px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+    }
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
     .nav {
       display: flex;
@@ -372,6 +378,8 @@
     }
     @media (max-width: 650px) {
       .top { align-items: flex-start; flex-direction: column; }
+      .brand { align-items: flex-start; }
+      .brand-logo { width: 138px; height: 52px; }
       .nav { display: none; }
       .cards { grid-template-columns: 1fr; }
       .group-head { display: block; }
@@ -384,7 +392,7 @@
   <header class="hero">
     <div class="shell">
       <div class="top">
-        <div class="brand"><span class="mark">H</span><span>hai.tech · מרכז הלומדות · robotics15</span></div>
+        <div class="brand"><span class="brand-logo"><img src="assets/brand/hai-tech-logo-transparent.webp" alt="דרך ההייטק"></span><span>robotics15 · מרכז הלומדות</span></div>
         <nav class="nav">
           <a href="#active-courses">קורסים פעילים</a>
           <a href="#classroom-login">כניסת כיתה</a>
