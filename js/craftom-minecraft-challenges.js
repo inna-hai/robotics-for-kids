@@ -2857,11 +2857,10 @@
   // switch to down is a real change and both directions get used.
   {
     const exercise = detailsByChallenge[1][2].academy.exercises[0];
-    // The route to the station (learned in lesson 2) is already on the board. The courier puts the package into the
-    // station from the cell before it, without entering, so forward is what makes it work.
-    exercise.prefilledStart = true;
-    exercise.mission = 'בלוח כבר יש מסלול מוכן שמביא את השליח עד התחנה. עכשיו השליח מניח חבילה בתוך התחנה, בלי להיכנס אליה. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. חשבו איפה השליח צריך לעצור ובאיזה כיוון להניח.';
-    exercise.hint = 'השליח עוצר משבצת אחת לפני התחנה (שנו את מספר הצעדים בתנועה האחרונה), ושם מניח את החבילה קדימה (forward), לתוך התחנה.';
+    // The student builds the whole route, stops on the cell before the station and puts the package into the station
+    // from outside with forward (without entering it).
+    exercise.mission = 'בנו לבד את המסלול: השליח נוסע לכיוון התחנה ועוצר משבצת אחת לפניה, בלי להיכנס אליה. משם הוא מניח חבילה בתוך התחנה. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. חשבו באיזה כיוון צריך להניח.';
+    exercise.hint = 'ספרו את המשבצות: כמה צעדים עד הפינה, לאיזה צד פונים, וכמה צעדים אחרי הפנייה עד המשבצת שלפני התחנה. שם מניחים את החבילה קדימה (forward), לתוך התחנה.';
     exercise.criteria = [
       { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' },
       { label: 'השליח לא נכנס לתחנה', type: 'notOnStation' },
