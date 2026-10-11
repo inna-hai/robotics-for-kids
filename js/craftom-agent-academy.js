@@ -640,14 +640,32 @@
     const moveStart = { x: state.x, y: state.y };
     for (let stepIndex = 0; stepIndex < steps; stepIndex += 1) {
       const from = { x: state.x, y: state.y };
-      state.x += Math.cos(radians) * cell;
-      state.y += Math.sin(radians) * cell;
-      state.x = Math.max(52, Math.min(canvas.width - 52, state.x));
-      state.y = Math.max(74, Math.min(canvas.height - 52, state.y));
+      const to = {
+        x: Math.max(52, Math.min(canvas.width - 52, state.x + Math.cos(radians) * cell)),
+        y: Math.max(74, Math.min(canvas.height - 52, state.y + Math.sin(radians) * cell)),
+      };
+      // A closed barrier really blocks the road: the courier stops in front of it and the rest of this move is lost.
+      if (stepBlockedByBarrier(state, from, to)) {
+        state.hitBarrier = true;
+        state.bubbleText = 'המחסום סגור!';
+        state.bubbleTtl = sayBubbleFrames;
+        state.frames.push(visualSnapshot(state));
+        break;
+      }
+      state.x = to.x;
+      state.y = to.y;
       state.path.push({ x1: from.x, y1: from.y, x2: state.x, y2: state.y, step: state.path.length + 1 });
       state.frames.push(visualSnapshot(state));
     }
     state.moves.push({ ...command, from: moveStart, to: { x: state.x, y: state.y } });
+  }
+
+  function stepBlockedByBarrier(state, from, to) {
+    if (usesRouteState && state.routeOpen === false) {
+      const barrierX = start.x + cell * barrierCells;
+      if (Math.abs(from.y - start.y) < 4 && Math.abs(to.y - start.y) < 4 && Math.min(from.x, to.x) < barrierX && Math.max(from.x, to.x) > barrierX) return true;
+    }
+    return usesGates && gateDefs.some(gate => state.gates?.[gate.id] === false && isNear(to, gatePoint(gate), stationRadius));
   }
 
   function hasNestedBlock(block, type) {
@@ -777,7 +795,8 @@
     const ids = exerciseGateIds(exercise);
     const combos = [];
     for (let mask = 0; mask < 2 ** ids.length; mask += 1) {
-      const combo = Object.fromEntries(gateDefs.map(gate => [gate.id, true]));
+      // Barriers the exercise is not about keep the state chosen with their switch.
+      const combo = { ...worldGates };
       ids.forEach((id, index) => { combo[id] = !(mask & (1 << index)); });
       combos.push(combo);
     }
@@ -795,7 +814,7 @@
     return [start, station, ...[...names].flatMap(name => (lanes[name] || []).map(cellPoint))];
   }
   const pathCells = run => run.path.map(step => ({ x: step.x2, y: step.y2 }));
-  const crossesClosedGate = (run, combo) => gateDefs.some(gate => combo[gate.id] === false && pathCells(run).some(point => isNear(point, gatePoint(gate), stationRadius)));
+  const crossesClosedGate = (run, combo) => run.hitBarrier || gateDefs.some(gate => combo[gate.id] === false && pathCells(run).some(point => isNear(point, gatePoint(gate), stationRadius)));
 
   // The barrier stands on the first leg of the route, this many cells east of the warehouse (lessons can override).
   const barrierCells = academy.world?.barrierCells || 2.5;
@@ -942,7 +961,8 @@
     if (criterion.type === 'blockedAvoidsBarrier') {
       // The barrier stands on the road two and a half cells east of the warehouse.
       const barrierX = start.x + cell * barrierCells;
-      return !runProgram(false).path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
+      const blockedRun = runProgram(false);
+      return !blockedRun.hitBarrier && !blockedRun.path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
         && Math.min(segment.x1, segment.x2) < barrierX && Math.max(segment.x1, segment.x2) > barrierX);
     }
     if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
@@ -1071,7 +1091,8 @@
       }
       // In road-state lessons, checks that are not about a specific road state (package direction, number of
       // packages, messages...) pass if the code does it in either state, not only in the state of the last run.
-      const stateFree = criterion => usesRouteState && !openStateTypes.includes(criterion.type) && !blockedStateTypes.includes(criterion.type) && criterion.type !== 'ranBothStates';
+      const checksRoadState = exercise.criteria.some(criterion => openStateTypes.includes(criterion.type) || blockedStateTypes.includes(criterion.type));
+      const stateFree = criterion => usesRouteState && checksRoadState && !openStateTypes.includes(criterion.type) && !blockedStateTypes.includes(criterion.type) && criterion.type !== 'ranBothStates';
       const bothRuns = usesRouteState ? [runProgram(true), runProgram(false)] : [];
       exercise.criteria.forEach(criterion => {
         const pass = stateFree(criterion) ? bothRuns.some(run => criterionPass(run, criterion)) : criterionPass(state, criterion);
@@ -1529,10 +1550,12 @@
   function animateGate(targetAngle) {
     const from = gateAngle;
     const startedAt = performance.now();
+    const runId = animationRunId;
     gateAnimating = true;
     function step(now) {
       const t = Math.min(1, (now - startedAt) / 500);
       gateAngle = from + (targetAngle - from) * (1 - Math.pow(1 - t, 3));
+      if (runId !== animationRunId) { gateAnimating = false; return; }
       drawWorld();
       if (t < 1) {
         requestAnimationFrame(step);
@@ -1717,6 +1740,7 @@
 
   // The board that was run, saved as the exercise's correct solution if every check passes.
   let lastRunBoardXml = '';
+  let lastRunHitBarrier = false;
 
   function renderChecks(checks) {
     const boardXml = lastRunBoardXml;
@@ -1740,7 +1764,9 @@
       ? 'כל תרגילי האקדמיה הושלמו וההתקדמות נשמרה. אפשר לחזור לשיעור.'
       : passed
         ? 'התרגיל עבר וההצלחה נשמרה.'
-        : onlyBothStatesMissing
+        : lastRunHitBarrier
+          ? 'השליח נעצר מול מחסום סגור, כי אי אפשר לעבור בו. הסתכלו בהדמיה איפה הוא נעצר.'
+          : onlyBothStatesMissing
           ? 'נראה טוב! עכשיו החליפו את מצב הדרך בכפתור שמעל ההדמיה והריצו שוב.'
           : onlyGateStatesMissing
             ? 'נראה טוב! עכשיו שנו את מצב המחסומים בכפתורים שמעל ההדמיה והריצו שוב, עד שתריצו בכל המצבים.'
@@ -1818,6 +1844,7 @@
       ranStates.add(comboKey(worldGates));
     }
     const state = runProgram();
+    lastRunHitBarrier = Boolean(state.hitBarrier);
     renderRanStates();
     const checks = evaluate(state);
     lastRunBoardXml = currentBoardXml();
@@ -1898,23 +1925,22 @@
       gateAngle = gateClosedAngle;
       renderRouteToggle();
     }
-    // Exercises that do not check the road state keep the road open and hide the switch, so a closed barrier
-    // can never be driven through in an exercise that does not deal with it.
+    // The road switch is always available. Exercises that do not check the road state start with the road open;
+    // closing it there really blocks the courier at the barrier.
     if (routeToggle) {
       const stateTypes = [...openStateTypes, ...blockedStateTypes];
       const checksRoadState = (academy.exercises[activeExercise]?.criteria || []).some(criterion => stateTypes.includes(criterion.type));
-      routeToggle.style.display = checksRoadState ? '' : 'none';
       if (!checksRoadState && !worldRouteOpen) {
         worldRouteOpen = true;
         gateAngle = gateOpenAngle;
         renderRouteToggle();
       }
     }
-    // Multi-barrier lessons show only the switches of the exercise's barriers; the other barriers are open.
+    // Multi-barrier lessons: every barrier has its switch in every exercise; barriers the exercise is not about
+    // start open.
     if (usesGates) {
       const ids = exerciseGateIds();
       gateDefs.forEach(gate => {
-        gateToggles[gate.id].style.display = ids.includes(gate.id) ? '' : 'none';
         if (!ids.includes(gate.id)) worldGates[gate.id] = true;
       });
       renderGateToggles();
@@ -1973,7 +1999,7 @@
       const ids = exerciseGateIds();
       states = gateCombos().map(combo => ({ key: comboKey(combo), label: ids.map(id => `${gateDefs.find(gate => gate.id === id).label} ${combo[id] ? 'פתוח' : 'סגור'}`).join(', ') }));
       current = comboKey(worldGates);
-    } else if (routeToggle && routeToggle.style.display !== 'none') {
+    } else if (routeToggle && (academy.exercises[activeExercise]?.criteria || []).some(criterion => openStateTypes.includes(criterion.type) || blockedStateTypes.includes(criterion.type))) {
       states = [{ key: 'open', label: 'דרך פתוחה' }, { key: 'blocked', label: 'דרך חסומה' }];
       current = worldRouteOpen ? 'open' : 'blocked';
     }
@@ -2015,14 +2041,17 @@
   function animateGateLift(id, target) {
     const from = gateLift[id];
     const startedAt = performance.now();
+    const runId = animationRunId;
     animatingGateId = id;
     function step(now) {
       const t = Math.min(1, (now - startedAt) / 500);
       gateLift[id] = from + (target - from) * (1 - Math.pow(1 - t, 3));
+      // A run started meanwhile draws its own frames; the switch animation must not paint over them.
+      if (runId !== animationRunId) { animatingGateId = null; return; }
       drawWorld();
       if (t < 1) { requestAnimationFrame(step); return; }
       animatingGateId = null;
-      drawWorld();
+      if (runId === animationRunId) drawWorld();
     }
     requestAnimationFrame(step);
   }
