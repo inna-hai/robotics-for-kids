@@ -2917,6 +2917,15 @@
     ]);
   }
 
+  // Lesson 5 exercise 4 continues exercise 3's correct code; only the number of rounds changes, no blocks are added.
+  {
+    const exercise = detailsByChallenge[2][0].academy.exercises[3];
+    exercise.continuePassed = true;
+    exercise.starter = { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] }] };
+    exercise.mission = 'עכשיו השליח צריך להניח 3 חבילות במקום 2, בלי להוסיף בלוקים. הריצו וראו מה שולט בכמות העבודה.';
+    exercise.criteria.push({ label: 'לא נוספו בלוקים, שונה רק מספר אחד', type: 'oneNumberChanged' });
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
