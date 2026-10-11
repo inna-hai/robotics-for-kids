@@ -2927,8 +2927,7 @@
   }
 
   // Lesson 6: driving to the station and delivering are already known, so they form one exercise. The freed slot
-  // becomes a new step after the loop: returning by turning around (not in reverse) and facing the station again,
-  // so the next round starts the right way.
+  // becomes a new step: returning by turning around (a double turn) instead of driving in reverse.
   {
     const lesson6 = detailsByChallenge[2][1].academy;
     const [, , ret, debug, loop, challenge] = lesson6.exercises;
@@ -2951,16 +2950,16 @@
     loop.continuePassed = true;
     const turnAround = {
       title: 'תרגיל 5 - חוזרים עם הפנים קדימה',
-      continuePassed: true,
-      mission: 'עד עכשיו השליח חזר למחסן בנסיעה אחורה. הפעם הוא חוזר כשהוא נוסע קדימה, בלי לנסוע אחורה. שימו לב: בכל סיבוב השליח צריך לצאת מהמחסן כשהוא מסתכל לכיוון התחנה.',
-      hint: 'כדי לנסוע קדימה בחזרה, השליח צריך קודם להסתובב. ומה צריך לקרות כשהוא מגיע למחסן, כדי שהסיבוב הבא יתחיל נכון?',
-      check: 'שני סיבובים בלי נסיעה אחורה, והשליח מסיים במחסן כשהוא מסתכל לכיוון התחנה.',
-      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 5 }] }] },
+      cleanStart: true,
+      freshStartMessage: 'בתרגיל הזה עובדים על נסיעה אחת, הלוך וחזור, בלי לולאה.',
+      mission: 'עד עכשיו השליח חזר למחסן בנסיעה אחורה. הפעם הוא מוסר את החבילה בתחנה וחוזר למחסן כשהוא נוסע קדימה, בלי לנסוע אחורה.',
+      hint: 'כדי לנסוע קדימה לכיוון המחסן, השליח צריך קודם להסתובב. כמה פניות צריך כדי להסתובב לגמרי?',
+      check: 'השליח מוסר בתחנה וחוזר למחסן בלי לנסוע אחורה.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'move', direction: 'BACK', steps: 5 }] },
       criteria: [
-        { label: 'השליח לא נוסע אחורה', type: 'noBackMoves' },
-        { label: 'הפעולה חוזרת 2 פעמים', type: 'repeatTimes', times: 2 },
         { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' },
-        { label: 'בסוף השליח במחסן ומסתכל לכיוון התחנה', type: 'endsAtCell', dx: 0, dy: 0, heading: 0 },
+        { label: 'השליח חוזר למחסן', type: 'returnToStart' },
+        { label: 'השליח לא נוסע אחורה', type: 'noBackMoves' },
       ],
     };
     lesson6.exercises = [deliver, ret, debug, loop, turnAround, challenge];
