@@ -68,8 +68,15 @@
 
   // The check list shows results to look for in the run, not which block to add or where (the mission says that).
   // Labels that already describe a result (messages, delivery, road states, "after the fix...") stay as they are.
-  function resultLabel(criterion) {
+  function resultLabel(criterion, exercise) {
     const n = Number(criterion.min || criterion.times || 0);
+    // In exercises with a turn, the distance checks say which part of the trip they measure.
+    const routeStart = academy.world?.start;
+    const routeEnd = academy.world?.station;
+    const routeTurns = Boolean(routeStart && routeEnd && routeStart.x !== routeEnd.x && routeStart.y !== routeEnd.y);
+    const hasTurn = routeTurns || (exercise?.criteria || []).some(item => ['turn', 'moveBeforeTurn', 'turnBeforeSecondMove'].includes(item.type));
+    if (hasTurn && criterion.type === 'firstMove') return 'השליח נוסע את המרחק הנכון עד הפנייה';
+    if (hasTurn && criterion.type === 'secondMove') return 'אחרי הפנייה השליח נוסע את המרחק הנכון';
     switch (criterion.type) {
       case 'command':
       case 'chatDeliver': return 'הקוד מופעל מהפקודה הנכונה בצ׳אט';
@@ -106,7 +113,7 @@
   academy.exercises?.forEach(exercise => {
     (exercise.criteria || []).forEach(criterion => {
       if (/^אחרי התיקון/.test(criterion.label || '')) return;
-      const label = resultLabel(criterion);
+      const label = resultLabel(criterion, exercise);
       if (label) criterion.label = label;
     });
   });
