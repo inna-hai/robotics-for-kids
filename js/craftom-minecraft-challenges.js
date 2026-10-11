@@ -2853,6 +2853,15 @@
   // Lesson 1 challenge: many pairs of numbers add up to 7, so the fix is limited to changing one number.
   detailsByChallenge[1][0].academy.exercises[5].criteria.push({ label: 'שונה מספר אחד בלבד', type: 'oneNumberChanged' });
 
+  // Lesson 3 exercise 1 uses place forward (the package lands on the cell in front of the courier), so exercise 2's
+  // switch to down is a real change and both directions get used.
+  {
+    const exercise = detailsByChallenge[1][2].academy.exercises[0];
+    exercise.mission = 'השליח מגיע לתחנה ומשאיר חבילה במשבצת שמולו. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. בתרגיל הזה השתמשו ב-forward.';
+    exercise.hint = 'קודם בנו מסלול שמגיע לתחנה, ואז חפשו ב-Agent את בלוק place, הוסיפו אותו בסוף הרצף ובחרו בתפריט שלו forward.';
+    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'place').concat([{ label: 'החבילה מונחת במשבצת שמול השליח', type: 'placeDirection', direction: 'FORWARD' }]);
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
