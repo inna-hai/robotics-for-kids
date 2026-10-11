@@ -2850,19 +2850,14 @@
     ],
   });
 
-  // Lessons 11-12: the detour around the single barrier is a stone path one row below the road, and a courier that
-  // goes around must drive on it (not anywhere on the grass).
-  [[2, 7, [2, 3, 4, 5]], [3, 6, [2, 3, 5]]].forEach(([lessonIndex, stationCol, exerciseIndexes]) => {
+  // Lessons 11-12: a stone detour path one row below the road shows one way around the barrier. Any detour that
+  // does not cross the barrier is accepted here; driving on the detour path is enforced only in lessons 15-16.
+  [[2, 7], [3, 6]].forEach(([lessonIndex, stationCol]) => {
     const academy = detailsByChallenge[3][lessonIndex].academy;
     const { start } = academy.world;
     academy.world.roadLabels = [{ text: 'שביל עוקף', cell: [stationCol / 2, 1.62] }];
     academy.world.routeTiles = academy.world.routeTiles.concat(Array.from({ length: stationCol + 1 }, (_, col) => ({ x: start.x + col * 42, y: start.y + 42, kind: 'detour' })));
-    exerciseIndexes.forEach(index => {
-      academy.exercises[index].criteria.push({ label: 'כשהדרך חסומה השליח נוסע רק בכביש ובשביל העוקף', type: 'blockedFollowsDetour' });
-    });
   });
-  detailsByChallenge[3][2].academy.exercises[2].mission = 'במקום לחכות, השליח יכול לעקוף: כשהדרך חסומה הוא מגיע לתחנה בשביל האבנים העוקף שמתחת לכביש, בלי לעבור דרך המחסום. אפשר להשאיר גם את ההודעה.';
-  detailsByChallenge[3][3].academy.exercises[2].mission = 'בחרו לבד מה השליח עושה כשהדרך חסומה: לחכות, לעקוף או לחזור, אבל לא לעבור דרך המחסום. מי שבוחר לעקוף, עוקף בשביל האבנים שמתחת לכביש. הוסיפו הודעה שמסבירה מה הוא עושה.';
 
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
