@@ -35,6 +35,12 @@
     canvas.insertAdjacentHTML('beforebegin', `<div class="academy-gate-toggles">${gateDefs.map(gate => `<button type="button" class="btn secondary academy-route-toggle" data-gate-toggle="${gate.id}"></button>`).join('')}</div>`);
     gateDefs.forEach(gate => { gateToggles[gate.id] = document.querySelector(`[data-gate-toggle="${gate.id}"]`); });
   }
+  // Condition lessons show which road / barrier states were already run with the current code.
+  let ranStatesEl = null;
+  if (usesRouteState || usesGates) {
+    canvas.insertAdjacentHTML('beforebegin', '<div class="academy-ran-states" id="academyRanStates" hidden></div>');
+    ranStatesEl = document.getElementById('academyRanStates');
+  }
   const gateTypes = ['gatesDeliver', 'gatesReach', 'gatesNoCrossing', 'gatesBestRoute', 'gatesSayWhenClosed', 'gatesArrivalSay', 'gatesRanAll'];
   // Exercises with switchable barriers require running every combination of them.
   academy.exercises?.forEach(exercise => {
@@ -1760,6 +1766,7 @@
       ranStates.add(comboKey(worldGates));
     }
     const state = runProgram();
+    renderRanStates();
     const checks = evaluate(state);
     lastRunBoardXml = currentBoardXml();
     animationRunId += 1;
@@ -1865,6 +1872,7 @@
     boardBasis[activeExercise] = entry;
     loadBoard(keepWork ? savedBoards[activeExercise] : entry);
     saveBoard();
+    renderRanStates();
     const exercise = academy.exercises[activeExercise];
     showExercise(exercise?.debugStart
       ? (exercise.freshStartMessage || 'תרגיל דיבוג: הקוד בלוח מכיל באג. הריצו אותו, הסתכלו בהדמיה ומצאו מה לא עובד.')
@@ -1899,9 +1907,33 @@
       saveBoard();
       updatePython();
       feedbackEl.textContent = 'שיניתם את הבלוקים. לחצו הרצה ובדיקה.';
+      renderRanStates();
       feedbackEl.className = 'academy-feedback';
     }
   });
+
+  // The states this exercise needs, each marked ✓ once it ran with the current code (changing the code resets them).
+  function renderRanStates() {
+    if (!ranStatesEl) return;
+    let states = [];
+    let current = '';
+    if (usesGates && exerciseGateIds().length) {
+      const ids = exerciseGateIds();
+      states = gateCombos().map(combo => ({ key: comboKey(combo), label: ids.map(id => `${gateDefs.find(gate => gate.id === id).label} ${combo[id] ? 'פתוח' : 'סגור'}`).join(', ') }));
+      current = comboKey(worldGates);
+    } else if (routeToggle && routeToggle.style.display !== 'none') {
+      states = [{ key: 'open', label: 'דרך פתוחה' }, { key: 'blocked', label: 'דרך חסומה' }];
+      current = worldRouteOpen ? 'open' : 'blocked';
+    }
+    ranStatesEl.hidden = states.length === 0;
+    if (!states.length) return;
+    const sameCode = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace)) === ranStatesCode;
+    const done = states.filter(state => sameCode && ranStates.has(state.key)).length;
+    ranStatesEl.innerHTML = `<span class="academy-ran-title">מצבים שבדקתם בריצה: ${done}/${states.length}</span>${states.map(state => {
+      const ran = sameCode && ranStates.has(state.key);
+      return `<span class="academy-ran-chip${ran ? ' ran' : ''}${state.key === current ? ' current' : ''}">${ran ? '✓' : '·'} ${esc(state.label)}</span>`;
+    }).join('')}`;
+  }
 
   function renderRouteToggle() {
     if (!routeToggle) return;
@@ -1912,6 +1944,7 @@
   routeToggle?.addEventListener('click', () => {
     worldRouteOpen = !worldRouteOpen;
     renderRouteToggle();
+    renderRanStates();
     animationRunId += 1;
     runButton.disabled = false;
     animateGate(worldRouteOpen ? gateOpenAngle : gateClosedAngle);
@@ -1945,6 +1978,7 @@
     gateToggles[gate.id].addEventListener('click', () => {
       worldGates[gate.id] = !worldGates[gate.id];
       renderGateToggles();
+      renderRanStates();
       animationRunId += 1;
       runButton.disabled = false;
       animateGateLift(gate.id, worldGates[gate.id] ? gateOpenAngle : gateClosedAngle);
