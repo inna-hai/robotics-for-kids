@@ -2850,15 +2850,6 @@
     ],
   });
 
-  // Lessons 11-12: a stone detour path one row below the road shows one way around the barrier. Any detour that
-  // does not cross the barrier is accepted here; driving on the detour path is enforced only in lessons 15-16.
-  [[2, 7], [3, 6]].forEach(([lessonIndex, stationCol]) => {
-    const academy = detailsByChallenge[3][lessonIndex].academy;
-    const { start } = academy.world;
-    academy.world.roadLabels = [{ text: 'שביל עוקף', cell: [stationCol / 2, 1.62] }];
-    academy.world.routeTiles = academy.world.routeTiles.concat(Array.from({ length: stationCol + 1 }, (_, col) => ({ x: start.x + col * 42, y: start.y + 42, kind: 'detour' })));
-  });
-
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
