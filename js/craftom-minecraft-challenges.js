@@ -2873,6 +2873,14 @@
     detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].title = title;
   });
 
+  // Lesson 1 exercise 3 opens with the code ready (summon + move 3); the student changes only the number.
+  Object.assign(detailsByChallenge[1][0].academy.exercises[2], {
+    cleanStart: true,
+    freshStartMessage: 'הקוד כבר מוכן בלוח. שנו בו רק את המספר והריצו.',
+    mission: 'הקוד כבר מוכן בלוח: השליח מזומן ונוסע 3 צעדים. אל תשנו את הקוד ואל תוסיפו בלוקים, רק את המספר בבלוק התנועה: שנו אותו ל-5, הריצו ובדקו איך המרחק שהשליח עובר משתנה על השביל. השליח עדיין לא יגיע לתחנה, וזה בסדר.',
+  });
+  detailsByChallenge[1][0].academy.exercises[2].criteria.push({ label: 'שונה רק המספר בבלוק התנועה', type: 'oneNumberChanged' });
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
