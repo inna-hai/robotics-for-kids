@@ -2857,8 +2857,10 @@
   // switch to down is a real change and both directions get used.
   {
     const exercise = detailsByChallenge[1][2].academy.exercises[0];
-    exercise.mission = 'השליח מגיע לתחנה ומשאיר חבילה במשבצת שמולו. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. בתרגיל הזה השתמשו ב-forward.';
-    exercise.hint = 'קודם בנו מסלול שמגיע לתחנה, ואז חפשו ב-Agent את בלוק place, הוסיפו אותו בסוף הרצף ובחרו בתפריט שלו forward.';
+    // The route to the station (learned in lesson 2) is already on the board; the new step is placing the package.
+    exercise.prefilledStart = true;
+    exercise.mission = 'בלוח כבר יש מסלול מוכן שמביא את השליח עד התחנה, אין צורך לבנות אותו. עכשיו השליח משאיר חבילה במשבצת שמולו. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. בתרגיל הזה השתמשו ב-forward.';
+    exercise.hint = 'חפשו ב-Agent את בלוק place, הוסיפו אותו בסוף הרצף, אחרי התנועה האחרונה, ובחרו בתפריט שלו forward.';
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'place').concat([{ label: 'החבילה מונחת במשבצת שמול השליח', type: 'placeDirection', direction: 'FORWARD' }]);
   }
 
