@@ -2249,7 +2249,7 @@
       hint: 'השליח עובר את התחנה בשני צעדים. בדקו את התנועה השנייה.',
       check: 'אחרי התיקון השליח עוצר בדיוק בתחנה, ושתי התנועות וההודעות נשארו.',
       debugStart: true,
-      starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'say', text: 'חצי דרך!' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'say', text: 'המשלוח הגיע' }] },
+      starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'say', text: 'עצירה בדרך לתחנה' }, { type: 'move', direction: 'FORWARD', steps: 6 }, { type: 'say', text: 'המשלוח הגיע' }] },
       criteria: [
         { label: 'אחרי התיקון השליח עוצר בדיוק בתחנה', type: 'reachedStation', radius: 20 },
         { label: 'שתי התנועות נשארו', type: 'moveCount', min: 2 },
