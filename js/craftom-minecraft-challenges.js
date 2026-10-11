@@ -2903,6 +2903,7 @@
           { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
           { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
           { label: 'השליח נוסע בכביש הראשי', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע בכביש הראשי', type: 'gatesOnPath' },
         ],
       },
       {
@@ -2916,6 +2917,7 @@
         criteria: [
           { label: 'אחרי התיקון החבילה מונחת בתחנה', type: 'packageNearStation' },
           { label: 'השליח נוסע בכביש הראשי', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע בכביש הראשי', type: 'gatesOnPath' },
           { label: 'אחרי המסירה מופיעה הודעה עם תוצאת הבדיקה', type: 'arrivalSay' },
         ],
       },
@@ -2929,7 +2931,8 @@
         criteria: [
           { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
-          { label: 'השליח עוקף רק כשהמחסום סגור', type: 'gatesBestRoute' },
+          { label: 'כשמחסום א פתוח השליח נוסע ישר ולא עוקף', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכביש ועל הדרכים העוקפות', type: 'gatesOnPath' },
         ],
       },
       {
@@ -2943,6 +2946,7 @@
           { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
           { label: 'השליח עוקף רק מחסום סגור', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכביש ועל הדרכים העוקפות', type: 'gatesOnPath' },
         ],
       },
       {
@@ -2956,7 +2960,8 @@
         criteria: [
           { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
-          { label: 'השליח עוקף רק מחסום סגור, בדרך העוקפת שלו', type: 'gatesBestRoute' },
+          { label: 'השליח עוקף רק מחסום סגור', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכביש ועל הדרכים העוקפות', type: 'gatesOnPath' },
         ],
       },
       {
@@ -2972,6 +2977,7 @@
           { label: 'בכל מצב החבילה מונחת בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
           { label: 'השליח עוקף רק מחסום סגור', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכביש ועל הדרכים העוקפות', type: 'gatesOnPath' },
           { label: 'על כל מחסום סגור מופיעה הודעה', type: 'gatesSayWhenClosed' },
           { label: 'בכל מצב יש הודעת תוצאה אחרי המסירה', type: 'gatesArrivalSay' },
         ],
@@ -3010,6 +3016,7 @@
           { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
           { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
           { label: 'השליח נוסע בדרך הקצרה', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע בדרך הקצרה', type: 'gatesOnPath' },
         ],
       },
       {
@@ -3021,6 +3028,7 @@
         starter: { command: 'demo', blocks: [{ type: 'teleport' }, say('עכשיו השליח יביא חבילות לתחנה'), ...roadA] },
         criteria: [
           { label: 'השליח נוסע בדרך הקצרה', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע בדרך הקצרה', type: 'gatesOnPath' },
           { label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' },
           { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
           { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' },
@@ -3038,6 +3046,7 @@
           { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
           { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכבישים והשבילים', type: 'gatesOnPath' },
           { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
         ],
       },
@@ -3052,6 +3061,7 @@
           { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
           { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכבישים והשבילים', type: 'gatesOnPath' },
           { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
         ],
       },
@@ -3069,6 +3079,7 @@
           { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
           { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכבישים והשבילים', type: 'gatesOnPath' },
         ],
       },
       {
@@ -3086,6 +3097,7 @@
           { label: 'בכל מצב החבילות מונחות בתחנה', type: 'gatesDeliver' },
           { label: 'השליח אף פעם לא עובר במחסום סגור', type: 'gatesNoCrossing' },
           { label: 'השליח נוסע בדרך הקצרה ביותר שפתוחה', type: 'gatesBestRoute' },
+          { label: 'השליח נוסע רק על הכבישים והשבילים', type: 'gatesOnPath' },
           { label: 'על כל מחסום סגור מופיעה הודעה', type: 'gatesSayWhenClosed' },
           { label: 'מונחות 3 חבילות', type: 'placeCount', min: 3 },
           { label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' },

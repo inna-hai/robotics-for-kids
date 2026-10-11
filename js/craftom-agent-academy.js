@@ -41,7 +41,7 @@
     canvas.insertAdjacentHTML('beforebegin', '<div class="academy-ran-states" id="academyRanStates" hidden></div>');
     ranStatesEl = document.getElementById('academyRanStates');
   }
-  const gateTypes = ['gatesDeliver', 'gatesReach', 'gatesNoCrossing', 'gatesBestRoute', 'gatesSayWhenClosed', 'gatesArrivalSay', 'gatesRanAll'];
+  const gateTypes = ['gatesDeliver', 'gatesReach', 'gatesNoCrossing', 'gatesBestRoute', 'gatesOnPath', 'gatesSayWhenClosed', 'gatesArrivalSay', 'gatesRanAll'];
   // Exercises with switchable barriers require running every combination of them.
   academy.exercises?.forEach(exercise => {
     if (usesGates && (exercise.gates || []).length && !(exercise.criteria || []).some(criterion => criterion.type === 'gatesRanAll')) {
@@ -1062,10 +1062,18 @@
       if (criterion.type === 'gatesDeliver') return runs.every(({ run }) => run.packages.some(pkg => isNear(pkg, station, stationRadius)));
       if (criterion.type === 'gatesReach') return runs.every(({ run }) => isNear(run, station, stationRadius));
       if (criterion.type === 'gatesNoCrossing') return runs.every(({ run, combo }) => run.path.length > 0 && !crossesClosedGate(run, combo));
+      // The courier drives only on the map's roads and detour paths (never across the grass).
+      if (criterion.type === 'gatesOnPath') {
+        const cells = [start, station, ...Object.values(academy.world?.lanes || {}).flat().map(cellPoint)];
+        return runs.every(({ run }) => run.path.length > 0 && pathCells(run).every(point => cells.some(tile => isNear(point, tile, stationRadius))));
+      }
+      // The right road for each state: the courier never uses a road that this state does not call for
+      // (e.g. a detour while its barrier is open). Steps on the grass are the gatesOnPath check's job.
       if (criterion.type === 'gatesBestRoute') {
         return runs.every(({ run, combo }) => {
-          const cells = allowedCells(combo);
-          return run.path.length > 0 && pathCells(run).every(point => cells.some(tile => isNear(point, tile, stationRadius)));
+          const allowed = allowedCells(combo);
+          const otherRoads = Object.values(academy.world?.lanes || {}).flat().map(cellPoint).filter(point => !allowed.some(tile => isNear(point, tile, 4)));
+          return run.path.length > 0 && !pathCells(run).some(point => otherRoads.some(tile => isNear(point, tile, stationRadius)));
         });
       }
       // Every closed barrier the courier meets (its condition was checked) gets its own message about going around it.
