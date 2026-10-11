@@ -2962,6 +2962,24 @@
         { label: 'השליח לא נוסע אחורה', type: 'noBackMoves' },
       ],
     };
+    // The challenge puts the double turn in a loop: the courier turns around at the station and again at the
+    // warehouse, so every round starts facing the station.
+    Object.assign(challenge, {
+      continuePassed: true,
+      mission: 'השלימו מחזור מלא בלולאה של 2 סיבובים: בכל סיבוב השליח נוסע לתחנה, מוסר חבילה וחוזר למחסן בנסיעה קדימה, בלי לנסוע אחורה. כדי שהסיבוב הבא יתחיל נכון, גם במחסן הוא מסתובב שוב. בסוף כל הסיבובים מופיעה הודעת סיום אחת בלבד.',
+      hint: 'הריצו וצפו בסיבוב השני: לאן השליח יוצא? בסוף כל סיבוב הוא צריך לעמוד במחסן כשהוא מסתכל לכיוון התחנה.',
+      check: 'שני סיבובים עם פנייה כפולה בתחנה ובמחסן, שתי חבילות בתחנה והודעת סיום אחת.',
+      starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 5 }, { type: 'place', direction: 'DOWN' }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 5 }] },
+      criteria: [
+        { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
+        { label: 'הפעולה חוזרת 2 פעמים', type: 'repeatTimes', times: 2 },
+        { label: 'שתי החבילות מונחות בתחנה', type: 'packagesAtCell', dx: 5, dy: 0, min: 2 },
+        { label: 'השליח לא נוסע אחורה', type: 'noBackMoves' },
+        { label: 'בסוף השליח במחסן ומסתכל לכיוון התחנה', type: 'endsAtCell', dx: 0, dy: 0, heading: 0 },
+        { label: 'הודעת הסיום מופיעה בסוף', type: 'sayAfterLoop' },
+        { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayOnce' },
+      ],
+    });
     lesson6.exercises = [deliver, ret, debug, loop, turnAround, challenge];
   }
 
