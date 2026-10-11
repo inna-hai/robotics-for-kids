@@ -2886,6 +2886,17 @@
   });
   detailsByChallenge[1][0].academy.exercises[2].criteria.push({ label: 'שונה רק המספר בבלוק התנועה', type: 'oneNumberChanged' });
 
+  // Lesson 3 exercise 2 continues exercise 1 (courier stopped before the station, package forward into it): now the
+  // courier drives into the station and places the package under itself, so both the stop and the direction change.
+  Object.assign(detailsByChallenge[1][2].academy.exercises[1], {
+    debugStart: false,
+    continuePassed: true,
+    title: 'תרגיל 2 - נכנסים לתחנה ומניחים למטה',
+    mission: 'בלוח נמצא הקוד מהתרגיל הקודם: השליח עוצר לפני התחנה ומניח את החבילה לתוכה מבחוץ. עכשיו השליח נכנס לתוך התחנה ומניח את החבילה על הרצפה, במקום שבו הוא עומד. לשם כך צריך לשנות שני דברים: איפה השליח עוצר, ובאיזה כיוון הוא מניח.',
+    hint: 'השליח צריך להתקדם עוד צעד אחד כדי לעמוד בתחנה. בתפריט הקטן של ״הנחת חבילה״ בחרו למטה (down).',
+    starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'FORWARD' }] },
+  });
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
