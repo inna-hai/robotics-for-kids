@@ -2897,6 +2897,13 @@
     starter: { blocks: [{ type: 'teleport' }, { type: 'move', direction: 'FORWARD', steps: 4 }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'FORWARD' }] },
   });
 
+  // Lesson 3 exercise 3 (debug): the hint and the checks don't point at the faulty block; the student finds it.
+  {
+    const exercise = detailsByChallenge[1][2].academy.exercises[2];
+    exercise.hint = 'השוו בהדמיה בין המקום שבו השליח עוצר לבין התחנה. איזה בלוק קובע כמה רחוק השליח נוסע?';
+    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'secondMove');
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
