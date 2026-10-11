@@ -1070,14 +1070,15 @@
       if (criterion.type === 'gatesReach') return runs.every(({ run }) => isNear(run, station, stationRadius));
       if (criterion.type === 'gatesNoCrossing') return runs.every(({ run, combo }) => run.path.length > 0 && !crossesClosedGate(run, combo));
       // The courier drives only on the map's roads and detour paths (never across the grass).
-      if (criterion.type === 'gatesOnPath') {
-        const cells = [start, station, ...Object.values(academy.world?.lanes || {}).flat().map(cellPoint)];
-        return runs.every(({ run }) => run.path.length > 0 && pathCells(run).every(point => cells.some(tile => isNear(point, tile, stationRadius))));
-      }
+      const roadCells = [start, station, ...Object.values(academy.world?.lanes || {}).flat().map(cellPoint)];
+      const onRoads = run => run.path.length > 0 && pathCells(run).every(point => roadCells.some(tile => isNear(point, tile, stationRadius)));
+      if (criterion.type === 'gatesOnPath') return runs.every(({ run }) => onRoads(run));
       // The right road for each state: the courier never uses a road that this state does not call for
-      // (e.g. a detour while its barrier is open). Steps on the grass are the gatesOnPath check's job.
+      // (e.g. a detour while its barrier is open). Runs that leave the roads (or don't move) are judged only by the
+      // other checks, so this check never reports a grass problem as "wrong road".
       if (criterion.type === 'gatesBestRoute') {
         return runs.every(({ run, combo }) => {
+          if (!onRoads(run)) return true;
           const allowed = allowedCells(combo);
           const otherRoads = Object.values(academy.world?.lanes || {}).flat().map(cellPoint).filter(point => !allowed.some(tile => isNear(point, tile, 4)));
           return run.path.length > 0 && !pathCells(run).some(point => otherRoads.some(tile => isNear(point, tile, stationRadius)));
