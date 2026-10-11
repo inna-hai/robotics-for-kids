@@ -2857,11 +2857,16 @@
   // switch to down is a real change and both directions get used.
   {
     const exercise = detailsByChallenge[1][2].academy.exercises[0];
-    // The route to the station (learned in lesson 2) is already on the board; the new step is placing the package.
+    // The route to the station (learned in lesson 2) is already on the board. The courier puts the package into the
+    // station from the cell before it, without entering, so forward is what makes it work.
     exercise.prefilledStart = true;
-    exercise.mission = 'בלוח כבר יש מסלול מוכן שמביא את השליח עד התחנה, אין צורך לבנות אותו. עכשיו השליח משאיר חבילה במשבצת שמולו. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. בתרגיל הזה השתמשו ב-forward.';
-    exercise.hint = 'חפשו ב-Agent את בלוק place, הוסיפו אותו בסוף הרצף, אחרי התנועה האחרונה, ובחרו בתפריט שלו forward.';
-    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'place').concat([{ label: 'החבילה מונחת במשבצת שמול השליח', type: 'placeDirection', direction: 'FORWARD' }]);
+    exercise.mission = 'בלוח כבר יש מסלול מוכן שמביא את השליח עד התחנה. עכשיו השליח מניח חבילה בתוך התחנה, בלי להיכנס אליה. לשם כך יש בלוק חדש: agent place. יש לו שני כיוונים: forward מניח את החבילה במשבצת שמול ה-Agent, ו-down מניח אותה על הרצפה מתחתיו. חשבו איפה השליח צריך לעצור ובאיזה כיוון להניח.';
+    exercise.hint = 'השליח עוצר משבצת אחת לפני התחנה (שנו את מספר הצעדים בתנועה האחרונה), ושם מניח את החבילה קדימה (forward), לתוך התחנה.';
+    exercise.criteria = [
+      { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' },
+      { label: 'השליח לא נכנס לתחנה', type: 'notOnStation' },
+      { label: 'החבילה מונחת במשבצת שמול השליח', type: 'placeDirection', direction: 'FORWARD' },
+    ];
   }
 
   // Titles that no longer matched their missions after the refinements.

@@ -982,6 +982,8 @@
       return firstTurnAction > -1 && moveActions.length > 1 && firstTurnAction < moveActions[1];
     }
     if (criterion.type === 'reachedStation') return reachedStation;
+    // The courier delivers from outside: it ends next to the station, not on it.
+    if (criterion.type === 'notOnStation') return state.moves.length > 0 && !reachedStation;
     if (criterion.type === 'place') return state.packages.length > 0;
     if (criterion.type === 'placeDirection') return state.packages.some(pkg => pkg.direction === (criterion.direction || 'DOWN'));
     if (criterion.type === 'packageNearStation') return hasPackageNearStation;
