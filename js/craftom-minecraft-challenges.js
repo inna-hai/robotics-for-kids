@@ -2866,7 +2866,7 @@
   [
     [2, 0, 2, 'תרגיל 3 - דיבוג'],
     [2, 1, 4, 'תרגיל 5 - המחזור בתוך לולאה'],
-    [2, 2, 0, 'תרגיל 1 - נוסעים בלולאה'],
+    [2, 2, 0, 'תרגיל 1 - מזהים פעולה חוזרת'],
     [3, 1, 4, 'תרגיל 5 - מניחים חבילה בתחנה'],
   ].forEach(([challengeId, lessonIndex, exerciseIndex, title]) => {
     detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].title = title;
