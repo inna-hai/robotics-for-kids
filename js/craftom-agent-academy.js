@@ -1170,6 +1170,20 @@
     ctx.stroke();
   }
 
+  // One cell of a wide asphalt road (horizontal), with edge lines and a dashed yellow centre line.
+  function drawMainRoadTile(x, y) {
+    const half = cell / 2;
+    ctx.fillStyle = '#374151';
+    ctx.fillRect(x - half, y - 17, cell, 34);
+    ctx.fillStyle = '#1f2937';
+    ctx.fillRect(x - half, y + 17, cell, 6);
+    ctx.fillStyle = '#e5e7eb';
+    ctx.fillRect(x - half, y - 17, cell, 2);
+    ctx.fillRect(x - half, y + 15, cell, 2);
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(x - 10, y - 1.5, 20, 3);
+  }
+
   function drawWoodCrate(x, y, w = 86, h = 68) {
     drawBlock(x - w / 2, y - h / 2, w, h, '#b8792b', '#7c4a18', 12, '#5f3712');
     ctx.strokeStyle = 'rgba(95, 55, 18, .75)';
@@ -1517,7 +1531,21 @@
     ctx.strokeRect(34, 32, canvas.width - 68, canvas.height - 64);
 
     // The stone path leads to the station, so it is hidden together with it.
-    if (showStation && !academy.world?.hidePath) routeTiles.forEach(tile => drawCobbleTile(tile.x, tile.y, tile.w || 34, tile.h || 28));
+    if (showStation && !academy.world?.hidePath) {
+      // A main road (tile.kind 'main') is a wide asphalt road with a dashed centre line, so it stands out from the
+      // narrow stone detours. Lessons can also put short labels on the map (world.roadLabels).
+      routeTiles.filter(tile => tile.kind !== 'main').forEach(tile => drawCobbleTile(tile.x, tile.y, tile.w || 34, tile.h || 28));
+      routeTiles.filter(tile => tile.kind === 'main').forEach(tile => drawMainRoadTile(tile.x, tile.y));
+      (academy.world?.roadLabels || []).forEach(label => {
+        const point = { x: start.x + label.cell[0] * cell, y: start.y + label.cell[1] * cell };
+        ctx.font = '900 15px Rubik, Arial';
+        const width = ctx.measureText(label.text).width + 14;
+        roundedBox(point.x - width / 2, point.y - 11, width, 22, 6, label.dark ? 'rgba(15, 23, 42, .78)' : 'rgba(255, 251, 235, .92)', label.dark ? null : '#78716c');
+        ctx.fillStyle = label.dark ? '#fde047' : '#44403c';
+        ctx.textAlign = 'center';
+        ctx.fillText(label.text, point.x, point.y + 5);
+      });
+    }
 
     drawWoodCrate(start.x, start.y + 4, 92, 74);
     ctx.fillStyle = '#fff7ed';

@@ -2857,7 +2857,8 @@
   {
     const cellXY = (origin, [dx, dy]) => ({ x: origin.x + dx * 42, y: origin.y + dy * 42 });
     const rowCells = (dy, fromDx, toDx) => Array.from({ length: toDx - fromDx + 1 }, (_, index) => [fromDx + index, dy]);
-    const gateWorld = (origin, stationCell, gates, lanes, routePlan, water) => ({
+    const gateWorld = (origin, stationCell, gates, lanes, routePlan, water, mainLane, roadLabels) => ({
+      roadLabels,
       start: origin,
       station: cellXY(origin, stationCell),
       gates,
@@ -2865,7 +2866,7 @@
       routePlan,
       water,
       hidePath: false,
-      routeTiles: Object.values(lanes).flat().map(point => cellXY(origin, point)),
+      routeTiles: Object.entries(lanes).flatMap(([name, points]) => points.map(point => ({ ...cellXY(origin, point), kind: mainLane && name === mainLane ? 'main' : undefined }))),
     });
     const F = steps => ({ type: 'move', direction: 'FORWARD', steps });
     const L = steps => ({ type: 'move', direction: 'LEFT', steps });
@@ -2881,7 +2882,9 @@
     lesson15.world = gateWorld({ x: 112, y: 204 }, [8, 0],
       [{ id: 'A', label: 'א', cell: [2, 0], labelSide: 'below' }, { id: 'B', label: 'ב', cell: [6, 0], labelSide: 'above' }],
       { main: rowCells(0, 1, 7), detourA: [[1, -1], [2, -1], [3, -1]], detourB: [[5, 1], [6, 1], [7, 1]] },
-      [{ when: { A: false }, lanes: ['detourA'] }, { when: { B: false }, lanes: ['detourB'] }]);
+      [{ when: { A: false }, lanes: ['detourA'] }, { when: { B: false }, lanes: ['detourB'] }],
+      undefined, 'main',
+      [{ text: 'כביש ראשי', cell: [4, 0], dark: true }, { text: 'עוקף את א', cell: [2.5, -1.62] }, { text: 'עוקף את ב', cell: [6, 1.62] }]);
     lesson15.story = 'מפגש 15 בודק את מערכת המחסומים החדשה בעיר. בדרך מהמחסן לתחנה יש שני מחסומים, א ו-ב, ולכל אחד דרך עוקפת קצרה. בדיקה טובה מריצה את הקוד בכל מצבי המחסומים: כשמחסום פתוח השליח נוסע ישר, וכשהוא סגור השליח עוקף אותו ובכל זאת מגיע לתחנה.';
     const detourA = [F(1), L(1), F(2), R(1)];
     const detourB = [R(1), F(2), L(1)];
