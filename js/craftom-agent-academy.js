@@ -923,6 +923,33 @@
     return state.actions.some((action, index) => index > anchor && action.type === 'say' && isSuccessMessage(action.text));
   }
 
+  // The block structure and the numbers (steps, rounds) of a board, in code order.
+  function boardSignature(space) {
+    const top = space.getTopBlocks(true).find(block => block.type === 'mc_on_chat');
+    if (!top) return null;
+    const numbers = [];
+    const walk = block => {
+      for (let current = block; current; current = current.getNextBlock()) {
+        if (current.type === 'mc_move_agent') numbers.push(Number(current.getFieldValue('STEPS')));
+        if (current.type === 'mc_repeat') numbers.push(Number(current.getFieldValue('TIMES')));
+        ['DO', 'ELSE'].forEach(name => { if (current.getInput(name)) walk(current.getInputTargetBlock(name)); });
+      }
+    };
+    walk(top.getInputTargetBlock('DO'));
+    return { shape: blockShape(top), numbers };
+  }
+  function boardSignatureFromXml(xml) {
+    const scratch = new Blockly.Workspace();
+    try {
+      Blockly.Xml.domToWorkspace(new DOMParser().parseFromString(xml, 'text/xml').documentElement, scratch);
+      return boardSignature(scratch);
+    } catch (_) {
+      return null;
+    } finally {
+      scratch.dispose();
+    }
+  }
+
   function criterionPass(state, criterion) {
     const firstMove = state.moves[0];
     const secondMove = state.moves[1];
@@ -1032,27 +1059,12 @@
     // "One change only": the blocks keep the same order and nesting as the starting code (only values may change).
     // "Fix one number only": the blocks keep the starting code's structure and exactly one number (steps or rounds)
     // differs from it. Message texts may change.
+    // Compared with the board the exercise started from (the previous solution or the scaffold).
     if (criterion.type === 'oneNumberChanged') {
-      const starter = academy.exercises[activeExercise]?.starter;
-      const top = workspace.getTopBlocks(true).find(block => block.type === 'mc_on_chat');
-      if (!starter || !top || blockShape(top) !== `on_chat[${specShape(starter.blocks)}]`) return false;
-      const boardNumbers = [];
-      const walkBoard = block => {
-        for (let current = block; current; current = current.getNextBlock()) {
-          if (current.type === 'mc_move_agent') boardNumbers.push(Number(current.getFieldValue('STEPS')));
-          if (current.type === 'mc_repeat') boardNumbers.push(Number(current.getFieldValue('TIMES')));
-          ['DO', 'ELSE'].forEach(name => { if (current.getInput(name)) walkBoard(current.getInputTargetBlock(name)); });
-        }
-      };
-      walkBoard(top.getInputTargetBlock('DO'));
-      const starterNumbers = [];
-      const walkSpec = specs => (specs || []).forEach(spec => {
-        if (spec.type === 'move') starterNumbers.push(Number(spec.steps || 1));
-        if (spec.type === 'repeat') { starterNumbers.push(Number(spec.times || 2)); walkSpec(spec.blocks); }
-        if (spec.type === 'ifRoute' || spec.type === 'ifGate') { walkSpec(spec.then); walkSpec(spec.else); }
-      });
-      walkSpec(starter.blocks);
-      return boardNumbers.length === starterNumbers.length && boardNumbers.filter((value, index) => value !== starterNumbers[index]).length === 1;
+      const now = boardSignature(workspace);
+      const basis = boardBasis[activeExercise] ? boardSignatureFromXml(boardBasis[activeExercise]) : null;
+      if (!now || !basis || now.shape !== basis.shape || now.numbers.length !== basis.numbers.length) return false;
+      return now.numbers.filter((value, index) => value !== basis.numbers[index]).length === 1;
     }
     if (criterion.type === 'sameStructure') {
       const starter = academy.exercises[activeExercise]?.starter;
@@ -1938,6 +1950,9 @@
     if (academy.exercises[index]?.cleanStart) return starterXml(index);
     // Exercise 1 starts empty, unless its mission says the board already has the chat command and summon.
     if (index === 0) return academy.exercises[0]?.prefilledStart ? starterXml(0) : emptyBoardXml();
+    // Exercises that continue the previous one always get working code: the previous correct solution, or the
+    // scaffold if there is none (never an unfinished attempt).
+    if (academy.exercises[index]?.continuePassed) return passedBoards[index - 1] || previousSolutions[index - 1] || starterXml(index);
     if (passedBoards[index - 1]) return passedBoards[index - 1];
     if (savedBoards[index - 1]) return savedBoards[index - 1];
     return starterXml(index);

@@ -2873,11 +2873,10 @@
     detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].title = title;
   });
 
-  // Lesson 1 exercise 3 opens with the code ready (summon + move 3); the student changes only the number.
+  // Lesson 1 exercise 3 continues exercise 2's correct code (or the scaffold: summon + move 3); only the number changes.
   Object.assign(detailsByChallenge[1][0].academy.exercises[2], {
-    cleanStart: true,
-    freshStartMessage: 'הקוד כבר מוכן בלוח. שנו בו רק את המספר והריצו.',
-    mission: 'הקוד כבר מוכן בלוח: השליח מזומן ונוסע 3 צעדים. אל תשנו את הקוד ואל תוסיפו בלוקים, רק את המספר בבלוק התנועה: שנו אותו ל-5, הריצו ובדקו איך המרחק שהשליח עובר משתנה על השביל. השליח עדיין לא יגיע לתחנה, וזה בסדר.',
+    continuePassed: true,
+    mission: 'בלוח נמצא הקוד מהתרגיל הקודם: השליח מזומן ונוסע 3 צעדים. אל תשנו את הקוד ואל תוסיפו בלוקים, רק את המספר בבלוק התנועה: שנו אותו ל-5, הריצו ובדקו איך המרחק שהשליח עובר משתנה על השביל. השליח עדיין לא יגיע לתחנה, וזה בסדר.',
   });
   detailsByChallenge[1][0].academy.exercises[2].criteria.push({ label: 'שונה רק המספר בבלוק התנועה', type: 'oneNumberChanged' });
 
