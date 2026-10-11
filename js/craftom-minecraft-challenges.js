@@ -2325,7 +2325,7 @@
     lesson4.exercises[1].mission = 'הוסיפו פנייה אחת אחרי התנועה הראשונה, בפינה שבה השביל משנה כיוון.';
     lesson4.exercises[1].criteria = lesson4.exercises[1].criteria.filter(criterion => criterion.type !== 'turnBeforeSecondMove');
     Object.assign(lesson4.exercises[2], {
-      mission: 'השלימו את המסלול מהפנייה ועד התחנה. שימו לב: בדרך יש עוד פינה. בשלב הזה עוד לא מניחים חבילה.',
+      mission: 'השלימו את המסלול מהפנייה ועד התחנה. בשלב הזה עוד לא מניחים חבילה.',
       hint: 'אחרי הפנייה הראשונה נוסעים עד הפינה הבאה, פונים שוב, וממשיכים עד התחנה. בדקו לאיזה צד הפנייה השנייה.',
       check: 'המסלול עם שתי הפניות מגיע לתחנה.',
       criteria: [
