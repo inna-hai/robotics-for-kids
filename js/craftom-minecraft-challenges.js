@@ -2862,6 +2862,16 @@
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'place').concat([{ label: 'החבילה מונחת במשבצת שמול השליח', type: 'placeDirection', direction: 'FORWARD' }]);
   }
 
+  // Titles that no longer matched their missions after the refinements.
+  [
+    [2, 0, 2, 'תרגיל 3 - דיבוג'],
+    [2, 1, 4, 'תרגיל 5 - המחזור בתוך לולאה'],
+    [2, 2, 0, 'תרגיל 1 - נוסעים בלולאה'],
+    [3, 1, 4, 'תרגיל 5 - מניחים חבילה בתחנה'],
+  ].forEach(([challengeId, lessonIndex, exerciseIndex, title]) => {
+    detailsByChallenge[challengeId][lessonIndex].academy.exercises[exerciseIndex].title = title;
+  });
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
