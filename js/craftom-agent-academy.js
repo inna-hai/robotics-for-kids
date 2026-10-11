@@ -982,6 +982,8 @@
       return firstTurnAction > -1 && moveActions.length > 1 && firstTurnAction < moveActions[1];
     }
     if (criterion.type === 'reachedStation') return reachedStation;
+    // The courier never drives in reverse (it turns around instead).
+    if (criterion.type === 'noBackMoves') return state.moves.length > 0 && state.moves.every(move => move.direction !== 'BACK');
     // The courier delivers from outside: it ends next to the station, not on it.
     if (criterion.type === 'notOnStation') return state.moves.length > 0 && !reachedStation;
     if (criterion.type === 'place') return state.packages.length > 0;
