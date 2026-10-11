@@ -2908,6 +2908,15 @@
   detailsByChallenge[1][1].academy.exercises[4].hint = 'המסלול כבר כמעט נכון. בדקו את מספר הצעדים בבלוקי התנועה.';
   detailsByChallenge[2][1].academy.exercises[3].hint = 'אל תשנו את הדרך הלוך, היא עובדת. התמקדו בדרך חזור.';
 
+  // Lesson 5 exercise 3 (debug): checks describe the result (packages in different places), not the faulty block.
+  {
+    const exercise = detailsByChallenge[2][0].academy.exercises[2];
+    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'teleportOutsideRepeat').concat([
+      { label: 'השליח יוצא מנקודת ההתחלה', type: 'teleport' },
+      { label: 'שתי החבילות מונחות במקומות שונים', type: 'packagesApart', min: 2 },
+    ]);
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
@@ -3201,6 +3210,7 @@
     [15, 4, 'כל מחסום מקבל החלטה משלו. בין שני המחסומים יש קטע כביש שנוסעים בו בכל מצב. עקבו בהדמיה אחרי הדרך העוקפת מתחת למחסום ב.'],
     [16, 3, 'בלוק ״תנאי״ בקטגוריית Logic בודק אם מחסום א פתוח (gateAOpen). ספרו את המשבצות לאורך הדרך העליונה ובדקו לאיזה צד פונים בכל פינה. מה שמחוץ לתנאי מתבצע בשני המצבים.'],
     [4, 4, 'החבילה צריכה להיות על הרצפה של התחנה. באיזה רגע בקוד השליח כבר עומד בתחנה?'],
+    [5, 3, 'הסתכלו בהדמיה איפה מונחות החבילות. האם הן במקומות שונים, כמו שצריך? עקבו אחרי השליח בכל סיבוב.'],
     [7, 1, 'בלוק ״לולאה״ נמצא בקטגוריית Loops. מה השליח צריך לעשות שוב ושוב?'],
     [14, 2, 'באיזה כיוון צריך להניח כדי שהחבילה תהיה בתחנה, במקום שבו השליח עומד?'],
     [16, 4, 'מתי בכלל צריך לבדוק את מחסום ב? רק כשמחסום א סגור. איפה בקוד נמצא המקום הזה? את הדרך הארוכה ספרו בהדמיה, פינה אחרי פינה.'],
