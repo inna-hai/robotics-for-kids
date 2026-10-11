@@ -1023,6 +1023,30 @@
     if (criterion.type === 'sayInRepeat') return state.actions.filter(action => action.type === 'say' && action.inRepeat && isSuccessMessage(action.text)).length >= Number(criterion.min || 2);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
     // "One change only": the blocks keep the same order and nesting as the starting code (only values may change).
+    // "Fix one number only": the blocks keep the starting code's structure and exactly one number (steps or rounds)
+    // differs from it. Message texts may change.
+    if (criterion.type === 'oneNumberChanged') {
+      const starter = academy.exercises[activeExercise]?.starter;
+      const top = workspace.getTopBlocks(true).find(block => block.type === 'mc_on_chat');
+      if (!starter || !top || blockShape(top) !== `on_chat[${specShape(starter.blocks)}]`) return false;
+      const boardNumbers = [];
+      const walkBoard = block => {
+        for (let current = block; current; current = current.getNextBlock()) {
+          if (current.type === 'mc_move_agent') boardNumbers.push(Number(current.getFieldValue('STEPS')));
+          if (current.type === 'mc_repeat') boardNumbers.push(Number(current.getFieldValue('TIMES')));
+          ['DO', 'ELSE'].forEach(name => { if (current.getInput(name)) walkBoard(current.getInputTargetBlock(name)); });
+        }
+      };
+      walkBoard(top.getInputTargetBlock('DO'));
+      const starterNumbers = [];
+      const walkSpec = specs => (specs || []).forEach(spec => {
+        if (spec.type === 'move') starterNumbers.push(Number(spec.steps || 1));
+        if (spec.type === 'repeat') { starterNumbers.push(Number(spec.times || 2)); walkSpec(spec.blocks); }
+        if (spec.type === 'ifRoute' || spec.type === 'ifGate') { walkSpec(spec.then); walkSpec(spec.else); }
+      });
+      walkSpec(starter.blocks);
+      return boardNumbers.length === starterNumbers.length && boardNumbers.filter((value, index) => value !== starterNumbers[index]).length === 1;
+    }
     if (criterion.type === 'sameStructure') {
       const starter = academy.exercises[activeExercise]?.starter;
       const top = workspace.getTopBlocks(true).find(block => block.type === 'mc_on_chat');

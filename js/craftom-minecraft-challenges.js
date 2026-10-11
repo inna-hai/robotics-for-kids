@@ -2740,7 +2740,7 @@
   // student's job (the hint button still points at the right place). Same wording as the later debug exercises.
   const debugSteps = 'כך מדבגים: מריצים וצופים בהדמיה, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים אותו. אם נתקעים, לוחצים רמז.';
   [
-    [1, 0, 5, 'אתגר קטן - דיבוג', 'השליח צריך לעצור באמצע הדרך, להמשיך עד התחנה ולהודיע שהמשלוח הגיע, אבל משהו בקוד לא עובד.'],
+    [1, 0, 5, 'אתגר קטן - דיבוג', 'השליח צריך לעצור באמצע הדרך, להמשיך עד התחנה ולהודיע שהמשלוח הגיע, אבל משהו בקוד לא עובד. תקנו מספר אחד בלבד.'],
     [1, 1, 3, 'תרגיל 4 - דיבוג', 'השליח צריך ללכת עד הפינה, לפנות שם ולהגיע לתחנה, אבל הקוד לא עושה את זה.'],
     [1, 1, 4, 'תרגיל 5 - דיבוג', 'השליח צריך להגיע לתחנה ולעצור בה, אבל משהו בקוד לא עובד.'],
     [1, 2, 2, 'תרגיל 3 - דיבוג', 'השליח צריך להניח את החבילה בתחנה, אבל משהו בקוד לא עובד.'],
@@ -2849,6 +2849,9 @@
       { label: 'כשהדרך חסומה מופיעה הודעה על החסימה', type: 'blockedSays' }
     ],
   });
+
+  // Lesson 1 challenge: many pairs of numbers add up to 7, so the fix is limited to changing one number.
+  detailsByChallenge[1][0].academy.exercises[5].criteria.push({ label: 'שונה מספר אחד בלבד', type: 'oneNumberChanged' });
 
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
