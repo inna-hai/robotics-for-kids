@@ -2857,7 +2857,7 @@
   {
     const cellXY = (origin, [dx, dy]) => ({ x: origin.x + dx * 42, y: origin.y + dy * 42 });
     const rowCells = (dy, fromDx, toDx) => Array.from({ length: toDx - fromDx + 1 }, (_, index) => [fromDx + index, dy]);
-    const gateWorld = (origin, stationCell, gates, lanes, routePlan, water, mainLane, roadLabels) => ({
+    const gateWorld = (origin, stationCell, gates, lanes, routePlan, water, mainLanes, roadLabels) => ({
       roadLabels,
       start: origin,
       station: cellXY(origin, stationCell),
@@ -2866,7 +2866,7 @@
       routePlan,
       water,
       hidePath: false,
-      routeTiles: Object.entries(lanes).flatMap(([name, points]) => points.map(point => ({ ...cellXY(origin, point), kind: mainLane && name === mainLane ? 'main' : undefined }))),
+      routeTiles: Object.entries(lanes).flatMap(([name, points]) => points.map(point => ({ ...cellXY(origin, point), kind: (mainLanes || ['main']).includes(name) ? undefined : 'detour' }))),
     });
     const F = steps => ({ type: 'move', direction: 'FORWARD', steps });
     const L = steps => ({ type: 'move', direction: 'LEFT', steps });
@@ -2883,7 +2883,7 @@
       [{ id: 'A', label: 'א', cell: [2, 0], labelSide: 'below' }, { id: 'B', label: 'ב', cell: [6, 0], labelSide: 'above' }],
       { main: rowCells(0, 1, 7), detourA: [[1, -1], [2, -1], [3, -1]], detourB: [[5, 1], [6, 1], [7, 1]] },
       [{ when: { A: false }, lanes: ['detourA'] }, { when: { B: false }, lanes: ['detourB'] }],
-      undefined, 'main',
+      undefined, ['main'],
       [{ text: 'כביש ראשי', cell: [4, 0], dark: true }, { text: 'עוקף את א', cell: [2.5, -1.62] }, { text: 'עוקף את ב', cell: [6, 1.62] }]);
     lesson15.story = 'מפגש 15 בודק את מערכת המחסומים החדשה בעיר. בדרך מהמחסן לתחנה יש שני מחסומים, א ו-ב, ולכל אחד דרך עוקפת קצרה. בדיקה טובה מריצה את הקוד בכל מצבי המחסומים: כשמחסום פתוח השליח נוסע ישר, וכשהוא סגור השליח עוקף אותו ובכל זאת מגיע לתחנה.';
     const detourA = [F(1), L(1), F(2), R(1)];
@@ -2990,7 +2990,7 @@
         roadC: [[1, 1], [1, 2], ...rowCells(3, 1, 6), [6, 2], [6, 1]],
       },
       [{ when: { A: true }, lanes: ['roadA'] }, { when: { A: false, B: true }, lanes: ['roadB'] }, { when: { A: false, B: false }, lanes: ['roadC'] }],
-      [{ x: 492, y: 35, w: 88, h: 132 }, { x: 200, y: 262, w: 128, h: 40 }]);
+      [{ x: 492, y: 35, w: 88, h: 132 }, { x: 200, y: 262, w: 128, h: 40 }], ['main', 'roadA']);
     lesson16.story = 'מפגש 16 הוא השיעור האחרון: מכינים הצגה (דמו) של העיר החכמה, שמשלבת את כל מה שלמדנו בקורס. מהמחסן לתחנה יש שלוש דרכים: הדרך הקצרה עוברת במחסום א, הדרך העליונה עוברת במחסום ב, והדרך הארוכה למטה בלי מחסום. השליח בוחר תמיד את הדרך הקצרה ביותר שפתוחה, ולשם כך צריך תנאי בתוך תנאי.';
     const roadA = [F(8)];
     const roadB = [F(1), turn('L'), F(2), turn('R'), F(5), turn('R'), F(2), turn('L'), F(2)];
