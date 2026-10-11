@@ -2904,6 +2904,10 @@
     exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'secondMove');
   }
 
+  // Debug hints that pointed straight at the faulty block now point at the area to look at.
+  detailsByChallenge[1][1].academy.exercises[4].hint = 'המסלול כבר כמעט נכון. בדקו את מספר הצעדים בבלוקי התנועה.';
+  detailsByChallenge[2][1].academy.exercises[3].hint = 'אל תשנו את הדרך הלוך, היא עובדת. התמקדו בדרך חזור.';
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
