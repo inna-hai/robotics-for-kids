@@ -15,7 +15,14 @@
   const completeEl = document.getElementById('academyComplete');
   const completeBackLink = document.getElementById('academyCompleteBackLink');
 
-  if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
+  if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) {
+    // A script that failed to load (e.g. a dropped connection) would otherwise leave an empty page with no explanation.
+    if (feedbackEl) {
+      feedbackEl.textContent = 'הלומדה לא נטענה עד הסוף. רעננו את הדף (Ctrl+Shift+R). אם זה חוזר, דווחו לנו.';
+      feedbackEl.className = 'academy-feedback fail';
+    }
+    return;
+  }
 
   // Lessons with if routeOpen get a button that switches the road between open and blocked.
   const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour'];
