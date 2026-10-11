@@ -300,6 +300,13 @@
   if (completeBackLink) completeBackLink.href = lessonUrl();
   renderTeacherReturnAction();
 
+  // Sideways steps (move left/right without turning) look like a turn to beginners, so they are offered only from
+  // lesson 15, where the barrier detours use them. Earlier lessons move only forward and back and turn with "פנייה".
+  const sidewaysFromLesson = 15;
+  const moveDirectionOptions = [['forward · קדימה', 'FORWARD'], ['back · אחורה', 'BACK']].concat(Number(lesson.id) >= sidewaysFromLesson
+    ? [['left · שמאלה (צעד הצידה)', 'LEFT'], ['right · ימינה (צעד הצידה)', 'RIGHT']]
+    : []);
+
   if (!window.__craftomAcademyBlocksDefined) {
     window.__craftomAcademyBlocksDefined = true;
     Blockly.defineBlocksWithJsonArray(withHebrewLabels([
@@ -323,7 +330,7 @@
         type: 'mc_move_agent',
         message0: 'agent move %1 by %2',
         args0: [
-          { type: 'field_dropdown', name: 'DIR', options: [['forward · קדימה', 'FORWARD'], ['back · אחורה', 'BACK'], ['left · שמאלה', 'LEFT'], ['right · ימינה', 'RIGHT']] },
+          { type: 'field_dropdown', name: 'DIR', options: moveDirectionOptions },
           { type: 'field_number', name: 'STEPS', value: 5, min: 1, max: 16 }
         ],
         previousStatement: null,
