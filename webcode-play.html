@@ -193,6 +193,30 @@
       keep.codePeekOpened = false;
       return keep;
     }
+    function looksLikeNestedWebCodeDocument(value){
+      const text = String(value || '');
+      if(!text) return false;
+      const lower = text.toLowerCase();
+      if(lower.includes('<!doctype html') || lower.includes('<html')) return true;
+      if(lower.includes('<script src="js/vendor/blockly/blockly.min.js"')) return true;
+      if(lower.includes('<title>webcode lab') && lower.includes('id="toprunbutton"')) return true;
+      return lower.includes('window.__hai_classroom_bootstrap') || lower.includes('webcode-play.html?lesson=');
+    }
+    function sanitizeSavedCodeState(saved){
+      if(!saved || typeof saved !== 'object') return saved || {};
+      const html = String(saved.html || '');
+      const css = String(saved.css || '');
+      const js = String(saved.js || '');
+      if(!looksLikeNestedWebCodeDocument(html) && !looksLikeNestedWebCodeDocument(css) && !looksLikeNestedWebCodeDocument(js)) return saved;
+      return {
+        activeExercise: 1,
+        highestUnlockedExercise: 1,
+        codePeekOpened: false,
+        done: [],
+        checkMemory: { score: normalizeStoredScore(null) },
+        savedAt: Date.now()
+      };
+    }
     function loadSavedState(){
       const candidates = [];
       [storageKey, stableStorageKey].forEach(key => {
@@ -218,7 +242,7 @@
       if(hasSavedBlocklyWork(best) && (!current || !hasSavedBlocklyWork(current))){
         try { localStorage.setItem(storageKey, JSON.stringify(best)); localStorage.setItem(stableStorageKey, JSON.stringify(best)); } catch(error) {}
       }
-      return sanitizeResetState(best);
+      return sanitizeResetState(sanitizeSavedCodeState(best));
     }
     function currentBlocklyXml(){
       if(!blocklyWorkspace || !window.Blockly) return '';
