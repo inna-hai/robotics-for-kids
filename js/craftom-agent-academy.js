@@ -18,7 +18,7 @@
   if (!academy || !window.Blockly || !blocklyDiv || !pythonOutput || !canvas || !exerciseList || !checksEl || !feedbackEl) return;
 
   // Lessons with if routeOpen get a button that switches the road between open and blocked.
-  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout'];
+  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour'];
   const usesRouteState = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => conditionCriteria.includes(criterion.type)));
   let routeToggle = null;
   if (usesRouteState) {
@@ -128,7 +128,7 @@
   // Exercises that check the code in both road states also require the student to run it in both states
   // themselves (switching the road with the button), not only the background check.
   const openStateTypes = ['openSays', 'openDelivers', 'openArrivalSay', 'openReaches', 'openReturns', 'openSayAfterReturn'];
-  const blockedStateTypes = ['blockedSays', 'blockedStays', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout'];
+  const blockedStateTypes = ['blockedSays', 'blockedStays', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour'];
   academy.exercises?.forEach(exercise => {
     const types = (exercise.criteria || []).map(criterion => criterion.type);
     if (types.some(type => openStateTypes.includes(type)) && types.some(type => blockedStateTypes.includes(type))) {
@@ -964,6 +964,11 @@
       const blockedRun = runProgram(false);
       return !blockedRun.hitBarrier && !blockedRun.path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
         && Math.min(segment.x1, segment.x2) < barrierX && Math.max(segment.x1, segment.x2) > barrierX);
+    }
+    // Blocked road: wherever the courier drives, it stays on the road or on the stone detour path (waiting counts too).
+    if (criterion.type === 'blockedFollowsDetour') {
+      const cells = [start, station, ...routeTiles];
+      return runProgram(false).path.every(step => cells.some(tile => isNear({ x: step.x2, y: step.y2 }, tile, stationRadius)));
     }
     if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
     if (criterion.type === 'blockedStays') {
