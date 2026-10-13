@@ -25,7 +25,7 @@
   }
 
   // Lessons with if routeOpen get a button that switches the road between open and blocked.
-  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour', 'messagesMatchState'];
+  const conditionCriteria = ['condition', 'conditionState', 'elseBranch', 'elseSay', 'repeatOrCondition', 'thenSay', 'openSays', 'blockedSays', 'openDelivers', 'openArrivalSay', 'blockedStays', 'openReaches', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour', 'messagesMatchState', 'personalRule'];
   const usesRouteState = (academy.exercises || []).some(exercise => (exercise.criteria || []).some(criterion => conditionCriteria.includes(criterion.type)));
   let routeToggle = null;
   if (usesRouteState) {
@@ -47,6 +47,27 @@
   if (usesRouteState || usesGates) {
     canvas.insertAdjacentHTML('beforebegin', '<div class="academy-ran-states" id="academyRanStates" hidden></div>');
     ranStatesEl = document.getElementById('academyRanStates');
+  }
+  // Lesson 12: the student chooses their own rule for a blocked road, and the check follows that choice.
+  const personalRules = {
+    wait: { option: 'ממתין במחסן', label: 'כשהדרך חסומה השליח ממתין במחסן, כמו בחוק שבחרתם' },
+    detour: { option: 'עוקף את המחסום', label: 'כשהדרך חסומה השליח עוקף את המחסום ומגיע לתחנה, כמו בחוק שבחרתם' },
+    return: { option: 'יוצא, רואה שחסום וחוזר למחסן', label: 'כשהדרך חסומה השליח חוזר למחסן, כמו בחוק שבחרתם' },
+  };
+  const ruleKey = `craftom-academy-rule:${lesson?.id || 1}`;
+  let personalRule = '';
+  let personalRuleText = '';
+  try { personalRule = localStorage.getItem(ruleKey) || ''; personalRuleText = localStorage.getItem(`${ruleKey}:text`) || ''; } catch (_) { /* storage blocked */ }
+  const checkLabel = criterion => criterion.type === 'personalRule'
+    ? (personalRules[personalRule]?.label || 'בחרו מעל הלוח את החוק שלכם למצב של דרך חסומה')
+    : criterion.label;
+  let rulePanel = null;
+  if ((academy.exercises || []).some(exercise => exercise.personalRule)) {
+    blocklyDiv.insertAdjacentHTML('beforebegin', `<div class="academy-rule" id="academyRule">
+      <label>החוק שלי כשהדרך חסומה: <select id="academyRuleSelect"><option value="">בחרו...</option>${Object.entries(personalRules).map(([key, rule]) => `<option value="${key}">${rule.option}</option>`).join('')}</select></label>
+      <label>במילים שלי: <input id="academyRuleText" type="text" maxlength="120" placeholder="למשל: כשחסום השליח מחכה ומודיע"></label>
+    </div>`);
+    rulePanel = document.getElementById('academyRule');
   }
   const gateTypes = ['gatesDeliver', 'gatesReach', 'gatesNoCrossing', 'gatesBestRoute', 'gatesOnPath', 'gatesSayWhenClosed', 'gatesArrivalSay', 'gatesRanAll'];
   // Exercises with switchable barriers require running every combination of them.
@@ -142,7 +163,7 @@
   // Exercises that check the code in both road states also require the student to run it in both states
   // themselves (switching the road with the button), not only the background check.
   const openStateTypes = ['openSays', 'openDelivers', 'openArrivalSay', 'openReaches', 'openReturns', 'openSayAfterReturn'];
-  const blockedStateTypes = ['blockedSays', 'blockedStays', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour', 'messagesMatchState'];
+  const blockedStateTypes = ['blockedSays', 'blockedStays', 'blockedReaches', 'blockedDelivers', 'blockedAvoidsBarrier', 'blockedSaysAbout', 'blockedFollowsDetour', 'messagesMatchState', 'personalRule'];
   academy.exercises?.forEach(exercise => {
     const types = (exercise.criteria || []).map(criterion => criterion.type);
     if (types.some(type => openStateTypes.includes(type)) && types.some(type => blockedStateTypes.includes(type))) {
@@ -1018,6 +1039,17 @@
     if (criterion.type === 'openReaches') return isNear(runProgram(true), station, criterion.radius || stationRadius);
     if (criterion.type === 'blockedReaches') return isNear(runProgram(false), station, criterion.radius || stationRadius);
     if (criterion.type === 'blockedDelivers') return runProgram(false).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
+    // Personal rule (lesson 12): the check follows the reaction the student chose for a blocked road.
+    if (criterion.type === 'personalRule') {
+      const blocked = runProgram(false);
+      const barrierX = start.x + cell * barrierCells;
+      const crossed = blocked.hitBarrier || blocked.path.some(segment => Math.abs(segment.y1 - start.y) < 4 && Math.abs(segment.y2 - start.y) < 4
+        && Math.min(segment.x1, segment.x2) < barrierX && Math.max(segment.x1, segment.x2) > barrierX);
+      if (personalRule === 'wait') return blocked.path.length === 0 && blocked.packages.length === 0;
+      if (personalRule === 'detour') return !crossed && isNear(blocked, station, stationRadius);
+      if (personalRule === 'return') return !crossed && blocked.path.length > 0 && isNear(blocked, start, stationRadius);
+      return false;
+    }
     if (criterion.type === 'blockedAvoidsBarrier') {
       // The barrier stands on the road two and a half cells east of the warehouse.
       const barrierX = start.x + cell * barrierCells;
@@ -1176,7 +1208,8 @@
         const comboRuns = gateCombos(exercise).map(combo => runProgram(true, combo));
         exercise.criteria.forEach(criterion => {
           const pass = gateTypes.includes(criterion.type) ? criterionPass(state, criterion) : comboRuns.every(run => criterionPass(run, criterion));
-          merged.set(criterion.label, merged.has(criterion.label) ? merged.get(criterion.label) && pass : pass);
+          const label = checkLabel(criterion);
+        merged.set(label, merged.has(label) ? merged.get(label) && pass : pass);
         });
         return [...merged].map(([label, pass]) => ({ label, pass }));
       }
@@ -1187,7 +1220,8 @@
       const bothRuns = usesRouteState ? [runProgram(true), runProgram(false)] : [];
       exercise.criteria.forEach(criterion => {
         const pass = stateFree(criterion) ? bothRuns.some(run => criterionPass(run, criterion)) : criterionPass(state, criterion);
-        merged.set(criterion.label, merged.has(criterion.label) ? merged.get(criterion.label) && pass : pass);
+        const label = checkLabel(criterion);
+        merged.set(label, merged.has(label) ? merged.get(label) && pass : pass);
       });
       return [...merged].map(([label, pass]) => ({ label, pass }));
     }
@@ -2000,6 +2034,7 @@
     setTimeout(() => Blockly.svgResize(workspace), 20);
     updatePython();
     drawWorld();
+    if (rulePanel) rulePanel.hidden = !academy.exercises[activeExercise]?.personalRule;
     checksEl.innerHTML = evaluate(defaultState()).map(check => `<div class="fail"><span>·</span>${esc(heText(check.label))}</div>`).join('');
     feedbackEl.textContent = message;
     feedbackEl.className = 'academy-feedback';
@@ -2164,6 +2199,24 @@
     });
   });
   if (usesGates) renderGateToggles();
+
+  if (rulePanel) {
+    const ruleSelect = document.getElementById('academyRuleSelect');
+    const ruleText = document.getElementById('academyRuleText');
+    ruleSelect.value = personalRule;
+    ruleText.value = personalRuleText;
+    ruleSelect.addEventListener('change', () => {
+      personalRule = ruleSelect.value;
+      try { localStorage.setItem(ruleKey, personalRule); } catch (_) { /* storage blocked */ }
+      checksEl.innerHTML = evaluate(defaultState()).map(check => `<div class="fail"><span>·</span>${esc(heText(check.label))}</div>`).join('');
+      feedbackEl.textContent = personalRule ? 'החוק נשמר. בנו את הקוד לפיו ולחצו הרצה ובדיקה.' : 'בחרו חוק למצב של דרך חסומה.';
+      feedbackEl.className = 'academy-feedback';
+    });
+    ruleText.addEventListener('input', () => {
+      personalRuleText = ruleText.value;
+      try { localStorage.setItem(`${ruleKey}:text`, personalRuleText); } catch (_) { /* storage blocked */ }
+    });
+  }
 
 
   runButton.addEventListener('click', runAndCheck);

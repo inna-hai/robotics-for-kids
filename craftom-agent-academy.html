@@ -21,6 +21,10 @@
     .academy-route-toggle { display: block; width: 100%; margin: 0 0 .6rem; background: #dcfce7; color: #166534; border: 2px solid #22c55e; font-weight: 900; }
     .academy-route-toggle.blocked { background: #fee2e2; color: #991b1b; border-color: #ef4444; }
     .academy-gate-toggles { display: flex; gap: .5rem; }
+    .academy-rule { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: 0 0 .6rem; padding: .55rem .8rem; border: 2px solid #c7d2fe; border-radius: 12px; background: #eef2ff; font-weight: 800; color: #312e81; font-size: .92rem; }
+    .academy-rule[hidden] { display: none; }
+    .academy-rule select, .academy-rule input { font: inherit; font-weight: 600; padding: .2rem .4rem; border: 1px solid #a5b4fc; border-radius: 8px; }
+    .academy-rule input { min-width: 220px; }
     .academy-ran-states { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; margin: 0 0 .6rem; font-size: .9rem; }
     .academy-ran-states[hidden] { display: none; }
     .academy-ran-title { font-weight: 800; color: #334155; margin-inline-end: .2rem; }
@@ -113,7 +117,7 @@
     </section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20261013-academy-l12m-1"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20261013-academy-rule-2"></script>
   <script>
     (() => {
       const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -142,7 +146,7 @@
   </script>
   <script src="js/vendor/blockly/blockly.min.js"></script>
   <script src="js/vendor/blockly/msg/he.js"></script>
-  <script src="js/craftom-agent-academy.js?v=20261013-academy-l12m-1"></script>
+  <script src="js/craftom-agent-academy.js?v=20261013-academy-rule-2"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

@@ -3007,6 +3007,22 @@
   // Lesson 12 exercise 2: the open-road behaviour is fixed; the personal choice comes in exercise 3.
   detailsByChallenge[3][3].academy.exercises[1].mission = 'בחוק שלכם, כשהדרך פתוחה השליח מגיע לתחנה ומניח בה חבילה. את מה שהשליח עושה כשהדרך חסומה תבחרו בעצמכם בתרגיל הבא.';
 
+  // Lesson 12: the student picks their own rule for a blocked road above the board; exercises 3 and 6 check it.
+  {
+    const lesson12 = detailsByChallenge[3][3].academy;
+    Object.assign(lesson12.exercises[2], {
+      personalRule: true,
+      mission: 'עכשיו בוחרים את החוק שלכם: מה השליח עושה כשהדרך חסומה? בחרו מעל הלוח אחת מהאפשרויות: לחכות במחסן, לעקוף את המחסום, או לצאת, לראות שחסום ולחזור למחסן. אפשר גם לכתוב את החוק במילים שלכם. בנו את הקוד לפי החוק שבחרתם, והוסיפו הודעה שמסבירה מה השליח עושה. השליח אף פעם לא עובר דרך המחסום.',
+      hint: 'החוק שבחרתם נכנס לחלק של ״אחרת״. הריצו כשהדרך חסומה ובדקו שהשליח עושה בדיוק את מה שבחרתם.',
+    });
+    lesson12.exercises[2].criteria.push({ label: 'החוק שבחרתם', type: 'personalRule' });
+    Object.assign(lesson12.exercises[5], {
+      personalRule: true,
+      mission: 'השלימו את החוק האישי שלכם: כשהדרך פתוחה השליח מוסר את החבילה ומודיע שהמשלוח הגיע. כשהדרך חסומה הוא פועל לפי החוק שבחרתם מעל הלוח ומודיע מה הוא עושה, בלי לעבור במחסום. הריצו ובדקו בשני מצבי הדרך.',
+    });
+    lesson12.exercises[5].criteria.push({ label: 'החוק שבחרתם', type: 'personalRule' });
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
