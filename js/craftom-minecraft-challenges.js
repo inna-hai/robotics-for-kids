@@ -3004,6 +3004,9 @@
     ]);
   }
 
+  // Lesson 12 exercise 2: the open-road behaviour is fixed; the personal choice comes in exercise 3.
+  detailsByChallenge[3][3].academy.exercises[1].mission = 'בחוק שלכם, כשהדרך פתוחה השליח מגיע לתחנה ומניח בה חבילה. את מה שהשליח עושה כשהדרך חסומה תבחרו בעצמכם בתרגיל הבא.';
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
