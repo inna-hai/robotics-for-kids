@@ -2807,7 +2807,7 @@
   // (what is outside the condition runs in every state).
   {
     const exercise = detailsByChallenge[3][2].academy.exercises[4];
-    exercise.mission = 'בשני המצבים השליח מניח חבילה בתחנה: גם אחרי הנסיעה הישרה וגם אחרי העקיפה. נסו להשתמש בבלוק אחד בלבד של הנחת חבילה.';
+    exercise.mission = 'בשני המצבים השליח מניח חבילה בתחנה: גם אחרי הנסיעה הישרה וגם אחרי העקיפה. השתמשו בבלוק אחד בלבד של הנחת חבילה.';
     exercise.hint = 'מה שנמצא מחוץ לתנאי מתבצע בכל מצב, גם כשהדרך פתוחה וגם כשהיא חסומה.';
     exercise.criteria = exercise.criteria.concat([{ label: 'בקוד יש בלוק אחד בלבד של הנחת חבילה', type: 'placeBlockCount', max: 1 }]);
   }
