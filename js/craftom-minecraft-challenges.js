@@ -2994,6 +2994,12 @@
     mission: 'השליח צריך להניח חבילה על כל נקודת מסירה, להגיע לתחנה ולהודיע כשהוא מסיים. תקנו את הקוד הנתון והוסיפו מה שנדרש כדי שהקוד יעבוד כמו שצריך. יש לתקן את הקוד ולא לכתוב אותו מחדש. שימו לב למיקום של הבלוקים: הסדר שלהם, ומה נמצא בתוך הלולאה ומה מחוץ לה.',
   });
 
+  // Lesson 9 exercise 3: both messages must fit their road state (the open message from exercise 2 stays correct).
+  detailsByChallenge[3][0].academy.exercises[2].criteria.push(
+    { label: 'כשהדרך פתוחה מופיעה הודעה שהדרך פתוחה', type: 'openSays' },
+    { label: 'כל הודעה מתאימה למצב הדרך', type: 'messagesMatchState' },
+  );
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
