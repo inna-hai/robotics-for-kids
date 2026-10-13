@@ -2983,6 +2983,9 @@
     lesson6.exercises = [deliver, ret, debug, loop, turnAround, challenge];
   }
 
+  // Lesson 5 exercise 2 is the first use of the loop, so its mission explains what a loop does.
+  detailsByChallenge[2][0].academy.exercises[1].mission = 'הכירו בלוק חדש: ״לולאה״, מקטגוריית Loops. הבלוקים שנמצאים בתוך הלולאה מתבצעים שוב ושוב, כמספר הפעמים שכתוב בראש הלולאה. למשל, לולאה עם המספר 2 מריצה את מה שבתוכה פעמיים. הכניסו את פעולת המשלוח לתוך הלולאה במקום להעתיק אותה פעמיים.';
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
