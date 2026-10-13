@@ -1026,7 +1026,9 @@
     if (criterion.type === 'messagesMatchState') {
       const open = runProgram(true).says;
       const blocked = runProgram(false).says;
-      return open.length > 0 && blocked.length > 0 && !open.some(isBlockedMessage) && !blocked.some(isOpenRoadMessage);
+      // Lenient on wording: it fails only when a message clearly describes the other state ("not blocked" is fine when open).
+      const soundsBlocked = text => isBlockedMessage(text) && !heRe(/לא\s*(חסו|סגור)/).test(normHe(text));
+      return open.length > 0 && blocked.length > 0 && !open.some(soundsBlocked) && !blocked.some(isOpenRoadMessage);
     }
     if (criterion.type === 'openDelivers') return runProgram(true).packages.some(pkg => isNear(pkg, station, criterion.radius || stationRadius));
     if (criterion.type === 'blockedStays') {

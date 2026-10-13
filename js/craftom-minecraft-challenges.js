@@ -2995,10 +2995,14 @@
   });
 
   // Lesson 9 exercise 3: both messages must fit their road state (the open message from exercise 2 stays correct).
-  detailsByChallenge[3][0].academy.exercises[2].criteria.push(
-    { label: 'כשהדרך פתוחה מופיעה הודעה שהדרך פתוחה', type: 'openSays' },
-    { label: 'כל הודעה מתאימה למצב הדרך', type: 'messagesMatchState' },
-  );
+  // Wording is free; only messages that describe the opposite state fail.
+  {
+    const exercise = detailsByChallenge[3][0].academy.exercises[2];
+    exercise.criteria = exercise.criteria.filter(criterion => criterion.type !== 'blockedSays').concat([
+      { label: 'כל הודעה מתאימה למצב הדרך', type: 'messagesMatchState' },
+      { label: 'הרצתם בשני מצבי הדרך', type: 'ranBothStates' },
+    ]);
+  }
 
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
