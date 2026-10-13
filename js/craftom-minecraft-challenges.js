@@ -3296,6 +3296,17 @@
     detailsByChallenge[challengeId][(lessonId - 1) % 4].academy.exercises[exerciseNumber - 1].hint = hint;
   });
 
+  // The "how to debug" explanation appears only in the first debug exercise of each lesson; later debug exercises
+  // in the same lesson point back to it.
+  [1, 2, 3, 4].forEach(challengeId => (detailsByChallenge[challengeId] || []).forEach(detail => {
+    let firstDebug = 0;
+    (detail?.academy?.exercises || []).forEach((exercise, index) => {
+      if (!/כך מדבגים/.test(exercise.mission || '')) return;
+      if (!firstDebug) { firstDebug = index + 1; return; }
+      exercise.mission = exercise.mission.replace(/\s*כך מדבגים[\s\S]*?לוחצים רמז\./, ` את ההסבר על אופן הדיבוג אפשר לראות בתרגיל ${firstDebug}.`);
+    });
+  }));
+
   const program = {
     title: 'אקדמיית ה-Agent במיינקראפט',
     subtitle: 'לומדה לעבודה עצמית בארבעה אתגרים שנבנים בהמשכים על אותה עיר: משלוח ראשון, קו אוטומטי, החלטות חכמות והוספת אוטומציות.',
