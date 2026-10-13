@@ -44,6 +44,9 @@
       .agent-academy { overflow: visible; }
       .academy-code-panel, .academy-sim-panel { position: sticky; top: 72px; align-self: start; max-height: calc(100vh - 80px); overflow-y: auto; }
     }
+    /* The signed-in badge sits in the page header next to "back to lesson" (not floating), so it never covers the checks. */
+    .actions #hai-user-badge { position: static !important; max-width: 340px; padding: 6px 11px !important; font-size: .8rem !important; box-shadow: none !important; }
+    .actions { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
   </style>
 </head>
 <body class="agent-academy-page">
@@ -110,7 +113,7 @@
     </section>
   </main>
   <a class="platform-home-link" href="index.html" aria-label="חזרה לעמוד הראשי"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">לעמוד הראשי</span></a>
-  <script src="js/craftom-minecraft-challenges.js?v=20261013-academy-l9m-2"></script>
+  <script src="js/craftom-minecraft-challenges.js?v=20261013-academy-badge-2"></script>
   <script>
     (() => {
       const program = window.CRAFTOM_MINECRAFT_PROGRAM;
@@ -139,7 +142,7 @@
   </script>
   <script src="js/vendor/blockly/blockly.min.js"></script>
   <script src="js/vendor/blockly/msg/he.js"></script>
-  <script src="js/craftom-agent-academy.js?v=20261013-academy-l9m-2"></script>
+  <script src="js/craftom-agent-academy.js?v=20261013-academy-badge-2"></script>
   <script src="/js/feedback-widget.js?v=20260907-tehila-fixes-1"></script>
 </body>
 </html>

@@ -313,6 +313,14 @@
   document.getElementById('lessonBackLink').href = lessonUrl();
   if (completeBackLink) completeBackLink.href = lessonUrl();
   renderTeacherReturnAction();
+  // The signed-in badge (added by user-badge.js) moves into the page header, so it doesn't float over the checks.
+  const badgeSlot = document.getElementById('lessonBackLink')?.parentElement;
+  const placeBadge = () => {
+    const badge = document.getElementById('hai-user-badge');
+    if (badge && badgeSlot && badge.parentElement !== badgeSlot) badgeSlot.appendChild(badge);
+  };
+  placeBadge();
+  if (badgeSlot) new MutationObserver(placeBadge).observe(document.body, { childList: true });
 
   // Sideways steps (move left/right without turning) look like a turn to beginners, so they are offered only from
   // lesson 15, where the barrier detours use them. Earlier lessons move only forward and back and turn with "פנייה".
