@@ -3081,25 +3081,27 @@
   // stations; first it is written out in full, then it is shortened with a loop inside a loop.
   {
     const lesson14 = detailsByChallenge[4][1].academy;
-    lesson14.world = { ...routeWorld({ x: 112, y: 204 }, [['E', 6]]), hidePath: false, showRoad: true };
+    // Each trip: turn right, 2 down, turn left, 4 east into a station, so the same code reaches both stations.
+    lesson14.world = { ...routeWorld({ x: 112, y: 110 }, [['S', 2], ['E', 4], ['S', 2], ['E', 4]]), hidePath: false, showRoad: true, stations: [{ cell: [4, 2], label: 'תחנה 1' }, { cell: [8, 4], label: 'תחנה 2' }] };
     lesson14.dropPointLabel = 'תחנה';
     lesson14.story = 'מפגש 14 בונה אוטומציה חדשה בעיר: השליח מביא 3 חבילות לכל אחת משתי תחנות חדשות. את האוטומציה מפעילים בפקודת start. כשאותו חלק בקוד חוזר, ובתוכו כבר יש לולאה, אפשר לשים לולאה בתוך לולאה.';
-    const points = [[3, 0], [6, 0]];
+    const points = [[4, 2], [8, 4]];
     const place3 = { type: 'repeat', times: 3, blocks: [{ type: 'place', direction: 'DOWN' }] };
-    const trip = [{ type: 'move', direction: 'FORWARD', steps: 3 }, place3];
+    const drive = [{ type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'turn', turn: 'LEFT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 4 }];
+    const trip = [...drive, place3];
     const debugSteps14 = 'כך מדבגים: מריצים וצופים בהדמיה, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים אותו. אם נתקעים, לוחצים רמז.';
     lesson14.exercises = [
       {
         title: 'תרגיל 1 - התחנה הראשונה',
         prefilledStart: true,
         dropPoints: points,
-        mission: 'בשיעור הזה בונים אוטומציה לשתי תחנות חדשות בעיר. בלוח כבר יש את הפקודה start ואת הזימון של השליח. השליח נוסע לתחנה הראשונה ומניח בה 3 חבילות, בלי להעתיק את אותו בלוק שלוש פעמים.',
-        hint: 'ספרו את המשבצות עד התחנה הראשונה. בלוק ״לולאה״ נמצא בקטגוריית Loops.',
+        mission: 'בשיעור הזה בונים אוטומציה לשתי תחנות חדשות בעיר. בלוח כבר יש את הפקודה start ואת הזימון של השליח. השליח נוסע לתחנה 1 ומניח בה 3 חבילות, בלי להעתיק את אותו בלוק שלוש פעמים.',
+        hint: 'עקבו אחרי הכביש מהמחסן: לאן פונים, וכמה משבצות בכל קטע? בלוק ״לולאה״ נמצא בקטגוריית Loops.',
         check: '3 חבילות בתחנה הראשונה, בעזרת לולאה.',
         starter: { command: 'start', blocks: [{ type: 'teleport' }] },
         criteria: [
           { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
-          { label: '3 חבילות מונחות בתחנה הראשונה', type: 'packagesAtCell', dx: 3, dy: 0, min: 3 },
+          { label: '3 חבילות מונחות בתחנה הראשונה', type: 'packagesAtCell', dx: 4, dy: 2, min: 3 },
           { label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' },
         ],
       },
@@ -3107,8 +3109,8 @@
         title: 'תרגיל 2 - גם התחנה השנייה',
         continuePassed: true,
         dropPoints: points,
-        mission: 'השליח ממשיך לתחנה השנייה ומניח גם בה 3 חבילות.',
-        hint: 'מהתחנה הראשונה ממשיכים קדימה. כמה משבצות יש עד התחנה השנייה?',
+        mission: 'השליח ממשיך בכביש לתחנה 2 ומניח גם בה 3 חבילות.',
+        hint: 'השוו את הדרך מתחנה 1 לתחנה 2 עם הדרך מהמחסן לתחנה 1. מה דומה?',
         check: '3 חבילות בכל אחת משתי התחנות.',
         starter: { command: 'start', blocks: [{ type: 'teleport' }, ...trip] },
         criteria: [{ label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 }],
@@ -3117,14 +3119,14 @@
         title: 'תרגיל 3 - לולאה בתוך לולאה',
         continuePassed: true,
         dropPoints: points,
-        maxBlocks: 6,
-        mission: 'בקוד שלכם אותו חלק כתוב פעמיים: נוסעים לתחנה ומניחים 3 חבילות. קצרו את הקוד כך שיעשה בדיוק אותו דבר, עם 6 בלוקים לכל היותר (כולל ״כשכותבים בצ׳אט״). חדש: את החלק שחוזר אפשר להכניס ללולאה, גם אם כבר יש בתוכו לולאה. כך נוצרת לולאה בתוך לולאה.',
+        maxBlocks: 9,
+        mission: 'בקוד שלכם אותו חלק כתוב פעמיים: נוסעים לתחנה ומניחים 3 חבילות. קצרו את הקוד כך שיעשה בדיוק אותו דבר, עם 9 בלוקים לכל היותר (כולל ״כשכותבים בצ׳אט״). חדש: את החלק שחוזר אפשר להכניס ללולאה, גם אם כבר יש בתוכו לולאה. כך נוצרת לולאה בתוך לולאה.',
         hint: 'הלולאה החיצונית חוזרת פעם לכל תחנה. בתוכה: הנסיעה, ואחריה הלולאה של החבילות.',
-        check: '3 חבילות בכל תחנה, עם 6 בלוקים לכל היותר.',
+        check: '3 חבילות בכל תחנה, עם 9 בלוקים לכל היותר.',
         starter: { command: 'start', blocks: [{ type: 'teleport' }, ...trip, ...trip] },
         criteria: [
           { label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 },
-          { label: 'הקוד משתמש ב-6 בלוקים לכל היותר', type: 'maxBlocks', max: 6 },
+          { label: 'הקוד משתמש ב-9 בלוקים לכל היותר', type: 'maxBlocks', max: 9 },
         ],
       },
       {
@@ -3134,7 +3136,7 @@
         mission: `תרגיל דיבוג: בכל תחנה צריכות להיות 3 חבילות, אבל הקוד לא עושה את זה. ${debugSteps14}`,
         hint: 'הסתכלו בהדמיה איפה נוחתות החבילות. מה מתבצע בכל סיבוב של הלולאה החיצונית?',
         check: '3 חבילות בכל תחנה.',
-        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }] }, place3] },
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: drive }, place3] },
         criteria: [{ label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 }],
       },
       {
@@ -3155,10 +3157,10 @@
         title: 'אתגר קטן - האוטומציה המלאה',
         continuePassed: true,
         dropPoints: points,
-        maxBlocks: 9,
-        mission: 'הכינו את הגרסה המלאה של האוטומציה: לפני היציאה השליח מודיע מה הוא עומד לעשות. בכל תחנה הוא מניח 3 חבילות ומודיע שהתחנה קיבלה אותן. בסוף הוא מודיע פעם אחת שהמשימה הושלמה. השתמשו ב-9 בלוקים לכל היותר.',
+        maxBlocks: 12,
+        mission: 'הכינו את הגרסה המלאה של האוטומציה: לפני היציאה השליח מודיע מה הוא עומד לעשות. בכל תחנה הוא מניח 3 חבילות ומודיע שהתחנה קיבלה אותן. בסוף הוא מודיע פעם אחת שהמשימה הושלמה. השתמשו ב-12 בלוקים לכל היותר.',
         hint: 'הודעת הפתיחה לפני הלולאות, הודעת התחנה בתוך הלולאה החיצונית, והודעת הסיום אחרי כל הלולאות.',
-        check: 'פתיחה, 3 חבילות והודעה בכל תחנה, והודעת סיום אחת, ב-9 בלוקים לכל היותר.',
+        check: 'פתיחה, 3 חבילות והודעה בכל תחנה, והודעת סיום אחת, ב-12 בלוקים לכל היותר.',
         starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [...trip, { type: 'say', text: 'התחנה קיבלה את החבילות' }] }] },
         criteria: [
           { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
@@ -3166,7 +3168,7 @@
           { label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 },
           { label: 'בכל תחנה מופיעה הודעה', type: 'sayInRepeat', min: 2 },
           { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' },
-          { label: 'הקוד משתמש ב-9 בלוקים לכל היותר', type: 'maxBlocks', max: 9 },
+          { label: 'הקוד משתמש ב-12 בלוקים לכל היותר', type: 'maxBlocks', max: 12 },
         ],
       },
     ];

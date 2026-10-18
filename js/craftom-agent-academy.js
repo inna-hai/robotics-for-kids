@@ -1378,7 +1378,8 @@
     ctx.stroke();
   }
 
-  function drawStationBlock(x, y) {
+  const cellXY = ([dx, dy]) => ({ x: start.x + dx * cell, y: start.y + dy * cell });
+  function drawStationBlock(x, y, label = 'תחנה') {
     drawBlock(x - 50, y - 42, 100, 78, '#ded6c0', '#9b8c6d', 13, '#66543a');
     drawBlock(x - 38, y - 56, 76, 20, '#7c2d12', '#451a03', 8, '#451a03');
     ctx.fillStyle = '#362617';
@@ -1395,7 +1396,8 @@
     ctx.fillStyle = '#422006';
     ctx.font = '900 24px Rubik, Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('תחנה', x, y - 57);
+    ctx.font = label.length > 5 ? '900 20px Rubik, Arial' : ctx.font;
+    ctx.fillText(label, x, y - 57);
   }
 
   function roundedBox(x, y, w, h, r, fill, stroke) {
@@ -1741,7 +1743,10 @@
     ctx.textAlign = 'center';
     ctx.fillText('מחסן', start.x, start.y - 53);
 
-    if (showStation) drawStationBlock(station.x, station.y);
+    // Lessons with several stations (world.stations, in cells from the warehouse) draw a building for each.
+    const worldStations = (academy.world?.stations || []).map(item => ({ ...cellXY(item.cell), label: item.label }));
+    if (worldStations.length) worldStations.forEach(item => drawStationBlock(item.x, item.y, item.label));
+    else if (showStation) drawStationBlock(station.x, station.y);
 
     // Road-state lessons show an automatic boom gate on the road: the arm lies across the road when blocked and
     // is raised upright when open. Switching the road animates the arm.
@@ -1749,7 +1754,7 @@
     if (usesGates) drawGates(state);
     if ((usesRouteState || usesGates) && state.conditionBubble) drawConditionBubble(state.conditionBubble);
 
-    dropPointPositions().forEach((point, index) => {
+    dropPointPositions().filter(point => !worldStations.some(item => isNear(point, item, 20))).forEach((point, index) => {
       ctx.fillStyle = 'rgba(250, 204, 21, .35)';
       ctx.strokeStyle = '#ca8a04';
       ctx.lineWidth = 3;
