@@ -600,6 +600,7 @@ assert.ok(play.includes('debugHint'), 'play page gives student-friendly syntax/d
 assert.ok(play.includes('validateJavaScriptSyntax'), 'play page validates JavaScript syntax before preview injection');
 assert.ok(play.includes('שגיאת סינטקס ב־JavaScript'), 'play page shows Hebrew syntax error feedback');
 assert.ok(play.includes('Blockly.inject'), 'play page injects a real Blockly workspace');
+assert.ok(play.includes('zoom:{controls:true,wheel:false'), 'mouse wheel cannot accidentally zoom the Blockly workspace while zoom controls remain available');
 assert.ok(play.includes("$('blocksIntro').style.display = 'none'"), 'real Blockly lessons hide the redundant intro above the workspace');
 assert.ok(play.includes("$('blocksStage').classList.add('real-blockly-stage')") && play.includes('.blocks-stage.real-blockly-stage{padding:0;gap:0}'), 'real Blockly workspace removes the orange barrier and fills the panel');
 assert.ok(play.includes('defineWebBuilderBlocks'), 'play page defines draggable Web builder blocks');
