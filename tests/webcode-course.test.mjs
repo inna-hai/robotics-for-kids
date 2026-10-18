@@ -655,6 +655,8 @@ assert.ok(play.includes('generateCodeFromBlockly'), 'play page generates HTML/CS
 assert.ok(play.includes('highlightGeneratedCodeForBlock'), 'selecting a Blockly block highlights its generated code');
 assert.ok(play.includes('codeTargetForBlock'), 'play page maps block types to generated code snippets');
 assert.ok(play.includes('setSelectionRange'), 'generated code highlight selects the relevant text in the editor');
+assert.ok(play.includes('.editor-panel>.blocks-stage.real-blockly-stage{flex:1 1 56%;overflow:hidden}') && play.includes('.real-blockly.active{min-height:0;height:100%}') && play.includes('.code-peek[open]{flex:1 1 44%;max-height:none;min-height:220px;overflow:hidden}'), 'opening generated code should shrink Blockly and keep both panes visible instead of covering the blocks');
+assert.ok(play.includes("if(blocklyWorkspace && window.Blockly) Blockly.svgResize(blocklyWorkspace);"), 'opening or closing generated code should resize Blockly so its scrollbars match the visible pane');
 assert.ok(play.includes('shareProject'), 'play page can create a share link for the student project');
 assert.ok(play.includes('navigator.clipboard.writeText(shareUrl)'), 'share button copies only the public link');
 assert.ok(play.includes('הקישור הציבורי הועתק'), 'share button confirms the public link was copied');
