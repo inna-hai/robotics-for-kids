@@ -57,6 +57,10 @@ assert.ok(sensiCityHtml.includes("return ['NO_FENCE', 'FENCE'];"), 'Sensi City r
 assert.ok(sensiCityHtml.includes('rule_homeowner_message_inside_condition'), 'Sensi City validates lesson 13 homeowner report message');
 assert.ok(sensiCityHtml.includes('rule_burglar_message_inside_condition'), 'Sensi City validates lesson 13 burglar report message');
 assert.ok(sensiCityHtml.includes('rule_quiet_motion_message_inside_nested_condition'), 'Sensi City validates lesson 13 nested quiet-motion report message');
+assert.ok(
+  sensiCityHtml.includes('contents: categories.filter(category => category.contents.length > 0)'),
+  'Sensi City hides empty Blockly toolbox categories'
+);
 
 const certificate = read('js/course-certificate.js');
 assert.ok(certificate.includes('window.SisiProgress'), 'shared success helper exposes Sisi progress API');

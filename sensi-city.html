@@ -5764,46 +5764,44 @@
         }
 
         function buildToolbox() {
+            const categories = [
+                {
+                    kind: 'category',
+                    name: '🚩 התחלה',
+                    colour: '#FFAB19',
+                    contents: [
+                        { kind: 'block', type: 'event_start' }
+                    ]
+                },
+                {
+                    kind: 'category',
+                    name: '🚗 תנועה',
+                    colour: '#4C97FF',
+                    contents: toolboxBlocksFor('movement')
+                },
+                {
+                    kind: 'category',
+                    name: '👁️ חושים',
+                    colour: '#40BF4A',
+                    contents: toolboxBlocksFor('sensors')
+                },
+                {
+                    kind: 'category',
+                    name: '🔁 בקרה',
+                    colour: '#FF8C1A',
+                    contents: toolboxBlocksFor('controls')
+                },
+                {
+                    kind: 'category',
+                    name: '💬 דיבור/פעולות',
+                    colour: '#9966FF',
+                    contents: toolboxBlocksFor('actions')
+                }
+            ];
+
             return {
                 kind: 'categoryToolbox',
-                contents: [
-                    {
-                        kind: 'category',
-                        name: '🚩 התחלה',
-                        colour: '#FFAB19',
-                        contents: [
-                            { kind: 'block', type: 'event_start' }
-                        ]
-                    },
-                    {
-                        kind: 'category',
-                        name: '🚗 תנועה',
-                        colour: '#4C97FF',
-                        contents: toolboxBlocksFor('movement')
-                    },
-                    {
-                        kind: 'category',
-                        name: '👁️ חושים',
-                        colour: '#40BF4A',
-
-                        contents: toolboxBlocksFor('sensors')
-
-                    },
-                    {
-                        kind: 'category',
-                        name: '🔁 בקרה',
-                        colour: '#FF8C1A',
-                        contents: toolboxBlocksFor('controls')
-                    },
-                    {
-                        kind: 'category',
-                        name: '💬 דיבור/פעולות',
-                        colour: '#9966FF',
-
-                        contents: toolboxBlocksFor('actions')
-
-                    }
-                ]
+                contents: categories.filter(category => category.contents.length > 0)
             };
         }
 
