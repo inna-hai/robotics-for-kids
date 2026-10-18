@@ -362,13 +362,24 @@
       const panel = $('previewPanel');
       const main = document.querySelector('.main');
       if(!handle || !panel || !main) return;
-      const maxWidth = () => Math.min(Math.max(420, window.innerWidth - 520), 880);
+      const defaultWidth = 420;
+      const minEditorWidth = 360;
+      const maxWidth = () => {
+        const mainWidth = main.getBoundingClientRect().width || window.innerWidth;
+        const lessonWidth = document.getElementById('lessonPanel')?.getBoundingClientRect().width || 360;
+        const mainStyles = getComputedStyle(main);
+        const gap = parseFloat(mainStyles.columnGap || mainStyles.gap) || 16;
+        return Math.min(Math.max(320, mainWidth - lessonWidth - minEditorWidth - (gap * 2)), 880);
+      };
       const saved = Number(localStorage.getItem('webcodePreviewWidth'));
       if(saved) setPreviewWidth(saved);
       let startX = 0, startWidth = 0;
       function resizeBlockly(){ if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 40); }
       function apply(clientX){
-        const next = startWidth + (clientX - startX);
+        // The preview is the left-most column in our RTL grid and its resize
+        // handle sits on the panel's right edge. Moving the handle left grows
+        // the preview; moving it right shrinks it.
+        const next = startWidth + (startX - clientX);
         setPreviewWidth(next);
         resizeBlockly();
       }
@@ -383,7 +394,7 @@
       }
       function onMove(event){ apply(event.clientX); }
       function setPreviewWidth(width){
-        const clamped = Math.max(320, Math.min(maxWidth(), parseFloat(width) || 420));
+        const clamped = Math.max(320, Math.min(maxWidth(), parseFloat(width) || defaultWidth));
         document.documentElement.style.setProperty('--preview-width', `${Math.round(clamped)}px`);
       }
       handle.addEventListener('pointerdown', event => {
@@ -397,6 +408,11 @@
         window.addEventListener('pointermove', onMove);
         window.addEventListener('pointerup', stop);
         window.addEventListener('pointercancel', stop);
+      });
+      handle.addEventListener('dblclick', () => {
+        setPreviewWidth(defaultWidth);
+        localStorage.setItem('webcodePreviewWidth', String(defaultWidth));
+        resizeBlockly();
       });
       window.addEventListener('resize', () => setPreviewWidth(getComputedStyle(document.documentElement).getPropertyValue('--preview-width')));
     }
