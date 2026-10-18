@@ -3337,6 +3337,13 @@
     });
   }));
 
+  // Debug titles are just "דיבוג": what goes wrong is described in the mission, not in the title.
+  [1, 2, 3, 4].forEach(challengeId => (detailsByChallenge[challengeId] || []).forEach(detail => {
+    (detail?.academy?.exercises || []).forEach(exercise => {
+      exercise.title = String(exercise.title || '').replace(/^(.* - דיבוג):.*$/, '$1');
+    });
+  }));
+
   const program = {
     title: 'אקדמיית ה-Agent במיינקראפט',
     subtitle: 'לומדה לעבודה עצמית בארבעה אתגרים שנבנים בהמשכים על אותה עיר: משלוח ראשון, קו אוטומטי, החלטות חכמות והוספת אוטומציות.',
