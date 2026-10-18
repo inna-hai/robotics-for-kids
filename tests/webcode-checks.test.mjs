@@ -154,7 +154,7 @@ assert.notEqual(lesson9.blocklyBlocks.find(block => block.type === 'lesson_9_sma
 assert.notEqual(lesson9.blocklyBlocks.find(block => block.type === 'lesson_9_gameover').args0[0].text, 'נגמרו החיים. נסו שוב!', 'lesson 9 game-over block has a visible default change');
 assert.ok(lesson9.starter.js.includes('if (lives > 0)') && lesson9.starter.js.includes('if (lives <= 0)'), 'lesson 9 does not overwrite Game Over by immediately rolling a new item');
 
-assert.ok(play.includes('disabled="true"') && !play.includes('אפשר בלוק עמוד אחד בלבד'), 'toolbox greys/disables the page root block without an extra note');
+assert.ok(play.includes('<block type="page_start" enabled="true"></block>'), 'page root block stays enabled and draggable in the toolbox');
 assert.ok(play.includes("getAllBlocks(false).filter(block => block.type === 'page_start')") && play.includes('block.dispose(false, true)'), 'player enforces a single page root block even if duplicates appear from saved state/history');
 
 assert.equal(lesson9.exercises[1].check.requiresPreviewScoreFromBlockField?.mode, 'increase', 'lesson 9 star exercise validates a real score increase in the preview');

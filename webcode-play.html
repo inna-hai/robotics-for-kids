@@ -607,14 +607,13 @@
         return `<block type="${block.type}">${fields}</block>`;
       };
       const lessonStudio = lesson.blocklyLessonBuilder ? `<sep gap="14"></sep><label text="בלוקי השיעור"></label>${(lesson.blocklyBlocks || []).map(lessonBlockXml).join('')}` : '';
-      const pageStartDisabled = blocklyWorkspace && hasPageStartBlock() ? ' disabled="true"' : '';
       if(lesson.blocklyLessonBuilder){
         return `<xml xmlns="https://developers.google.com/blockly/xml">
       ${lessonStudio}
     </xml>`;
       }
       return `<xml xmlns="https://developers.google.com/blockly/xml">
-      <block type="page_start"${pageStartDisabled}></block>
+      <block type="page_start" enabled="true"></block>
       <sep gap="14"></sep>
       <label text="מבנה עמוד"></label>
       <block type="web_title"></block>
@@ -639,17 +638,6 @@
       if(window.Blockly?.Xml?.textToDom) return Blockly.Xml.textToDom(xmlText);
       return new DOMParser().parseFromString(xmlText, 'text/xml').documentElement;
     }
-    function hasPageStartBlock(){
-      return !!blocklyWorkspace?.getAllBlocks(false).some(block => block.type === 'page_start');
-    }
-    function refreshPageStartToolbox(){
-      if(!blocklyWorkspace || !window.Blockly) return;
-      const hasStart = hasPageStartBlock();
-      if(blocklyWorkspace.__pageStartToolboxDisabled === hasStart) return;
-      blocklyWorkspace.__pageStartToolboxDisabled = hasStart;
-      blocklyWorkspace.updateToolbox(webBuilderToolbox());
-      scheduleFixedFlyoutRefresh();
-    }
     function enforceSinglePageStart(){
       if(!blocklyWorkspace) return false;
       const starts = blocklyWorkspace.getAllBlocks(false).filter(block => block.type === 'page_start');
@@ -663,7 +651,7 @@
         block.dispose(false, true);
       });
       $('feedback').className = 'feedback bad';
-      $('feedback').textContent = 'כבר יש בלוק “עמוד האתר שלי” בקוד, לכן השארנו רק אחד כדי שהעמוד לא יישבר.';
+      $('feedback').textContent = 'הבלוק “עמוד האתר שלי” יכול להופיע רק פעם אחת, בתחילת התוכנית.';
       return true;
     }
     function ensureLessonPageStart(){
@@ -991,7 +979,6 @@
         if(ensureLessonPageStart()) normalizeLessonBlocklyStack();
       }
       enforceSinglePageStart();
-      refreshPageStartToolbox();
       setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 80);
       setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 300);
       blocklyWorkspace.addChangeListener(event => {
@@ -1019,7 +1006,6 @@
         applyStarterExerciseLocks();
         enableEditableWorkspaceFields();
         generateCodeFromBlockly();
-        refreshPageStartToolbox();
         scheduleFixedFlyoutRefresh();
         saveLessonState();
         setTimeout(saveLessonState, 60);
