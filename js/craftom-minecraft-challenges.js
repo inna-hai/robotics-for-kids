@@ -3077,6 +3077,101 @@
     lesson13.exercises = [merged, systems, shorten, debug, report, challenge];
   }
 
+  // Lesson 14: an automation for two new stations. The same trip ("drive, place 3 packages") repeats at both
+  // stations; first it is written out in full, then it is shortened with a loop inside a loop.
+  {
+    const lesson14 = detailsByChallenge[4][1].academy;
+    lesson14.world = { ...routeWorld({ x: 112, y: 204 }, [['E', 6]]), hidePath: false, showRoad: true };
+    lesson14.dropPointLabel = 'תחנה';
+    lesson14.story = 'מפגש 14 בונה אוטומציה חדשה בעיר: השליח מביא 3 חבילות לכל אחת משתי תחנות חדשות. את האוטומציה מפעילים בפקודת start. כשאותו חלק בקוד חוזר, ובתוכו כבר יש לולאה, אפשר לשים לולאה בתוך לולאה.';
+    const points = [[3, 0], [6, 0]];
+    const place3 = { type: 'repeat', times: 3, blocks: [{ type: 'place', direction: 'DOWN' }] };
+    const trip = [{ type: 'move', direction: 'FORWARD', steps: 3 }, place3];
+    const debugSteps14 = 'כך מדבגים: מריצים וצופים בהדמיה, מתארים מה קרה ומה היה צריך לקרות, מוצאים את הבלוק שגורם להבדל ומתקנים אותו. אם נתקעים, לוחצים רמז.';
+    lesson14.exercises = [
+      {
+        title: 'תרגיל 1 - התחנה הראשונה',
+        prefilledStart: true,
+        dropPoints: points,
+        mission: 'בשיעור הזה בונים אוטומציה לשתי תחנות חדשות בעיר. בלוח כבר יש את הפקודה start ואת הזימון של השליח. השליח נוסע לתחנה הראשונה ומניח בה 3 חבילות, בלי להעתיק את אותו בלוק שלוש פעמים.',
+        hint: 'ספרו את המשבצות עד התחנה הראשונה. בלוק ״לולאה״ נמצא בקטגוריית Loops.',
+        check: '3 חבילות בתחנה הראשונה, בעזרת לולאה.',
+        starter: { command: 'start', blocks: [{ type: 'teleport' }] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
+          { label: '3 חבילות מונחות בתחנה הראשונה', type: 'packagesAtCell', dx: 3, dy: 0, min: 3 },
+          { label: 'הפעולה חוזרת בלי להעתיק בלוקים', type: 'repeat' },
+        ],
+      },
+      {
+        title: 'תרגיל 2 - גם התחנה השנייה',
+        continuePassed: true,
+        dropPoints: points,
+        mission: 'השליח ממשיך לתחנה השנייה ומניח גם בה 3 חבילות.',
+        hint: 'מהתחנה הראשונה ממשיכים קדימה. כמה משבצות יש עד התחנה השנייה?',
+        check: '3 חבילות בכל אחת משתי התחנות.',
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, ...trip] },
+        criteria: [{ label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 }],
+      },
+      {
+        title: 'תרגיל 3 - לולאה בתוך לולאה',
+        continuePassed: true,
+        dropPoints: points,
+        maxBlocks: 6,
+        mission: 'בקוד שלכם אותו חלק כתוב פעמיים: נוסעים לתחנה ומניחים 3 חבילות. קצרו את הקוד כך שיעשה בדיוק אותו דבר, עם 6 בלוקים לכל היותר (כולל ״כשכותבים בצ׳אט״). חדש: את החלק שחוזר אפשר להכניס ללולאה, גם אם כבר יש בתוכו לולאה. כך נוצרת לולאה בתוך לולאה.',
+        hint: 'הלולאה החיצונית חוזרת פעם לכל תחנה. בתוכה: הנסיעה, ואחריה הלולאה של החבילות.',
+        check: '3 חבילות בכל תחנה, עם 6 בלוקים לכל היותר.',
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, ...trip, ...trip] },
+        criteria: [
+          { label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 },
+          { label: 'הקוד משתמש ב-6 בלוקים לכל היותר', type: 'maxBlocks', max: 6 },
+        ],
+      },
+      {
+        title: 'תרגיל 4 - דיבוג',
+        debugStart: true,
+        dropPoints: points,
+        mission: `תרגיל דיבוג: בכל תחנה צריכות להיות 3 חבילות, אבל הקוד לא עושה את זה. ${debugSteps14}`,
+        hint: 'הסתכלו בהדמיה איפה נוחתות החבילות. מה מתבצע בכל סיבוב של הלולאה החיצונית?',
+        check: '3 חבילות בכל תחנה.',
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [{ type: 'move', direction: 'FORWARD', steps: 3 }] }, place3] },
+        criteria: [{ label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 }],
+      },
+      {
+        title: 'תרגיל 5 - הודעה בכל תחנה',
+        continuePassed: true,
+        dropPoints: points,
+        mission: 'בכל תחנה, אחרי שהשליח מניח את 3 החבילות, הוא מודיע שהתחנה קיבלה את החבילות. בלי להעתיק את ההודעה.',
+        hint: 'ההודעה צריכה להופיע פעם אחת בכל תחנה, לא אחרי כל חבילה. באיזו לולאה היא צריכה להיות?',
+        check: 'הודעה אחת בכל תחנה, אחרי החבילות.',
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: trip }] },
+        criteria: [
+          { label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 },
+          { label: 'בכל תחנה מופיעה הודעה', type: 'sayInRepeat', min: 2 },
+          { label: 'מופיעות 2 הודעות בלבד', type: 'sayCountExact', count: 2 },
+        ],
+      },
+      {
+        title: 'אתגר קטן - האוטומציה המלאה',
+        continuePassed: true,
+        dropPoints: points,
+        maxBlocks: 9,
+        mission: 'הכינו את הגרסה המלאה של האוטומציה: לפני היציאה השליח מודיע מה הוא עומד לעשות. בכל תחנה הוא מניח 3 חבילות ומודיע שהתחנה קיבלה אותן. בסוף הוא מודיע פעם אחת שהמשימה הושלמה. השתמשו ב-9 בלוקים לכל היותר.',
+        hint: 'הודעת הפתיחה לפני הלולאות, הודעת התחנה בתוך הלולאה החיצונית, והודעת הסיום אחרי כל הלולאות.',
+        check: 'פתיחה, 3 חבילות והודעה בכל תחנה, והודעת סיום אחת, ב-9 בלוקים לכל היותר.',
+        starter: { command: 'start', blocks: [{ type: 'teleport' }, { type: 'repeat', times: 2, blocks: [...trip, { type: 'say', text: 'התחנה קיבלה את החבילות' }] }] },
+        criteria: [
+          { label: 'פקודת הצ׳אט היא start', type: 'command', command: 'start' },
+          { label: 'מופיעה הודעה לפני שהשליח יוצא', type: 'sayBeforeFirstMove' },
+          { label: 'בכל תחנה מונחות 3 חבילות', type: 'packagesEachPoint', min: 3 },
+          { label: 'בכל תחנה מופיעה הודעה', type: 'sayInRepeat', min: 2 },
+          { label: 'הודעת הסיום מופיעה פעם אחת', type: 'sayAfterLoop' },
+          { label: 'הקוד משתמש ב-9 בלוקים לכל היותר', type: 'maxBlocks', max: 9 },
+        ],
+      },
+    ];
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
@@ -3364,7 +3459,6 @@
     [12, 4, 'הריצו בשני המצבים. מתי מתבצע ״אז״ ומתי ״אחרת״? האם זה מה שהחוק אומר?'],
     [12, 5, 'ההודעה מתאימה רק למצב שבו החבילה נמסרה. איפה זה קורה בקוד?'],
     [13, 4, 'השוו בהדמיה איפה נוחתות החבילות לעומת הנקודות המסומנות. שימו לב לסדר הפעולות.'],
-    [14, 5, 'השוו בהדמיה בין המקום שבו השליח עוצר לבין התחנה. איזה בלוק קובע כמה רחוק הוא נוסע?'],
     [15, 2, 'השוו בהדמיה בין המקום שבו השליח עוצר לבין התחנה. דוגמה להודעה: "הבדיקה עברה, החבילה בתחנה".'],
     [15, 3, 'בלוק ״תנאי״ בקטגוריית Logic בודק אם מחסום א פתוח (gateAOpen). עקבו בהדמיה אחרי הדרך העוקפת מעל המחסום וספרו את המשבצות. אחרי התנאי ממשיכים יחד עד התחנה.'],
     [15, 4, 'כל מחסום מקבל החלטה משלו. בין שני המחסומים יש קטע כביש שנוסעים בו בכל מצב. עקבו בהדמיה אחרי הדרך העוקפת מתחת למחסום ב.'],
@@ -3372,7 +3466,6 @@
     [4, 4, 'החבילה צריכה להיות על הרצפה של התחנה. באיזה רגע בקוד השליח כבר עומד בתחנה?'],
     [5, 3, 'הסתכלו בהדמיה איפה מונחות החבילות. האם הן במקומות שונים, כמו שצריך? עקבו אחרי השליח בכל סיבוב.'],
     [7, 1, 'בלוק ״לולאה״ נמצא בקטגוריית Loops. מה השליח צריך לעשות שוב ושוב?'],
-    [14, 2, 'באיזה כיוון צריך להניח כדי שהחבילה תהיה בתחנה, במקום שבו השליח עומד?'],
     [16, 4, 'מתי בכלל צריך לבדוק את מחסום ב? רק כשמחסום א סגור. איפה בקוד נמצא המקום הזה? את הדרך הארוכה ספרו בהדמיה, פינה אחרי פינה.'],
   ].forEach(([lessonId, exerciseNumber, hint]) => {
     const challengeId = Math.ceil(lessonId / 4);

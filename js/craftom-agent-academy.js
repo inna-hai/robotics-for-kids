@@ -1108,6 +1108,8 @@
     if (criterion.type === 'sayOnce') return state.says.filter(text => String(text || '').trim()).length === 1;
     // A message inside the loop: it shows once in every round.
     if (criterion.type === 'sayInRepeat') return state.actions.filter(action => action.type === 'say' && action.inRepeat && isSuccessMessage(action.text)).length >= Number(criterion.min || 2);
+    // Exactly this many messages in the whole run.
+    if (criterion.type === 'sayCountExact') return state.says.filter(text => String(text || '').trim()).length === Number(criterion.count || 1);
     if (criterion.type === 'sayCount') return state.says.filter(isSuccessMessage).length >= Number(criterion.min || 1);
     // "One change only": the blocks keep the same order and nesting as the starting code (only values may change).
     // "Fix one number only": the blocks keep the starting code's structure and exactly one number (steps or rounds)
@@ -1135,6 +1137,13 @@
       return state.packages.length >= Number(criterion.min || 1) && state.packages.every(pkg => isNear(pkg, target, 18));
     }
     if (criterion.type === 'packageAtCell') return state.packages.some(pkg => isNear(pkg, { x: start.x + criterion.dx * cell, y: start.y + criterion.dy * cell }, 18));
+    // Every marked point gets at least `min` packages, and no package lands anywhere else.
+    if (criterion.type === 'packagesEachPoint') {
+      const points = dropPointPositions();
+      const min = Number(criterion.min || 1);
+      return points.length > 0 && points.every(point => state.packages.filter(pkg => isNear(pkg, point, 18)).length >= min)
+        && state.packages.every(pkg => points.some(point => isNear(pkg, point, 18)));
+    }
     if (criterion.type === 'onDropPoints') {
       const points = dropPointPositions();
       return points.length > 0 && state.packages.length === points.length
@@ -1704,7 +1713,7 @@
     ctx.strokeRect(34, 32, canvas.width - 68, canvas.height - 64);
 
     // The stone path leads to the station, so it is hidden together with it.
-    if (showStation && !academy.world?.hidePath) {
+    if ((showStation || academy.world?.showRoad) && !academy.world?.hidePath) {
       // Roads are drawn as connected asphalt with a dashed centre line; detours (tile.kind 'detour') stay narrow
       // stone paths, so the main road stands out. Lessons can also put short labels on the map (world.roadLabels).
       routeTiles.filter(tile => tile.kind === 'detour').forEach(tile => drawCobbleTile(tile.x, tile.y, tile.w || 34, tile.h || 28));
