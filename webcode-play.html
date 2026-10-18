@@ -376,10 +376,7 @@
       let startX = 0, startWidth = 0, activePointerId = null;
       function resizeBlockly(){ if(window.Blockly && blocklyWorkspace) setTimeout(() => Blockly.svgResize(blocklyWorkspace), 40); }
       function apply(clientX){
-        // The preview is the left-most column in our RTL grid and its resize
-        // handle sits on the panel's right edge. Moving the handle left grows
-        // the preview; moving it right shrinks it.
-        const next = startWidth + (startX - clientX);
+        const next = startWidth + (clientX - startX);
         setPreviewWidth(next);
         resizeBlockly();
       }
