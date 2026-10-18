@@ -3013,9 +3013,11 @@
     const lesson12 = detailsByChallenge[3][3].academy;
     Object.assign(lesson12.exercises[2], {
       personalRule: true,
-      mission: 'עכשיו בוחרים את החוק שלכם: מה השליח עושה כשהדרך חסומה? בחרו מעל הלוח אחת מהאפשרויות: לחכות במחסן, לעקוף את המחסום, או לצאת, לראות שחסום ולחזור למחסן. בנו את הקוד לפי החוק שבחרתם, והוסיפו הודעה שמסבירה מה השליח עושה. השליח אף פעם לא עובר דרך המחסום.',
+      mission: 'עכשיו בוחרים את החוק שלכם: מה השליח עושה כשהדרך חסומה? בחרו מעל הלוח אחת מהאפשרויות: לחכות במחסן, לעקוף את המחסום, או לצאת, לראות שחסום ולחזור למחסן. בנו את הקוד לפי החוק שבחרתם. השליח אף פעם לא עובר דרך המחסום.',
       hint: 'החוק שבחרתם נכנס לחלק של ״אחרת״. הריצו כשהדרך חסומה ובדקו שהשליח עושה בדיוק את מה שבחרתם.',
     });
+    // The blocked-road message belongs to exercise 5; exercise 3 is only about the rule itself.
+    lesson12.exercises[2].criteria = lesson12.exercises[2].criteria.filter(criterion => criterion.type !== 'blockedSays');
     lesson12.exercises[2].criteria.push({ label: 'החוק שבחרתם', type: 'personalRule' });
     Object.assign(lesson12.exercises[5], {
       personalRule: true,
@@ -3026,8 +3028,8 @@
     // the new step is the message for the open road. The challenge then continues from exercise 5.
     Object.assign(lesson12.exercises[4], {
       continueFrom: 2,
-      title: 'תרגיל 5 - הודעה למצב פתוח',
-      mission: 'בלוח נמצא החוק שלכם מתרגיל 3, כולל ההודעה כשהדרך חסומה. הוסיפו הודעה גם למצב פתוח: אחרי המסירה השליח מודיע שהמשלוח הגיע.',
+      title: 'תרגיל 5 - הודעות לשני המצבים',
+      mission: 'בלוח נמצא החוק שלכם מתרגיל 3. הוסיפו הודעה לכל אחד מהמצבים: כשהדרך פתוחה, אחרי המסירה השליח מודיע שהמשלוח הגיע. כשהדרך חסומה, השליח מודיע מה הוא עושה. אם כבר הוספתם הודעה למצב חסום בתרגיל 3, אין צורך להוסיף אותה שוב.',
     });
     lesson12.exercises[5].continuePassed = true;
   }
