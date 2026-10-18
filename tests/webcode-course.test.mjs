@@ -543,6 +543,7 @@ assert.ok(play.includes('lesson-collapsed'), 'collapsing instructions reallocate
 assert.ok(play.includes('previewResize') && play.includes('--preview-width'), 'preview panel has a draggable width resizer');
 assert.ok(play.includes('webcodePreviewWidth') && play.includes('pointermove'), 'preview width drag persists and handles pointer movement');
 assert.ok(play.includes('startWidth + (startX - clientX)'), 'preview resize follows the RTL handle direction');
+assert.ok(play.includes('handle.setPointerCapture(event.pointerId)') && play.includes("handle.addEventListener('lostpointercapture', stop)"), 'preview resize releases reliably even when the pointer crosses the live iframe');
 assert.ok(play.includes('minEditorWidth') && play.includes("handle.addEventListener('dblclick'"), 'preview resize preserves editor space and supports resetting its width');
 assert.ok(play.includes('webcodeLessonState:v176') && play.includes('saveLessonState') && play.includes('restoreProgress'), 'lesson progress and code persist across page refreshes');
 assert.ok(loadedLessonsCode.includes("purposeFromSelectedTab:'code_role'") && loadedLessonsCode.includes('HTML = מבנה/תוכן, CSS = עיצוב, JavaScript = פעולה/תגובה') && loadedLessonsCode.includes('requiresCodeSelectionTab'), 'passive code-reading role tasks validate according to an explicitly selected generated-code tab');
