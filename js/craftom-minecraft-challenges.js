@@ -3034,6 +3034,49 @@
     lesson12.exercises[5].continuePassed = true;
   }
 
+  // Lesson 13: the plan command, the opening message and the trip to the station form one exercise, and the systems
+  // on the way are marked from the start. The freed slot becomes a new step: a message at every system (in the loop).
+  {
+    const lesson13 = detailsByChallenge[4][0].academy;
+    const [first, second, systems, shorten, debug, challenge] = lesson13.exercises;
+    const points = systems.dropPoints;
+    const merged = {
+      ...first,
+      title: 'תרגיל 1 - פקודת plan',
+      dropPoints: points,
+      mission: 'בשיעור הזה מתכננים מפה של מערכות בעיר: הנקודות המסומנות בהדמיה. צרו פקודת צ׳אט בשם plan (באנגלית: "תוכנית"). השליח מודיע מה הולכים לעשות, נוסע לתחנה ומניח שם חבילה. את המערכות שבדרך משלימים בתרגיל הבא.',
+      hint: 'הודעה כותבים עם הבלוק מקטגוריית Player. הסתכלו איפה התחנה ביחס למחסן: בדרך צריך לפנות.',
+      criteria: [
+        { label: 'פקודת הצ׳אט היא plan', type: 'command', command: 'plan' },
+        { label: 'יש הודעת פתיחה', type: 'openingSay' },
+        { label: 'השליח מגיע לתחנה', type: 'reachedStation' },
+        { label: 'החבילה מונחת בתחנה', type: 'packageNearStation' },
+      ],
+    };
+    systems.title = 'תרגיל 2 - שלוש מערכות ברחוב';
+    shorten.title = 'תרגיל 3 - מקצרים את התוכנית';
+    debug.title = 'תרגיל 4 - דיבוג';
+    const report = {
+      title: 'תרגיל 5 - הודעה בכל מערכת',
+      continuePassed: true,
+      dropPoints: points,
+      mission: 'בכל מערכת ברחוב, אחרי שהשליח מניח עליה חבילה, הוא מודיע שהמערכת סומנה. השתמשו בלולאה שכבר יש בקוד, בלי להעתיק את ההודעה שלוש פעמים.',
+      hint: 'מה שנמצא בתוך הלולאה מתבצע בכל סיבוב.',
+      check: 'הודעה אחרי כל חבילה על מערכת ברחוב.',
+      starter: debug.starter && { command: 'plan', blocks: [{ type: 'say', text: 'נניח חבילה על כל מערכת בעיר' }, { type: 'teleport' }, { type: 'repeat', times: 3, blocks: [{ type: 'move', direction: 'FORWARD', steps: 2 }, { type: 'place', direction: 'DOWN' }] }, { type: 'turn', turn: 'RIGHT_TURN' }, { type: 'move', direction: 'FORWARD', steps: 3 }, { type: 'place', direction: 'DOWN' }] },
+      criteria: [
+        { label: 'כל חבילה הונחה על נקודה מסומנת', type: 'onDropPoints' },
+        { label: 'בכל מערכת ברחוב מופיעה הודעה', type: 'sayInRepeat', min: 3 },
+      ],
+    };
+    // The challenge keeps the per-system message, so it may use one more block.
+    challenge.maxBlocks = 11;
+    challenge.continuePassed = true;
+    challenge.criteria = challenge.criteria.map(criterion => criterion.type === 'maxBlocks' ? { ...criterion, max: 11, label: 'הקוד משתמש ב-11 בלוקים לכל היותר' } : criterion);
+    challenge.mission = 'השלימו תוכנית מלאה: הודעת פתיחה, חבילה על כל המערכות ובתחנה בקוד קצר, ובסוף הודעת סיכום שמסבירה מה נעשה.';
+    lesson13.exercises = [merged, systems, shorten, debug, report, challenge];
+  }
+
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
   // When a barrier is closed the courier must get to the station by going around it, not only report it.
   // Lesson 15 brings in the double barrier with one detour per barrier (two conditions one after the other);
@@ -3320,7 +3363,7 @@
     [11, 6, 'ההודעה צריכה להופיע לפני שהשליח מתחיל לעקוף, ורק כשהדרך חסומה.'],
     [12, 4, 'הריצו בשני המצבים. מתי מתבצע ״אז״ ומתי ״אחרת״? האם זה מה שהחוק אומר?'],
     [12, 5, 'ההודעה מתאימה רק למצב שבו החבילה נמסרה. איפה זה קורה בקוד?'],
-    [13, 5, 'השוו בהדמיה איפה נוחתות החבילות לעומת הנקודות המסומנות. שימו לב לסדר הפעולות.'],
+    [13, 4, 'השוו בהדמיה איפה נוחתות החבילות לעומת הנקודות המסומנות. שימו לב לסדר הפעולות.'],
     [14, 5, 'השוו בהדמיה בין המקום שבו השליח עוצר לבין התחנה. איזה בלוק קובע כמה רחוק הוא נוסע?'],
     [15, 2, 'השוו בהדמיה בין המקום שבו השליח עוצר לבין התחנה. דוגמה להודעה: "הבדיקה עברה, החבילה בתחנה".'],
     [15, 3, 'בלוק ״תנאי״ בקטגוריית Logic בודק אם מחסום א פתוח (gateAOpen). עקבו בהדמיה אחרי הדרך העוקפת מעל המחסום וספרו את המשבצות. אחרי התנאי ממשיכים יחד עד התחנה.'],
