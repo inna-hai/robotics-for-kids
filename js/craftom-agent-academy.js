@@ -336,9 +336,12 @@
   renderTeacherReturnAction();
   // The signed-in badge (added by user-badge.js) moves into the page header, so it doesn't float over the checks.
   const badgeSlot = document.getElementById('lessonBackLink')?.parentElement;
+  // The "report a problem" button (feedback-widget.js) moves there too.
   const placeBadge = () => {
     const badge = document.getElementById('hai-user-badge');
     if (badge && badgeSlot && badge.parentElement !== badgeSlot) badgeSlot.appendChild(badge);
+    const feedbackButton = document.querySelector('.rfw-button');
+    if (feedbackButton && badgeSlot && feedbackButton.parentElement !== badgeSlot) badgeSlot.appendChild(feedbackButton);
   };
   placeBadge();
   if (badgeSlot) new MutationObserver(placeBadge).observe(document.body, { childList: true });
