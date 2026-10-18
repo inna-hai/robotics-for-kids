@@ -56,8 +56,7 @@
   };
   const ruleKey = `craftom-academy-rule:${lesson?.id || 1}`;
   let personalRule = '';
-  let personalRuleText = '';
-  try { personalRule = localStorage.getItem(ruleKey) || ''; personalRuleText = localStorage.getItem(`${ruleKey}:text`) || ''; } catch (_) { /* storage blocked */ }
+  try { personalRule = localStorage.getItem(ruleKey) || ''; } catch (_) { /* storage blocked */ }
   const checkLabel = criterion => criterion.type === 'personalRule'
     ? (personalRules[personalRule]?.label || 'בחרו מעל הלוח את החוק שלכם למצב של דרך חסומה')
     : criterion.label;
@@ -65,7 +64,6 @@
   if ((academy.exercises || []).some(exercise => exercise.personalRule)) {
     blocklyDiv.insertAdjacentHTML('beforebegin', `<div class="academy-rule" id="academyRule">
       <label>החוק שלי כשהדרך חסומה: <select id="academyRuleSelect"><option value="">בחרו...</option>${Object.entries(personalRules).map(([key, rule]) => `<option value="${key}">${rule.option}</option>`).join('')}</select></label>
-      <label>במילים שלי: <input id="academyRuleText" type="text" maxlength="120" placeholder="למשל: כשחסום השליח מחכה ומודיע"></label>
     </div>`);
     rulePanel = document.getElementById('academyRule');
   }
@@ -2205,19 +2203,13 @@
 
   if (rulePanel) {
     const ruleSelect = document.getElementById('academyRuleSelect');
-    const ruleText = document.getElementById('academyRuleText');
     ruleSelect.value = personalRule;
-    ruleText.value = personalRuleText;
     ruleSelect.addEventListener('change', () => {
       personalRule = ruleSelect.value;
       try { localStorage.setItem(ruleKey, personalRule); } catch (_) { /* storage blocked */ }
       checksEl.innerHTML = evaluate(defaultState()).map(check => `<div class="fail"><span>·</span>${esc(heText(check.label))}</div>`).join('');
       feedbackEl.textContent = personalRule ? 'החוק נשמר. בנו את הקוד לפיו ולחצו הרצה ובדיקה.' : 'בחרו חוק למצב של דרך חסומה.';
       feedbackEl.className = 'academy-feedback';
-    });
-    ruleText.addEventListener('input', () => {
-      personalRuleText = ruleText.value;
-      try { localStorage.setItem(`${ruleKey}:text`, personalRuleText); } catch (_) { /* storage blocked */ }
     });
   }
 
