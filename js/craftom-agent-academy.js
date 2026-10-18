@@ -2008,6 +2008,9 @@
     // Exercises that continue the previous one always get working code: the previous correct solution, or the
     // scaffold if there is none (never an unfinished attempt).
     if (academy.exercises[index]?.continuePassed) return passedBoards[index - 1] || previousSolutions[index - 1] || starterXml(index);
+    // Some exercises continue an earlier exercise (not the one right before), e.g. the student's own rule.
+    const from = academy.exercises[index]?.continueFrom;
+    if (Number.isInteger(from)) return passedBoards[from] || previousSolutions[from] || starterXml(index);
     if (passedBoards[index - 1]) return passedBoards[index - 1];
     if (savedBoards[index - 1]) return savedBoards[index - 1];
     return starterXml(index);

@@ -3022,6 +3022,14 @@
       mission: 'השלימו את החוק האישי שלכם: כשהדרך פתוחה השליח מוסר את החבילה ומודיע שהמשלוח הגיע. כשהדרך חסומה הוא פועל לפי החוק שבחרתם מעל הלוח ומודיע מה הוא עושה, בלי לעבור במחסום. הריצו ובדקו בשני מצבי הדרך.',
     });
     lesson12.exercises[5].criteria.push({ label: 'החוק שבחרתם', type: 'personalRule' });
+    // Exercise 5 continues the student's own rule from exercise 3 (its blocked-road message is already theirs);
+    // the new step is the message for the open road. The challenge then continues from exercise 5.
+    Object.assign(lesson12.exercises[4], {
+      continueFrom: 2,
+      title: 'תרגיל 5 - הודעה למצב פתוח',
+      mission: 'בלוח נמצא החוק שלכם מתרגיל 3, כולל ההודעה כשהדרך חסומה. הוסיפו הודעה גם למצב פתוח: אחרי המסירה השליח מודיע שהמשלוח הגיע.',
+    });
+    lesson12.exercises[5].continuePassed = true;
   }
 
   // Lessons 15-16: two barriers (A and B), each with its own switch and condition variable (gateAOpen, gateBOpen).
