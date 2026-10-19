@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Research Lab · מפגש 12 · עיצוב מידע ושיפור הדוח</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#0f172a;--muted:#526070;--line:#cbd5e1;--page:#eef3f8;--card:#fff;--blue:#2563eb;--cyan:#0891b2;--green:#16a34a;--purple:#475569;--orange:#b45309;--dark:#0b1220;--warn:#b45309;--danger:#be123c}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at top left,rgba(8,145,178,.12),transparent 34%),radial-gradient(circle at 92% 8%,rgba(37,99,235,.08),transparent 26%),var(--page);line-height:1.65}bdi,.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:0 14px 38px rgba(15,23,42,.06);position:sticky;top:10px;z-index:10}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#0f172a,var(--cyan));color:#fff;display:grid;place-items:center;font-size:1.25rem;font-weight:900}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border-radius:999px;background:var(--dark);color:#fff;text-decoration:none;border:0;font-family:inherit;font-weight:900;cursor:pointer}.btn.secondary{background:#f8fafc;color:var(--dark);border:1px solid var(--line)}.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 330px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:0 18px 46px rgba(15,23,42,.06)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#f8fafc;border-radius:16px;padding:10px 12px;font-family:inherit;font-weight:900;color:#334155;cursor:pointer}.progress-list button.active{background:#ecfeff;border-color:#67e8f9;color:#155e75}.progress-list button.done{background:#dcfce7;border-color:#86efac;color:#166534}.hero{display:grid;grid-template-columns:1.12fr .88fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{background:linear-gradient(135deg,#0b1220,#164e63 62%,#1e293b);color:#fff;border-radius:26px;padding:24px;min-height:292px;display:flex;flex-direction:column;justify-content:center}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 11px;color:#bae6fd;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2rem,5vw,4rem);line-height:1.04;margin:0 0 12px}.hero p{margin:0;color:#dbeafe;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:#fff;border-radius:22px;padding:16px}.stat b{display:block;color:var(--cyan);font-size:1.45rem}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px}.card h3{margin:0 0 8px;color:#155e75}.card p,.card li{color:#475569;font-weight:700}.callout{border-right:6px solid var(--cyan);background:#ecfeff;border-radius:20px;padding:14px 16px;font-weight:900;color:#155e75;margin:14px 0}.success{border-right-color:var(--green);background:#f0fdf4;color:#166534}.warning{border-right-color:#f59e0b;background:#fffbeb;color:#92400e}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:92px;resize:vertical}.check{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#334155}.check input{width:auto;margin-top:5px}.template{direction:rtl;background:#020617;color:#dbeafe;border-radius:18px;padding:16px;white-space:pre-wrap;font-weight:800;line-height:1.7}.support h3,.sidebar h3{margin:0 0 10px}.pill{display:inline-flex;margin:4px 3px;border-radius:999px;background:#eef2ff;color:#3730a3;padding:6px 10px;font-weight:900;font-size:.84rem}.rubric{display:grid;gap:8px}.rubric div{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 18px,680px)}.panel{padding:14px;border-radius:22px}.grid,.support-grid{grid-template-columns:1fr}.brand-mark{width:48px;height:48px}.btn{min-height:44px}input,textarea,select{font-size:16px}}@media print{body{background:#fff}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ai-research-lab.html" aria-label="חזרה לקורס"><span class="platform-home-icon" aria-hidden="true">↩</span><span class="platform-home-text">AI Research Lab</span></a>
+  <div class="shell">
+    <header class="topbar"><div class="brand"><div class="brand-mark">12</div><div><h1>AI Research Lab · מפגש 12</h1><p>עיצוב מידע ושיפור הדוח · לומדה ותרגול צוותי לכיתה ט׳</p></div></div><div class="actions"><a class="btn secondary" href="ai-research-lab.html">עמוד הקורס</a><a class="btn secondary" href="ai-research-lab-slides-12.html">מצגת מדריך</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div></header>
+    <section class="hero" aria-label="פתיחה"><div class="hero-card"><span class="kicker">90 דקות · מפגש 12 מתוך 15 · עומר הנביעה</span><h2>עיצוב טוב נועד לעזור להבין את המסקנה.</h2><p>עיצוב טוב לא נועד להרשים - הוא נועד לעזור להבין את המסקנה.</p></div><div class="goal-card"><div class="stat"><b>נקודת מוצא</b>טיוטת דוח חקר חזותי ברמת כ-60%</div><div class="stat"><b>תוצר יציאה</b>דוח חקר חזותי כמעט סופי, קריא וברור</div><div class="stat"><b>גשר להמשך</b>בניית מצגת מסכמת במפגש 13</div></div></section>
+    <main class="layout"><aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 9 שלבים סומנו.</div></aside>
+      <section class="panel workspace">
+        <article class="step active" data-title="0 · מבט על"><h2>מבט על · עיצוב מידע ושיפור הדוח</h2><p class="lead">המפגש מבוסס על מערך המקור של הקורס וממשיך ישירות מהתוצר של המפגש הקודם.</p><div class="grid"><div class="card"><h3>נקודת מוצא</h3><p>טיוטת דוח חקר חזותי ברמת כ-60%</p></div><div class="card"><h3>תוצר יציאה</h3><p>דוח חקר חזותי כמעט סופי, קריא וברור</p></div></div><div class="field"><label>הכנה קצרה של הצוות</label><textarea data-save="preparation" placeholder="מה פתחנו מהמפגש הקודם? מה חסר לנו לפני שמתחילים?"></textarea></div><label class="check"><input type="checkbox" data-done="0"> פתחנו את החומרים מהמפגש הקודם ומבינים מה תוצר היציאה של היום.</label></article>
+        <article class="step" data-title="1 · לפני ואחרי">
+          <h2>שלב 1 · דוח עמוס מול דוח ברור</h2><p class="lead">משווים בין דוח שקשה להבין לבין גרסה נקייה יותר שמובילה את הקורא למסקנה.</p>
+          <div class="callout">תוצר השלב: הבנת תפקיד העיצוב - לא קישוט, אלא הבנה.</div>
+          <div class="grid"><div class="card"><h3>דוח עמוס מדי</h3><ul><li>הרבה טקסט צפוף.</li><li>כותרות כלליות כמו רקע וממצאים.</li><li>גרף בלי מקור.</li><li>צבעים רבים מדי.</li><li>מסקנה שקשה למצוא.</li></ul></div><div class="card"><h3>דוח ברור יותר</h3><ul><li>כותרת ראשית שמספרת מסר.</li><li>אזורים ברורים וטקסטים קצרים.</li><li>גרף עם כותרת ומקור.</li><li>תובנות בבולטים.</li><li>מסקנה במקום בולט.</li></ul></div></div>
+          <div class="field"><label>מה למדנו מההשוואה?</label><textarea data-save="step1compare" placeholder="איפה העין מסתכלת קודם? מה קל יותר להבין? מה אפשר להוריד בלי לפגוע במשמעות?"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="1"> הבנו איך עיצוב עוזר לקורא להבין את החקר והמסקנה.</label>
+        </article>
+        <article class="step" data-title="2 · כללי עיצוב">
+          <h2>שלב 2 · חמישה כללי עיצוב מידע</h2><p class="lead">עיצוב מידע הוא לא יפה או לא יפה, אלא מובן או לא מובן.</p>
+          <div class="callout">תוצר השלב: מחוון שיפור לדוח.</div>
+          <div class="grid"><div class="card"><h3>1. רעיון אחד בכל אזור</h3><p>לא מערבבים רקע, נתון ומסקנה באותו בלוק.</p></div><div class="card"><h3>2. כותרות שמספרות מסקנה</h3><p>במקום "ממצאים": "AI עוזר בעיקר בתחילת משימה".</p></div><div class="card"><h3>3. לא יותר מדי צבעים</h3><p>2-3 צבעים עקביים מספיקים.</p></div><div class="card"><h3>4. גרף עם כותרת ומקור</h3><p>בלי מקור, הגרף לא שלם.</p></div><div class="card"><h3>5. טקסט קצר וברור</h3><p>דוח חזותי אינו עבודה ארוכה.</p></div><div class="card"><h3>בדיקת על</h3><p>האם אדם שלא השתתף בקורס יבין את הדוח תוך דקה?</p></div></div>
+          <div class="field"><label>איזה כלל הכי חסר בדוח שלנו כרגע?</label><textarea data-save="step2rules" placeholder="בחרו כלל אחד או שניים ותארו מה תשנו בדוח"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="2"> בנינו מחוון שיפור לפי חמשת כללי עיצוב המידע.</label>
+        </article>
+        <article class="step" data-title="3 · שיפור אזור">
+          <h2>שלב 3 · דוגמת מדריך: משיפור טקסט עמוס לאזור ברור</h2><p class="lead">רואים איך לוקחים קטע ארוך ומסדרים אותו לכותרת, תובנה, הסתייגות והמלצה.</p>
+          <div class="callout">תוצר השלב: דוגמת שיפור מלאה.</div>
+          <div class="card"><h3>לפני</h3><p>מצאנו שיש הרבה תלמידים שמשתמשים ב-<bdi>AI</bdi> ויש גם יתרונות וגם חסרונות וזה תלוי איך משתמשים בזה ומורים צריכים לדעת איך להסביר...</p></div>
+          <div class="grid"><div class="card"><h3>כותרת</h3><p>שימוש נכון ב-<bdi>AI</bdi> תלוי בהנחיות ברורות.</p></div><div class="card"><h3>תובנה</h3><p>מהמקורות עולה ש-<bdi>AI</bdi> יכול לתמוך בלמידה כאשר משתמשים בו לשאלות, הסברים ותכנון.</p></div><div class="card"><h3>הסתייגות</h3><p>עדיין צריך לבדוק איך זה משתנה בין מקצועות וגילים.</p></div><div class="card"><h3>המלצה</h3><p>לבנות כללי שימוש שמדגישים בדיקת תשובות וניסוח עצמאי.</p></div></div>
+          <div class="field"><label>מה השתנה בגרסה המשופרת?</label><textarea data-save="step3demo" placeholder="כותרת מספרת מסר / טקסט חולק לחלקים / מסקנה בולטת / יש הסתייגות והמלצה"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="3"> ראינו איך קטע עמוס הופך לאזור ברור בדוח.</label>
+        </article>
+        <article class="step" data-title="4 · אבחון צוותי">
+          <h2>שלב 4 · אבחון הדוח הצוותי</h2><p class="lead">כל צוות מסמן לפחות 3 בעיות בדוח שלו לפני שמתחיל לעצב.</p>
+          <div class="callout">תוצר השלב: רשימת תיקונים.</div>
+          <div class="grid"><div class="card"><h3>בעיות נפוצות</h3><ul><li>כותרת כללית מדי.</li><li>יותר מדי טקסט.</li><li>חסר מקור לגרף/נתון.</li><li>התובנות ארוכות מדי.</li><li>המסקנה לא בולטת.</li><li>אין היררכיה ברורה.</li></ul></div><div class="card"><h3>עוד דברים לבדוק</h3><ul><li>צבעים או עיצוב מפריעים לקריאה.</li><li>לא ברור מה הקורא אמור להבין.</li><li>יש חלק בלי ראיה או מקור.</li><li>הכותרות רק מתארות נושא ולא מסקנה.</li></ul></div></div>
+          <div class="field"><label>3 בעיות שנשפר בדוח שלנו</label><textarea data-save="step4diagnosis" placeholder="1. ... | 2. ... | 3. ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="4"> סימנו לפחות 3 בעיות לשיפור בדוח שלנו.</label>
+        </article>
+        <article class="step" data-title="5 · AI בהירות">
+          <h2>שלב 5 · שימוש ב-<bdi>AI</bdi> לבדיקת בהירות וכותרות</h2><p class="lead"><bdi>AI</bdi> יכול לעזור לבדוק בהירות ולשפר כותרות, אבל לא לשנות מסקנה ולא להוסיף מידע.</p>
+          <div class="callout">תוצר השלב: הצעות ניסוח וכותרות שנבדקו על ידי הצוות.</div>
+          <div class="template">בדוק את הטקסט הבא מבחינת בהירות לקורא בכיתה ט׳.
+הצע כותרת חזקה יותר ושלושה שיפורי ניסוח.
+אל תשנה את המסקנה.
+אל תוסיף מידע חדש.
+טקסט: ____</div>
+          <div class="template">זו כותרת הדוח שלנו: ____.
+זו המסקנה המרכזית: ____.
+הצע 5 כותרות קצרות שמספרות את המסקנה בצורה ברורה, בלי להיות שיווקיות מדי.</div>
+          <div class="field"><label>מה לקחנו מההצעות ומה דחינו?</label><textarea data-save="step5ai" placeholder="כותרת שנבחרה: ... | שיפור ניסוח: ... | הצעה שדחינו כי שינתה מסקנה/הוסיפה מידע: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="5"> השתמשנו ב-AI רק לבהירות וכותרות, ולא שינינו מסקנה או הוספנו מידע.</label>
+        </article>
+        <article class="step" data-title="6 · שיפור הדוח">
+          <h2>שלב 6 · שיפור הדוח בפועל</h2><p class="lead">משפרים כותרות, טקסטים, גרף, מקורות, סדר וקריאות לפי רשימת בדיקה.</p>
+          <div class="callout">תוצר השלב: דוח חקר חזותי כמעט סופי.</div>
+          <div class="grid"><div class="card"><h3>רשימת בדיקה</h3><ul><li>שאלת החקר בולטת.</li><li>יש היררכיה: כותרת ראשית, כותרות משנה, טקסט קצר.</li><li>הגרף/תרשים ברור וכולל מקור.</li><li>התובנות קצרות ומבוססות ראיות.</li></ul></div><div class="card"><h3>בדיקות נוספות</h3><ul><li>המסקנה וההמלצה בולטות.</li><li>הצבעים עקביים ואין עומס חזותי.</li><li>אדם מבחוץ יבין את הדוח תוך דקה.</li><li>לא נמחקו ראיות ומקורות חשובים.</li></ul></div></div>
+          <div class="field"><label>מה שיפרנו בפועל?</label><textarea data-save="step6improve" placeholder="כותרות: ... | גרף/מקור: ... | טקסט שקוצר: ... | מסקנה/המלצה שהודגשו: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="6"> שיפרנו לפחות 3 רכיבים בדוח ושמרנו ראיות ומקורות.</label>
+        </article>
+        <article class="step" data-title="7 · משוב קריאות">
+          <h2>שלב 7 · בדיקת קריאות עמיתים</h2><p class="lead">צוות אחר קורא את הדוח במשך 3-4 דקות ומסמן מה ברור ומה עדיין לא ברור.</p>
+          <div class="callout">תוצר השלב: משוב חיצוני קצר ושיפור אחד שמיושם בפועל.</div>
+          <div class="grid"><div class="card"><h3>הצוות הקורא מסמן:</h3><ol><li>מה המסר המרכזי שהבנו?</li><li>מה לא היה ברור?</li><li>איפה חסר מקור או הסבר?</li><li>מה כדאי לקצר?</li></ol></div><div class="card"><h3>דגש חשוב</h3><p>אם צוות אחר לא מבין את הדוח, זה לא כישלון. זו הזדמנות לשפר לפני ההצגה.</p></div></div>
+          <div class="field"><label>משוב שקיבלנו ומה תיקנו בעקבותיו</label><textarea data-save="step7peer" placeholder="המסר שהצוות השני הבין: ... | מה לא היה ברור: ... | תיקון שביצענו: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="7"> קיבלנו משוב עמיתים ויישמנו לפחות תיקון אחד.</label>
+        </article>
+        <article class="step" data-title="8 · שמירה"><h2>שמירה לקראת מפגש 13</h2><p class="lead">במפגש הבא נהפוך את הדוח לסיפור קצר להצגה, לכן צריך לשמור את רכיבי הליבה.</p><div class="template">לשמור לפני יציאה:
+1. דוח חקר חזותי כמעט סופי.
+2. המסר המרכזי של הדוח.
+3. הגרף/תרשים המרכזי.
+4. 2-3 תובנות מרכזיות.
+5. מסקנה והמלצה קצרות.
+6. הערות אחרונות לתיקון לפני בניית המצגת.</div><div class="field"><label>מה שמרנו ומה עוד צריך תיקון?</label><textarea data-save="saveForNext" placeholder="קישור/שם קובץ: ... | מסר מרכזי: ... | תיקונים אחרונים: ..."></textarea></div><label class="check"><input type="checkbox" data-done="8"> שמרנו דוח כמעט סופי ורכיבים מוכנים לבניית מצגת במפגש 13.</label></article>
+      </section>
+      <aside class="panel support"><div class="support-grid"><div><h3>מושגים</h3><span class="pill">היררכיה</span><span class="pill">כותרת מסקנה</span><span class="pill">שטח לבן</span><span class="pill">מקור לגרף</span><span class="pill">קיצור טקסט</span><span class="pill">קריאות</span></div><div><h3>בדיקת איכות למדריך</h3><div class="rubric"><div><b>חובה:</b> התוצר תואם למערך המקור.</div><div><b>חובה:</b> יש קשר ברור למפגש הקודם ולמפגש הבא.</div><div><b>חובה:</b> הצוות מסביר מה <bdi>AI</bdi> עזר לעשות ומה נבדק עצמאית.</div><div><b>שדרוג:</b> ניסוח קצר וברור שאפשר להעביר לדוח או למצגת.</div></div></div></div></aside>
+    </main><div class="footer-note">המידע נשמר בדפדפן המקומי של המכשיר בלבד. אין להזין מידע אישי או פרטי תלמידים.</div>
+  </div>
+<script>
+const key='omerAiResearchLab.lesson12.v1';
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const state=JSON.parse(localStorage.getItem(key)||'{}');
+function save(){document.querySelectorAll('[data-save]').forEach(el=>state[el.dataset.save]=el.value);document.querySelectorAll('[data-done]').forEach(el=>state['done'+el.dataset.done]=el.checked);localStorage.setItem(key,JSON.stringify(state));renderNav()}
+function load(){document.querySelectorAll('[data-save]').forEach(el=>{if(state[el.dataset.save])el.value=state[el.dataset.save]});document.querySelectorAll('[data-done]').forEach(el=>{el.checked=!!state['done'+el.dataset.done]})}
+function show(i){steps.forEach((s,n)=>s.classList.toggle('active',n===i));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===i));window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){nav.innerHTML='';let done=0;steps.forEach((s,i)=>{const isDone=!!state['done'+i];if(isDone)done++;const b=document.createElement('button');b.textContent=(isDone?'✓ ':'')+s.dataset.title;b.className=isDone?'done':'';b.onclick=()=>show(i);nav.appendChild(b)});document.getElementById('scoreBox').textContent=done+' מתוך '+steps.length+' שלבים סומנו.'}
+function resetWork(){if(confirm('לאפס את העבודה השמורה במפגש 12?')){localStorage.removeItem(key);location.reload()}}
+document.addEventListener('input',e=>{if(e.target.matches('[data-save]'))save()});document.addEventListener('change',e=>{if(e.target.matches('[data-done]'))save()});load();renderNav();show(0);
+</script>
+<script src="/js/feedback-widget.js?v=20261004-ai-research-lab-lesson-12"></script>
+</body>
+</html>

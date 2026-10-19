@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Research Lab - מפגש 2 - מנושא רחב לשאלת חקר טובה</title>
+<link rel="stylesheet" href="assets/html-ppt/fonts.css">
+<link rel="stylesheet" href="assets/html-ppt/base.css">
+<link rel="stylesheet" href="assets/html-ppt/animations/animations.css">
+<link rel="stylesheet" href="assets/html-ppt/templates/obsidian-claude-gradient/style.css">
+<style>
+  body.tpl-obsidian-claude-gradient{direction:rtl;font-family:Rubik,Inter,Arial,sans-serif;--oc-bg:#0b1220;--oc-surface:#111827;--oc-surface2:#172033;--oc-border:#263449;--oc-accent:#06b6d4;--oc-accent2:#38bdf8;--oc-accent3:#67e8f9;--oc-blue:#60a5fa;--oc-green:#34d399;--oc-orange:#f59e0b;--oc-text:#e5f0ff;--oc-dim:#b8c7da;--oc-dimmer:#7b8ba4}
+  .tpl-obsidian-claude-gradient .deck,.tpl-obsidian-claude-gradient .slide{direction:rtl;font-family:Rubik,Inter,Arial,sans-serif;text-align:right}.tpl-obsidian-claude-gradient .deck{transform:scale(calc(var(--deck-scale,1) * .92))!important;border:1px solid rgba(103,232,249,.18);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.34)}
+  .tpl-obsidian-claude-gradient .slide{align-items:center;justify-content:flex-start;padding:74px 82px 58px}.tpl-obsidian-claude-gradient .slide.center{text-align:center;align-items:center;justify-content:center}.tpl-obsidian-claude-gradient .slide.center .oc-sub{margin-inline:auto}.tpl-obsidian-claude-gradient .oc-h1,.tpl-obsidian-claude-gradient .oc-h2{font-family:Rubik,Inter,Arial,sans-serif;letter-spacing:0}.tpl-obsidian-claude-gradient .oc-h1{font-size:66px}.tpl-obsidian-claude-gradient .oc-h2{font-size:43px}.tpl-obsidian-claude-gradient .oc-sub{font-size:20px;max-width:920px;color:var(--oc-dim)}.tpl-obsidian-claude-gradient .oc-card{text-align:right}.tpl-obsidian-claude-gradient bdi,.tpl-obsidian-claude-gradient .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}.tpl-obsidian-claude-gradient .oc-tag{direction:ltr;text-align:left}.tpl-obsidian-claude-gradient .oc-snum{direction:ltr;unicode-bidi:isolate;text-align:left}.tpl-obsidian-claude-gradient .oc-hl{text-align:right;border-left:0;border-right:4px solid var(--oc-accent2);border-radius:12px 0 0 12px;color:#dbeafe;background:rgba(6,182,212,.08);font-size:18px}.tpl-obsidian-claude-gradient .oc-code{direction:rtl;text-align:right;font-family:Rubik,Inter,Arial,sans-serif;font-size:21px;line-height:1.8;white-space:pre-wrap;unicode-bidi:plaintext;max-width:1120px;background:#020617;border-color:#334155;color:#eaf6ff}.tpl-obsidian-claude-gradient .oc-code .line{display:block;direction:rtl;text-align:right;unicode-bidi:isolate}.tpl-obsidian-claude-gradient .oc-steps{text-align:right;width:100%;max-width:1120px;margin-top:18px}.tpl-obsidian-claude-gradient .oc-step{flex-direction:row;direction:rtl;background:rgba(17,24,39,.72);border:1px solid var(--oc-border);border-radius:14px;margin-bottom:10px;padding:16px 18px}.tpl-obsidian-claude-gradient .oc-sn{order:0}.tpl-obsidian-claude-gradient .oc-sc{order:1;text-align:right}.tpl-obsidian-claude-gradient .oc-sc h4{font-size:22px}.tpl-obsidian-claude-gradient .oc-sc p{font-size:18px;color:#b8c7da}.tpl-obsidian-claude-gradient .course-link{position:fixed;top:16px;right:16px;z-index:9999;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border-radius:999px;background:rgba(229,240,255,.10);color:#e5f0ff;border:1px solid rgba(103,232,249,.24);font-family:Rubik,Arial,sans-serif;font-weight:900;text-decoration:none;box-shadow:0 10px 24px rgba(0,0,0,.18)}.tpl-obsidian-claude-gradient .course-link:hover{background:rgba(103,232,249,.18);text-decoration:none}.tpl-obsidian-claude-gradient .notes{display:none}.tpl-obsidian-claude-gradient .tight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:100%;max-width:1120px;margin-top:24px}.tpl-obsidian-claude-gradient .wide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;width:100%;max-width:1120px;margin-top:22px}.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-tag,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-h2,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-sub,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-code,.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-hl{width:100%;max-width:1120px}.tpl-obsidian-claude-gradient .slide:not(.center)>.oc-h2{margin-top:8px}.tpl-obsidian-claude-gradient .oc-card h3{font-size:22px;color:var(--oc-text);margin:0 0 9px}.tpl-obsidian-claude-gradient .oc-card p,.tpl-obsidian-claude-gradient .oc-card li{color:var(--oc-dim);font-size:17px;line-height:1.6}.tpl-obsidian-claude-gradient ul,.tpl-obsidian-claude-gradient ol{margin:0;padding-inline-start:22px}.tpl-obsidian-claude-gradient table{width:100%;max-width:1120px;border-collapse:separate;border-spacing:0 10px;margin-top:20px}.tpl-obsidian-claude-gradient th,.tpl-obsidian-claude-gradient td{text-align:right;padding:13px 16px;background:rgba(17,24,39,.72);border-top:1px solid var(--oc-border);border-bottom:1px solid var(--oc-border);color:var(--oc-dim);font-size:17px}.tpl-obsidian-claude-gradient th{color:#e5f0ff;background:rgba(6,182,212,.12)}.tpl-obsidian-claude-gradient td:first-child,.tpl-obsidian-claude-gradient th:first-child{border-right:1px solid var(--oc-border);border-radius:0 14px 14px 0}.tpl-obsidian-claude-gradient td:last-child,.tpl-obsidian-claude-gradient th:last-child{border-left:1px solid var(--oc-border);border-radius:14px 0 0 14px}@media(max-width:900px){.tpl-obsidian-claude-gradient .deck{transform:scale(var(--deck-scale,1))!important;border-radius:0}.tpl-obsidian-claude-gradient .slide{padding:52px 28px}.tpl-obsidian-claude-gradient .oc-h1{font-size:46px}.tpl-obsidian-claude-gradient .oc-h2{font-size:34px}.tpl-obsidian-claude-gradient .oc-grid-2,.tpl-obsidian-claude-gradient .oc-grid-3,.tpl-obsidian-claude-gradient .tight-grid,.tpl-obsidian-claude-gradient .wide-grid{grid-template-columns:1fr}.tpl-obsidian-claude-gradient .oc-snum{right:auto;left:22px}}
+</style>
+</head>
+<body class="tpl-obsidian-claude-gradient">
+<a class="course-link" href="ai-research-lab.html">↩ עמוד הקורס</a>
+<div class="deck">
+
+  <section class="slide center" data-title="פתיחה">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">01 / 10</div>
+    <div class="oc-tag">AI RESEARCH LAB · OMER</div>
+    <h1 class="oc-h1">מנושא רחב<br><span class="oc-g">לשאלת חקר טובה</span></h1>
+    <p class="oc-sub">מפגש 2 לכיתה ט׳: בוחרים נושא מוביל, מצמצמים אותו, מדרגים שאלות, ויוצאים עם שאלת חקר ראשונית + 3 שאלות משנה.</p>
+    <div class="oc-grid-3"><div class="oc-card"><span class="oc-badge oc-bb">נקודת מוצא</span><h3>2-3 נושאים</h3><p>התוצרים ממפגש 1.</p></div><div class="oc-card"><span class="oc-badge oc-bg">תהליך</span><h3>צמצום ודירוג</h3><p>לא בוחרים הצעה ראשונה.</p></div><div class="oc-card"><span class="oc-badge oc-bp">תוצר</span><h3>שאלה + 3 משנה</h3><p>בסיס למפת חיפוש במפגש 3.</p></div></div>
+    <div class="notes">להזכיר: במפגש 1 AI פתח כיוונים. היום הופכים כיוון למסלול חקר.</div>
+  </section>
+
+  <section class="slide center" data-title="רעיון מרכזי">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">02 / 10</div>
+    <div class="oc-tag">CORE IDEA</div>
+    <h1 class="oc-h1">נושא הוא אזור.<br><span class="oc-g">שאלת חקר היא מסלול ברור.</span></h1>
+    <p class="oc-sub">היום לא מחפשים ניסוח מושלם. מחפשים ניסוח שאפשר להתחיל לבדוק.</p>
+    <div class="notes">משפט עוגן למפגש. אפשר לבקש מהתלמידים לתת דוגמה: ספורט ובריאות הוא אזור, שאלת חקר היא מסלול.</div>
+  </section>
+
+  <section class="slide" data-title="בחירת נושא">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">03 / 10</div>
+    <div class="oc-tag">FROM LAST LESSON</div>
+    <h2 class="oc-h2">חוזרים ל-2-3 נושאים ממפגש 1</h2>
+    <p class="oc-sub">כל צוות בוחר נושא מוביל אחד. לא חייבים להיות בטוחים ב-100%, אבל צריך שתהיה נקודת התחלה טובה.</p>
+    <div class="wide-grid"><div class="oc-card"><span class="oc-badge oc-bg">שאלות בחירה</span><ul><li>מה הכי מעניין אותנו באמת?</li><li>על מה כנראה יש מידע זמין?</li><li>איזה נושא לא רחב מדי להתחלה?</li></ul></div><div class="oc-card"><span class="oc-badge oc-bo">דגש למדריך</span><p>אם צוות מתפזר, להגביל לנושא אחד בלבד. עדיף להתקדם עם בחירה זמנית מאשר להיתקע בדיון ארוך.</p></div></div>
+    <div class="notes">10 דקות. כל צוות יוצא עם נושא מוביל אחד.</div>
+  </section>
+
+  <section class="slide" data-title="שלוש דוגמאות">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">04 / 10</div>
+    <div class="oc-tag">WHAT MAKES A GOOD QUESTION</div>
+    <h2 class="oc-h2">שלוש רמות של ניסוח</h2>
+    <div class="tight-grid"><div class="oc-card"><span class="oc-badge oc-bo">רחב מדי</span><h3><bdi>AI</bdi> וחינוך</h3><p>זה אזור ענק. עוד אין פעולה, קהל יעד או דרך בדיקה.</p></div><div class="oc-card"><span class="oc-badge oc-bp">חלש</span><h3>האם <bdi>AI</bdi> טוב?</h3><p>שאלה כללית מדי, נוטה לדעה ולתשובת כן/לא.</p></div><div class="oc-card"><span class="oc-badge oc-bg">טוב יותר</span><h3>כיצד שימוש בכלי <bdi>AI</bdi> משפיע על הדרך שבה תלמידי כיתה ט׳ מתכוננים למבחנים?</h3><p>יש קהל, פעולה, תופעה וקשר שאפשר לבדוק.</p></div></div>
+    <div class="oc-hl">שאלת כיתה: מה הופך את הדוגמה השלישית לטובה יותר?</div>
+    <div class="notes">להוציא מהכיתה את המרכיבים: קהל יעד, פעולה, תוצאה, אפשרות בדיקה.</div>
+  </section>
+
+  <section class="slide" data-title="קריטריונים">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">05 / 10</div>
+    <div class="oc-tag">QUALITY CRITERIA</div>
+    <h2 class="oc-h2">4 קריטריונים לשאלת חקר טובה</h2>
+    <div class="wide-grid"><div class="oc-card"><h3>1. מעניינת אותנו</h3><p>יש לנו סיבה לחקור אותה.</p></div><div class="oc-card"><h3>2. אפשר לבדוק אותה</h3><p>לא רק דעה כללית או ויכוח פתוח.</p></div><div class="oc-card"><h3>3. יש עליה מידע</h3><p>מקורות, נתונים, דוגמאות או עדויות.</p></div><div class="oc-card"><h3>4. לא רחבה מדי</h3><p>אפשר להתקדם איתה בזמן הקורס.</p></div></div>
+    <div class="oc-hl">כלל אצבע: אם אי אפשר לדמיין איזה מידע נחפש במפגש הבא, השאלה עדיין רחבה מדי.</div>
+    <div class="notes">להדגיש: זו לא רשימת ביקורת תיאורטית, זו מערכת דירוג לשלב העבודה.</div>
+  </section>
+
+  <section class="slide" data-title="הדגמת AI">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">06 / 10</div>
+    <div class="oc-tag">LIVE DEMO</div>
+    <h2 class="oc-h2">משתמשים ב-<bdi>AI</bdi> כדי לייצר אפשרויות</h2>
+    <p class="oc-sub">הדוגמה: זמן מסך ושינה. מבקשים שאלות חקר, לא תשובה ולא בחירה אוטומטית.</p>
+    <div class="oc-code"><span class="line">הנושא שלנו הוא זמן מסך ושינה.</span><span class="line">הצע 10 שאלות חקר שמתאימות לתלמידי כיתה ט׳.</span><span class="line">השאלות צריכות להיות ממוקדות, ניתנות לבדיקה ולא כלליות מדי.</span><span class="line">אל תבחר בשבילנו. כתוב שאלות מגוונות שאפשר לדרג.</span></div>
+    <div class="notes">להדגים מול הכיתה. אם אין גישה לכלים, להשתמש בדוגמה מוכנה.</div>
+  </section>
+
+  <section class="slide" data-title="דירוג">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">07 / 10</div>
+    <div class="oc-tag">RANKING MODEL</div>
+    <h2 class="oc-h2">לא בוחרים לפי מה שנשמע יפה</h2>
+    <table><thead><tr><th>שאלה</th><th>עניין</th><th>אפשר לבדוק</th><th>יש מידע</th><th>לא רחבה מדי</th></tr></thead><tbody><tr><td>האם זמן מסך פוגע בשינה?</td><td>4</td><td>3</td><td>4</td><td>2</td></tr><tr><td>כיצד שימוש בטלפון בשעה שלפני השינה משפיע על איכות השינה של בני נוער?</td><td>5</td><td>5</td><td>4</td><td>5</td></tr></tbody></table>
+    <div class="oc-hl">למה השאלה השנייה טובה יותר? היא ממוקדת בזמן, בקהל ובתופעה.</div>
+    <div class="notes">להסביר שהדירוג הוא כלי לשיחה, לא מתמטיקה מדויקת.</div>
+  </section>
+
+  <section class="slide" data-title="עבודת צוות">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">08 / 10</div>
+    <div class="oc-tag">TEAM WORK</div>
+    <h2 class="oc-h2">עבודה בצוותים: 10 שאלות, דירוג, בחירה</h2>
+    <div class="oc-steps"><div class="oc-step"><div class="oc-sn">1</div><div class="oc-sc"><h4>מזינים נושא אחד</h4><p>מבקשים מ-<bdi>AI</bdi> 10 שאלות חקר אפשריות.</p></div></div><div class="oc-step"><div class="oc-sn">2</div><div class="oc-sc"><h4>מדרגים לפחות 4 שאלות</h4><p>עניין, בדיקה, מידע ומיקוד - 1 עד 5.</p></div></div><div class="oc-step"><div class="oc-sn">3</div><div class="oc-sc"><h4>מסמנים 2 מובילות</h4><p>בוחרים אחת ראשונית אחרי עצירת איכות.</p></div></div></div>
+    <div class="notes">30 דקות. לשמור על קצב ולמנוע גלישה לעשרות שאלות בלי דירוג.</div>
+  </section>
+
+  <section class="slide" data-title="עצירת איכות">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">09 / 10</div>
+    <div class="oc-tag">CHECKPOINT</div>
+    <h2 class="oc-h2">עצירת איכות: מצמצמים לפני שממשיכים</h2>
+    <div class="wide-grid"><div class="oc-card"><span class="oc-badge oc-bg">3 שאלות מדריך</span><ol><li>מה בדיוק אתם רוצים לגלות?</li><li>איך תדעו שמצאתם תשובה?</li><li>איזה מידע תצטרכו לחפש במפגש הבא?</li></ol></div><div class="oc-card"><span class="oc-badge oc-bb">צירי צמצום</span><ul><li>קהל יעד: כיתה ט׳ / בני נוער / בית הספר</li><li>זמן: לפני מבחן / לפני השינה / שבוע לימודים</li><li>פעולה: שימוש ב-<bdi>AI</bdi> / צפייה / תרגול</li><li>תוצאה: ריכוז / ביטחון / איכות שינה</li></ul></div></div>
+    <div class="notes">לסייע לצוותים שמנסחים שאלות רחבות מדי. לא לנסח עבורם הכל.</div>
+  </section>
+
+  <section class="slide center" data-title="סיכום">
+    <div class="oc-cbg"></div><div class="oc-cgrid"></div><div class="oc-snum">10 / 10</div>
+    <div class="oc-tag">EXIT TICKET</div>
+    <h1 class="oc-h1">יוצאים עם<br><span class="oc-g">שאלת חקר ראשונית</span></h1>
+    <p class="oc-sub">לכל צוות: שאלת חקר אחת + 3 שאלות משנה + הבנה איזה מידע צריך לחפש במפגש הבא.</p>
+    <div class="oc-grid-3"><div class="oc-card"><h3>שאלה אחת</h3><p>ממוקדת וניתנת לבדיקה.</p></div><div class="oc-card"><h3>3 שאלות משנה</h3><p>פירוק של השאלה הגדולה.</p></div><div class="oc-card"><h3>גשר למפגש 3</h3><p>מפת חיפוש בעברית ובאנגלית.</p></div></div>
+    <div class="notes">לוודא שהתלמידים שומרים את השאלה והשאלות המשנה. זה הבסיס למפת החיפוש.</div>
+  </section>
+
+</div>
+<script src="assets/html-ppt/runtime.js"></script>
+</body></html>

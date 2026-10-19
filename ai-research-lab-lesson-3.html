@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Research Lab · מפגש 3 · חיפוש חכם ובניית מפת חיפוש</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#0f172a;--muted:#526070;--line:#cbd5e1;--page:#eef3f8;--card:#fff;--blue:#2563eb;--cyan:#0891b2;--green:#16a34a;--purple:#475569;--orange:#b45309;--dark:#0b1220;--warn:#b45309;--danger:#be123c}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at top left,rgba(8,145,178,.12),transparent 34%),radial-gradient(circle at 92% 8%,rgba(37,99,235,.08),transparent 26%),var(--page);line-height:1.65}bdi,.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:0 14px 38px rgba(15,23,42,.06);position:sticky;top:10px;z-index:10}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#0f172a,var(--cyan));color:#fff;display:grid;place-items:center;font-size:1.25rem;font-weight:900}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border-radius:999px;background:var(--dark);color:#fff;text-decoration:none;border:0;font-family:inherit;font-weight:900;cursor:pointer}.btn.secondary{background:#f8fafc;color:var(--dark);border:1px solid var(--line)}.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 330px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:0 18px 46px rgba(15,23,42,.06)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#f8fafc;border-radius:16px;padding:10px 12px;font-family:inherit;font-weight:900;color:#334155;cursor:pointer}.progress-list button.active{background:#ecfeff;border-color:#67e8f9;color:#155e75}.progress-list button.done{background:#dcfce7;border-color:#86efac;color:#166534}.hero{display:grid;grid-template-columns:1.12fr .88fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{background:linear-gradient(135deg,#0b1220,#164e63 62%,#1e293b);color:#fff;border-radius:26px;padding:24px;min-height:292px;display:flex;flex-direction:column;justify-content:center}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 11px;color:#bae6fd;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2rem,5vw,4rem);line-height:1.04;margin:0 0 12px}.hero p{margin:0;color:#dbeafe;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:#fff;border-radius:22px;padding:16px}.stat b{display:block;color:var(--cyan);font-size:1.45rem}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px}.card h3{margin:0 0 8px;color:#155e75}.card p,.card li{color:#475569;font-weight:700}.callout{border-right:6px solid var(--cyan);background:#ecfeff;border-radius:20px;padding:14px 16px;font-weight:900;color:#155e75;margin:14px 0}.success{border-right-color:var(--green);background:#f0fdf4;color:#166534}.warning{border-right-color:#f59e0b;background:#fffbeb;color:#92400e}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:92px;resize:vertical}.check{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#334155}.check input{width:auto;margin-top:5px}.template{direction:rtl;background:#020617;color:#dbeafe;border-radius:18px;padding:16px;white-space:pre-wrap;font-weight:800;line-height:1.7}.support h3,.sidebar h3{margin:0 0 10px}.pill{display:inline-flex;margin:4px 3px;border-radius:999px;background:#eef2ff;color:#3730a3;padding:6px 10px;font-weight:900;font-size:.84rem}.rubric{display:grid;gap:8px}.rubric div{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 18px,680px)}.panel{padding:14px;border-radius:22px}.grid,.support-grid{grid-template-columns:1fr}.brand-mark{width:48px;height:48px}.btn{min-height:44px}input,textarea,select{font-size:16px}}@media print{body{background:#fff}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ai-research-lab.html" aria-label="חזרה לקורס"><span class="platform-home-icon" aria-hidden="true">↩</span><span class="platform-home-text">AI Research Lab</span></a>
+  <div class="shell">
+    <header class="topbar"><div class="brand"><div class="brand-mark">03</div><div><h1>AI Research Lab · מפגש 3</h1><p>חיפוש חכם ובניית מפת חיפוש · לומדה ותרגול צוותי לכיתה ט׳</p></div></div><div class="actions"><a class="btn secondary" href="ai-research-lab.html">עמוד הקורס</a><a class="btn secondary" href="ai-research-lab-slides-3.html">מצגת מדריך</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div></header>
+    <section class="hero" aria-label="פתיחה"><div class="hero-card"><span class="kicker">90 דקות · מפגש 3 מתוך 15 · עומר הנביעה</span><h2>חיפוש טוב מתחיל לפני שמקלידים.</h2><p>היום לומדים שלא פשוט כותבים את השאלה בגוגל או ב-AI. מפרקים את השאלה למילות מפתח, מילים נרדפות, עברית ואנגלית, וסוגי מקורות שונים.</p></div><div class="goal-card"><div class="stat"><b>נקודת מוצא</b>שאלת חקר ראשונית + 3 שאלות משנה</div><div class="stat"><b>תוצר יציאה</b>מפת חיפוש צוותית + רשימת 5-7 מקורות אפשריים</div><div class="stat"><b>גשר להמשך</b>בדיקת אמינות מקורות במפגש 4</div></div></section>
+    <main class="layout"><aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 9 שלבים סומנו.</div></aside>
+      <section class="panel workspace">
+        <article class="step active" data-title="0 · מבט על"><h2>מבט על · חיפוש חכם ובניית מפת חיפוש</h2><p class="lead">המפגש מבוסס על מערך המקור של הקורס וממשיך ישירות מהתוצר של המפגש הקודם.</p><div class="grid"><div class="card"><h3>נקודת מוצא</h3><p>שאלת חקר ראשונית + 3 שאלות משנה</p></div><div class="card"><h3>תוצר יציאה</h3><p>מפת חיפוש צוותית + רשימת 5-7 מקורות אפשריים</p></div></div><div class="field"><label>הכנה קצרה של הצוות</label><textarea data-save="preparation" placeholder="מה פתחנו מהמפגש הקודם? מה חסר לנו לפני שמתחילים?"></textarea></div><label class="check"><input type="checkbox" data-done="0"> פתחנו את החומרים מהמפגש הקודם ומבינים מה תוצר היציאה של היום.</label></article>
+        <article class="step" data-title="1 · חיפוש מהיר">
+          <h2>שלב 1 · חיפוש מהיר ולא מתוכנן</h2><p class="lead">מחפשים דקה אחת בלי תכנון ומשווים את התוצאות כדי להבין כמה רעש חיפוש מהיר מייצר.</p>
+          <div class="callout">תוצר השלב: הבנה שחיפוש מהיר מחזיר תשובות כלליות ולא תמיד מקור שאפשר לסמוך עליו.</div>
+          <div class="card"><h3>שאלת הדגמה</h3><p>כיצד שימוש ב-<bdi>AI</bdi> משפיע על הכנת שיעורי בית?</p></div>
+          <div class="grid"><div class="field"><label>מה מצאנו בדקה אחת?</label><textarea data-save="step1found" placeholder="תשובות כלליות, מקור ברור, אתר לא ברור, סרטון, כתבה..."></textarea></div><div class="field"><label>מה היה חסר כדי לסמוך על זה?</label><textarea data-save="step1missing" placeholder="מי כתב? תאריך? מקור נתונים? קשר לשאלה? סוג מקור?"></textarea></div></div>
+          <label class="check"><input type="checkbox" data-done="1"> הבנו שחיפוש לא מתוכנן מחזיר הרבה רעש ודורש תכנון מוקדם.</label>
+        </article>
+        <article class="step" data-title="2 · פירוק שאלה">
+          <h2>שלב 2 · פירוק שאלת חקר</h2><p class="lead">לא מחפשים רק את המשפט המלא. מפרקים אותו לרכיבים שאפשר לשלב בחיפושים שונים.</p>
+          <div class="callout">תוצר השלב: רכיבי חיפוש מתוך שאלת החקר.</div>
+          <div class="grid"><div class="card"><h3>רכיבים לפירוק</h3><ul><li>מושג מרכזי.</li><li>פעולה או תופעה.</li><li>קהל יעד.</li><li>מקום או זמן.</li><li>תוצאה שנבדקת.</li></ul></div><div class="card"><h3>דוגמה</h3><p><b>מושג:</b> <bdi>AI</bdi>, בינה מלאכותית, כלי <bdi>AI</bdi></p><p><b>פעולה:</b> שיעורי בית, תרגול, פתרון משימות</p><p><b>קהל:</b> תלמידים, בני נוער, students</p></div></div>
+          <div class="field"><label>פירוק שאלת החקר שלנו</label><textarea data-save="step2breakdown" placeholder="מושג מרכזי: ... | פעולה: ... | קהל יעד: ... | תוצאה נבדקת: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="2"> פירקנו את שאלת החקר לרכיבים שאפשר להפוך לשאילתות חיפוש.</label>
+        </article>
+        <article class="step" data-title="3 · מילות מפתח">
+          <h2>שלב 3 · מילות מפתח בעברית ובאנגלית</h2><p class="lead">יוצרים מאגר מילים ולא מסתפקים בניסוח אחד של השאלה.</p>
+          <div class="callout">תוצר השלב: לפחות 5 מילות מפתח בעברית ו-5 באנגלית.</div>
+          <div class="grid"><div class="field"><label>5+ מילות מפתח בעברית</label><textarea data-save="step3hebrew" placeholder="לדוגמה: בינה מלאכותית, שיעורי בית, תלמידים, למידה, העתקה..."></textarea></div><div class="field"><label>5+ מילות מפתח באנגלית</label><textarea data-save="step3english" placeholder="לדוגמה: artificial intelligence, homework, students, learning, cheating..."></textarea></div></div>
+          <div class="field"><label>3 שאילתות חיפוש שננסה</label><textarea data-save="step3queries" placeholder="1. AI homework students learning
+2. בינה מלאכותית שיעורי בית תלמידים
+3. ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="3"> יש לנו לפחות 5 מילים בעברית, 5 באנגלית וכמה שילובי חיפוש.</label>
+        </article>
+        <article class="step" data-title="4 · AI לתכנון">
+          <h2>שלב 4 · <bdi>AI</bdi> לתכנון חיפוש</h2><p class="lead">מבקשים מ-<bdi>AI</bdi> לעזור לתכנן חיפוש, לא לענות על שאלת החקר ולא לשמש מקור.</p>
+          <div class="callout">תוצר השלב: מילים נרדפות, מונחים באנגלית ושאלות משנה שעברו בחירה של הצוות.</div>
+          <div class="template">זו שאלת החקר שלנו: ____.
+עזור לנו לבנות מילות מפתח לחיפוש בעברית ובאנגלית.
+חלק אותן לפי:
+1. מושגים מרכזיים
+2. קהל יעד
+3. פעולה או תופעה
+4. תוצאה שנבדקת
+5. מילים נרדפות
+6. מונחים באנגלית
+אל תענה על שאלת החקר. רק עזור לנו לתכנן חיפוש.</div>
+          <div class="field"><label>מה בחרנו מתוך הצעות ה-AI ומה דחינו?</label><textarea data-save="step4selected" placeholder="מילים שימושיות: ... | מילים לא מתאימות: ... | למה?"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="4"> השתמשנו ב-AI לתכנון בלבד ובחרנו בעצמנו מה מתאים.</label>
+        </article>
+        <article class="step" data-title="5 · סוגי מקורות">
+          <h2>שלב 5 · סוגי מקורות שצריך למצוא</h2><p class="lead">חיפוש טוב לא מסתפק באתר אחד או בתשובה אחת. צריך מגוון מקורות.</p>
+          <div class="callout">תוצר השלב: תוכנית חיפוש מגוונת לפי סוגי מקורות.</div>
+          <div class="grid"><div class="card"><h3>סוגי מקורות</h3><ul><li>כתבה.</li><li>דוח / מחקר.</li><li>נתון / סקר.</li><li>אתר רשמי.</li><li>סרטון הסבר.</li></ul></div><div class="card"><h3>רצוי במיוחד</h3><p>לפחות מקור אחד מסוג נתון / סקר / דוח, ולפחות מקור אחד באנגלית.</p></div></div>
+          <div class="field"><label>אילו סוגי מקורות חסרים לנו?</label><textarea data-save="step5types" placeholder="כתבה: ... | דוח/מחקר: ... | נתון/סקר: ... | אתר רשמי: ... | סרטון: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="5"> סימנו לפחות 3 סוגי מקורות שננסה למצוא.</label>
+        </article>
+        <article class="step" data-title="6 · מקורות אפשריים">
+          <h2>שלב 6 · רשימת 5-7 מקורות אפשריים</h2><p class="lead">אוספים מקורות אפשריים ומסמנים סטטוס ראשוני. עדיין לא מוכיחים אמינות מלאה - זה יקרה במפגש 4.</p>
+          <div class="callout">תוצר השלב: רשימת מקורות עם סימון כנראה אמין / צריך בדיקה / לא מתאים.</div>
+          <div class="template">| שם המקור | קישור / איפה מצאנו | סוג מקור | למה הוא קשור לשאלה | סטטוס ראשוני |
+|---|---|---|---|---|
+| | | כתבה / דוח / נתון / רשמי / סרטון | | כנראה אמין / צריך בדיקה / לא מתאים |</div>
+          <div class="field"><label>רשימת המקורות שלנו</label><textarea data-save="step6sources" placeholder="1. מקור + סוג + סטטוס
+2. ...
+3. ...
+4. ...
+5. ...
+6-7 אם יש"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="6"> אספנו לפחות 5 מקורות אפשריים וסימנו כל אחד בסטטוס ראשוני.</label>
+        </article>
+        <article class="step" data-title="7 · עצירת איכות ושמירה">
+          <h2>שלב 7 · עצירת איכות ושמירה</h2><p class="lead">בודקים שהמפה באמת תעזור למפגש 4 ולא רק מלאה בקישורים.</p>
+          <div class="callout">תוצר השלב: תיק חקר מוכן לבדיקת אמינות במפגש 4.</div>
+          <div class="grid"><div class="card"><h3>שאלות בדיקה</h3><ol><li>האם כל מקור קשור ישירות לשאלת החקר?</li><li>האם יש יותר מסוג מקור אחד?</li><li>האם חיפשנו גם בעברית וגם באנגלית?</li><li>איזו מילת חיפוש הייתה יעילה במיוחד?</li><li>איזה סוג מקור חסר עדיין?</li></ol></div><div class="card"><h3>מה שומרים</h3><p>שאלת החקר, 3 שאלות משנה, מפת חיפוש, מילות מפתח, 5-7 מקורות וסימון ראשוני לכל מקור.</p></div></div>
+          <div class="field"><label>כרטיס יציאה</label><textarea data-save="step7exit" placeholder="מילת חיפוש יעילה: ... | מקור אחד טוב: ... | מה חסר למפגש 4: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="7"> שמרנו מפת חיפוש ורשימת מקורות מוכנות לבדיקת אמינות.</label>
+        </article>
+        <article class="step" data-title="8 · פרומפט"><h2>פרומפט עזר מבוקר</h2><p class="lead">השתמשו ב-<bdi>AI</bdi> כעוזר חשיבה בלבד. לא מעתיקים מסקנות ולא מוסיפים מידע שלא בדקתם.</p><div class="template">זו שאלת החקר שלנו: ____.
+עזור לנו לבנות מילות מפתח לחיפוש בעברית ובאנגלית.
+חלק אותן לפי:
+1. מושגים מרכזיים
+2. קהל יעד
+3. פעולה או תופעה
+4. תוצאה שנבדקת
+5. מילים נרדפות
+6. מונחים באנגלית
+אל תענה על שאלת החקר. רק עזור לנו לתכנן חיפוש.</div><div class="field"><label>איך השתמשנו ב-AI ומה בדקנו בעצמנו?</label><textarea data-save="aiDisclosure" placeholder="כתבו גילוי נאות קצר לשימוש אחראי ב-AI"></textarea></div><label class="check"><input type="checkbox" data-done="8"> השתמשנו ב-AI בצורה מבוקרת ושמרנו תוצר להמשך.</label></article>
+      </section>
+      <aside class="panel support"><div class="support-grid"><div><h3>מושגים</h3><span class="pill">מפת חיפוש</span><span class="pill">מילות מפתח</span><span class="pill">מילים נרדפות</span><span class="pill">עברית ואנגלית</span><span class="pill">סוגי מקורות</span><span class="pill">סינון ראשוני</span></div><div><h3>בדיקת איכות למדריך</h3><div class="rubric"><div><b>חובה:</b> התוצר תואם למערך המקור.</div><div><b>חובה:</b> יש קשר ברור למפגש הקודם ולמפגש הבא.</div><div><b>חובה:</b> הצוות מסביר מה <bdi>AI</bdi> עזר לעשות ומה נבדק עצמאית.</div><div><b>שדרוג:</b> ניסוח קצר וברור שאפשר להעביר לדוח או למצגת.</div></div></div></div></aside>
+    </main><div class="footer-note">המידע נשמר בדפדפן המקומי של המכשיר בלבד. אין להזין מידע אישי או פרטי תלמידים.</div>
+  </div>
+<script>
+const key='omerAiResearchLab.lesson3.v1';
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const state=JSON.parse(localStorage.getItem(key)||'{}');
+function save(){document.querySelectorAll('[data-save]').forEach(el=>state[el.dataset.save]=el.value);document.querySelectorAll('[data-done]').forEach(el=>state['done'+el.dataset.done]=el.checked);localStorage.setItem(key,JSON.stringify(state));renderNav()}
+function load(){document.querySelectorAll('[data-save]').forEach(el=>{if(state[el.dataset.save])el.value=state[el.dataset.save]});document.querySelectorAll('[data-done]').forEach(el=>{el.checked=!!state['done'+el.dataset.done]})}
+function show(i){steps.forEach((s,n)=>s.classList.toggle('active',n===i));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===i));window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){nav.innerHTML='';let done=0;steps.forEach((s,i)=>{const isDone=!!state['done'+i];if(isDone)done++;const b=document.createElement('button');b.textContent=(isDone?'✓ ':'')+s.dataset.title;b.className=isDone?'done':'';b.onclick=()=>show(i);nav.appendChild(b)});document.getElementById('scoreBox').textContent=done+' מתוך '+steps.length+' שלבים סומנו.'}
+function resetWork(){if(confirm('לאפס את העבודה השמורה במפגש 3?')){localStorage.removeItem(key);location.reload()}}
+document.addEventListener('input',e=>{if(e.target.matches('[data-save]'))save()});document.addEventListener('change',e=>{if(e.target.matches('[data-done]'))save()});load();renderNav();show(0);
+</script>
+<script src="/js/feedback-widget.js?v=20261004-ai-research-lab-lesson-3"></script>
+</body>
+</html>

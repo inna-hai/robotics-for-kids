@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Research Lab · מפגש 7 · ארגון מידע מטקסט לטבלה</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#0f172a;--muted:#526070;--line:#cbd5e1;--page:#eef3f8;--card:#fff;--blue:#2563eb;--cyan:#0891b2;--green:#16a34a;--purple:#475569;--orange:#b45309;--dark:#0b1220;--warn:#b45309;--danger:#be123c}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at top left,rgba(8,145,178,.12),transparent 34%),radial-gradient(circle at 92% 8%,rgba(37,99,235,.08),transparent 26%),var(--page);line-height:1.65}bdi,.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:0 14px 38px rgba(15,23,42,.06);position:sticky;top:10px;z-index:10}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#0f172a,var(--cyan));color:#fff;display:grid;place-items:center;font-size:1.25rem;font-weight:900}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border-radius:999px;background:var(--dark);color:#fff;text-decoration:none;border:0;font-family:inherit;font-weight:900;cursor:pointer}.btn.secondary{background:#f8fafc;color:var(--dark);border:1px solid var(--line)}.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 330px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:0 18px 46px rgba(15,23,42,.06)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#f8fafc;border-radius:16px;padding:10px 12px;font-family:inherit;font-weight:900;color:#334155;cursor:pointer}.progress-list button.active{background:#ecfeff;border-color:#67e8f9;color:#155e75}.progress-list button.done{background:#dcfce7;border-color:#86efac;color:#166534}.hero{display:grid;grid-template-columns:1.12fr .88fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{background:linear-gradient(135deg,#0b1220,#164e63 62%,#1e293b);color:#fff;border-radius:26px;padding:24px;min-height:292px;display:flex;flex-direction:column;justify-content:center}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 11px;color:#bae6fd;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2rem,5vw,4rem);line-height:1.04;margin:0 0 12px}.hero p{margin:0;color:#dbeafe;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:#fff;border-radius:22px;padding:16px}.stat b{display:block;color:var(--cyan);font-size:1.45rem}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px}.card h3{margin:0 0 8px;color:#155e75}.card p,.card li{color:#475569;font-weight:700}.callout{border-right:6px solid var(--cyan);background:#ecfeff;border-radius:20px;padding:14px 16px;font-weight:900;color:#155e75;margin:14px 0}.success{border-right-color:var(--green);background:#f0fdf4;color:#166534}.warning{border-right-color:#f59e0b;background:#fffbeb;color:#92400e}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;font:inherit;background:#fff;color:var(--ink)}textarea{min-height:92px;resize:vertical}.check{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#334155}.check input{width:auto;margin-top:5px}.template{direction:rtl;background:#020617;color:#dbeafe;border-radius:18px;padding:16px;white-space:pre-wrap;font-weight:800;line-height:1.7}.support h3,.sidebar h3{margin:0 0 10px}.pill{display:inline-flex;margin:4px 3px;border-radius:999px;background:#eef2ff;color:#3730a3;padding:6px 10px;font-weight:900;font-size:.84rem}.rubric{display:grid;gap:8px}.rubric div{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 18px,680px)}.panel{padding:14px;border-radius:22px}.grid,.support-grid{grid-template-columns:1fr}.brand-mark{width:48px;height:48px}.btn{min-height:44px}input,textarea,select{font-size:16px}}@media print{body{background:#fff}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ai-research-lab.html" aria-label="חזרה לקורס"><span class="platform-home-icon" aria-hidden="true">↩</span><span class="platform-home-text">AI Research Lab</span></a>
+  <div class="shell">
+    <header class="topbar"><div class="brand"><div class="brand-mark">07</div><div><h1>AI Research Lab · מפגש 7</h1><p>ארגון מידע מטקסט לטבלה · לומדה ותרגול צוותי לכיתה ט׳</p></div></div><div class="actions"><a class="btn secondary" href="ai-research-lab.html">עמוד הקורס</a><a class="btn secondary" href="ai-research-lab-slides-7.html">מצגת מדריך</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div></header>
+    <section class="hero" aria-label="פתיחה"><div class="hero-card"><span class="kicker">90 דקות · מפגש 7 מתוך 15 · עומר הנביעה</span><h2>טבלה טובה אינה עיצוב - היא דרך לחשוב.</h2><p>היום הופכים מידע מפוזר מתוך מקורות, סיכומים וטקסטים למבנה ברור שאפשר להסיק ממנו מסקנות ולהכין ממנו גרף או תרשים.</p></div><div class="goal-card"><div class="stat"><b>נקודת מוצא</b>טבלת השוואת מקורות, הסכמות, סתירות ופערים</div><div class="stat"><b>תוצר יציאה</b>טבלת מידע ראשונה עם לפחות 6 שורות</div><div class="stat"><b>גשר להמשך</b>נתונים, גרפים והמחשה חזותית במפגש 8</div></div></section>
+    <main class="layout"><aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 9 שלבים סומנו.</div></aside>
+      <section class="panel workspace">
+        <article class="step active" data-title="0 · מבט על"><h2>מבט על · ארגון מידע מטקסט לטבלה</h2><p class="lead">המפגש מבוסס על מערך המקור של הקורס וממשיך ישירות מהתוצר של המפגש הקודם.</p><div class="grid"><div class="card"><h3>נקודת מוצא</h3><p>טבלת השוואת מקורות, הסכמות, סתירות ופערים</p></div><div class="card"><h3>תוצר יציאה</h3><p>טבלת מידע ראשונה עם לפחות 6 שורות</p></div></div><div class="field"><label>הכנה קצרה של הצוות</label><textarea data-save="preparation" placeholder="מה פתחנו מהמפגש הקודם? מה חסר לנו לפני שמתחילים?"></textarea></div><label class="check"><input type="checkbox" data-done="0"> פתחנו את החומרים מהמפגש הקודם ומבינים מה תוצר היציאה של היום.</label></article>
+        <article class="step" data-title="1 · טקסט מול טבלה">
+          <h2>שלב 1 · טקסט מול טבלה</h2><p class="lead">פותחים עם אותה יחידת מידע בשתי צורות: פסקה עמוסה מול טבלה קצרה.</p>
+          <div class="callout">תוצר השלב: הבנה למה טבלה עוזרת לראות טענות, נתונים, דוגמאות ופערים.</div>
+          <div class="card"><h3>פסקת פתיחה לבדיקה</h3><p>מחקרים וכתבות שונות מצביעים על כך שתלמידים משתמשים בכלי <bdi>AI</bdi> כדי להבין חומר, לקבל דוגמאות ולתרגל שאלות. מצד שני, חלק מהמורים חוששים שתלמידים יעתיקו תשובות בלי להבין. בסקר מסוים נמצא שתלמידים מדווחים שהכלים עוזרים להם להתחיל משימה, אך לא תמיד יודעים לבדוק אם התשובה נכונה. כתבה אחרת טוענת שהבעיה המרכזית אינה השימוש בכלים אלא היעדר כללי עבודה ברורים.</p></div>
+          <div class="field"><label>אילו סוגי מידע מעורבבים בפסקה?</label><textarea data-save="step1mixed" placeholder="לדוגמה: טענה, חשש, נתון מסקר, דוגמה, פתרון מוצע..."></textarea></div>
+          <div class="field"><label>מה היה קל יותר לראות אם המידע היה בטבלה?</label><textarea data-save="step1tableValue" placeholder="כתבו מה הטבלה מאפשרת להשוות או לבדוק"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="1"> זיהינו למה מידע מפוזר בטקסט מקשה על הסקת מסקנות.</label>
+        </article>
+        <article class="step" data-title="2 · מודל טבלה">
+          <h2>שלב 2 · מודל טבלת מידע</h2><p class="lead">בונים עמודות בסיסיות לפי המערך: מקור, טענה / רעיון, נתון / ראיה, דוגמה, רמת אמינות וקשר לשאלת החקר.</p>
+          <div class="callout">תוצר השלב: מבנה טבלה בסיסי שאפשר להתחיל למלא.</div>
+          <div class="template">| מקור | טענה / רעיון | נתון / ראיה | דוגמה | רמת אמינות | קשר לשאלת החקר |
+|---|---|---|---|---|---|
+| | | | | | |</div>
+          <div class="field"><label>מה המשמעות של כל עמודה אצלנו?</label><textarea data-save="step2columns" placeholder="כתבו הגדרה קצרה לצוות לכל עמודה"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="2"> בנינו מבנה שמפריד בין טענה, נתון, דוגמה, אמינות וקשר לשאלה.</label>
+        </article>
+        <article class="step" data-title="3 · מטקסט לשורות">
+          <h2>שלב 3 · ממקור אחד לכמה שורות</h2><p class="lead">מקור אחד יכול להכיל כמה טענות, ראיות או דוגמאות. מפרקים אותו לשורות עבודה.</p>
+          <div class="callout">תוצר השלב: דוגמת המרה מטקסט לשתי שורות לפחות.</div>
+          <div class="grid"><div class="card"><h3>סדר פעולה</h3><ol><li>מסמנים משפט שיש בו טענה.</li><li>מחפשים נתון, ראיה, דוגמה או ציטוט.</li><li>בודקים רמת אמינות לפי מפגש 4.</li><li>כותבים איך השורה קשורה לשאלת החקר.</li></ol></div><div class="card"><h3>דגש חשוב</h3><p>לא חייבים שכל מקור יהיה שורה אחת. לפעמים מקור טוב הופך ל-2 או 3 שורות מידע נפרדות.</p></div></div>
+          <div class="field"><label>הדגמת המרה של מקור אחד</label><textarea data-save="step3conversion" placeholder="מקור: ... | טענה: ... | ראיה/דוגמה: ... | קשר לשאלה: ..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="3"> פירקנו מקור אחד לשורות מידע שניתן לעבוד איתן.</label>
+        </article>
+        <article class="step" data-title="4 · בחירת קטגוריות">
+          <h2>שלב 4 · בחירת קטגוריות צוותית</h2><p class="lead">כל צוות בוחר עמודות שמתאימות לשאלת החקר שלו, ולא רק מעתיק תבנית כללית.</p>
+          <div class="callout">תוצר השלב: תבנית טבלה מותאמת לצוות.</div>
+          <div class="grid"><div class="card"><h3>שאלות בחירה</h3><ul><li>מה אנחנו צריכים לדעת כדי לענות על השאלה?</li><li>האם אנחנו משווים יתרונות וסיכונים?</li><li>האם יש קבוצות, תקופות, פתרונות או דוגמאות?</li></ul></div><div class="card"><h3>עמודות אפשריות</h3><p>קהל יעד / גיל, יתרון / סיכון, פתרון מוצע, שנה / תאריך, סוג מידע, חוזק הראיה.</p></div></div>
+          <div class="field"><label>עמודה מותאמת שנוסיף לטבלה שלנו</label><input data-save="step4customColumn" placeholder="לדוגמה: יתרון / סיכון, קבוצת גיל, פתרון מוצע"></div>
+          <label class="check"><input type="checkbox" data-done="4"> בחרנו לפחות עמודה אחת שמתאימה לשאלת החקר שלנו.</label>
+        </article>
+        <article class="step" data-title="5 · מילוי מידע">
+          <h2>שלב 5 · מילוי טבלת המידע</h2><p class="lead">ממלאים לפחות 6 שורות מתוך המקורות, עם מקור ברור וקשר לשאלת החקר.</p>
+          <div class="callout">תוצר השלב: טבלת מידע ראשונה עם לפחות 6 שורות.</div>
+          <div class="field"><label>שורות מידע ראשונות</label><textarea data-save="step5rows" placeholder="1. מקור | טענה | ראיה/דוגמה | אמינות | קשר לשאלה
+2. ...
+3. ...
+4. ...
+5. ...
+6. ..."></textarea></div>
+          <div class="field"><label>מידע מעניין אבל לא קשור כרגע</label><textarea data-save="step5aside" placeholder="לא מוחקים מיד - מסמנים בצד ובודקים אם יחזור להיות רלוונטי"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="5"> יש לנו לפחות 6 שורות, וכל שורה כוללת מקור וקשר לשאלת החקר.</label>
+        </article>
+        <article class="step" data-title="6 · עצירת איכות">
+          <h2>שלב 6 · עצירת איכות</h2><p class="lead">בודקים שהטבלה לא רק מלאה, אלא באמת עוזרת לענות על שאלת החקר.</p>
+          <div class="callout">תוצר השלב: טבלה נקייה יותר עם מידע לא רלוונטי מסומן בצד.</div>
+          <div class="grid"><div class="card"><h3>שאלות בדיקה</h3><ol><li>איזו שורה הכי עוזרת לענות על שאלת החקר?</li><li>איזו שורה מעניינת אבל לא באמת קשורה?</li><li>האם יש שורה בלי מקור ברור?</li><li>האם יש טענה בלי ראיה?</li><li>האם יש מידע שיכול להפוך לגרף או תרשים?</li></ol></div><div class="card"><h3>אם השורות כלליות מדי</h3><p>חוזרים למקור ומחפשים נתון, דוגמה או ציטוט מדויק יותר.</p></div></div>
+          <div class="field"><label>מה תיקנו בעקבות עצירת האיכות?</label><textarea data-save="step6fixes" placeholder="כתבו שורות שתיקנתם, מחקתם או סימנתם בצד"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="6"> בדקנו מקור, ראיה, קשר לשאלה ואפשרות לייצוג חזותי.</label>
+        </article>
+        <article class="step" data-title="7 · שמירה למפגש 8">
+          <h2>שלב 7 · שמירה וגשר למפגש 8</h2><p class="lead">שומרים טבלה ברורה ומסמנים שורה אחת או שתיים שמתאימות לגרף, תרשים או המחשה חזותית.</p>
+          <div class="callout">תוצר השלב: בסיס מוכן למפגש 8 - נתונים, גרפים והמחשה חזותית.</div>
+          <div class="field"><label>שורה שיכולה להפוך לגרף או תרשים</label><textarea data-save="step7visualCandidate" placeholder="כתבו את השורה ולמה היא מתאימה להמחשה חזותית"></textarea></div>
+          <div class="field"><label>מה עדיין חסר וצריך להשלים?</label><textarea data-save="step7missing" placeholder="מקור נוסף, נתון מדויק, בדיקת אמינות, דוגמה..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="7"> שמרנו טבלת מידע, שורת מועמדת להמחשה ומידע חסר להשלמה.</label>
+        </article>
+        <article class="step" data-title="8 · AI מבוקר"><h2>שימוש מבוקר ב-<bdi>AI</bdi></h2><p class="lead">השתמשו ב-<bdi>AI</bdi> כעוזר לחשיבה על קטגוריות ובדיקת חסרים, לא כמחליף קריאה במקורות.</p><div class="template">זו שאלת החקר שלנו: ____.
+יש לנו מקורות מסוגים שונים: ____.
+אילו עמודות כדאי לכלול בטבלת מידע כדי לארגן טענות, נתונים, דוגמאות וקשר לשאלת החקר?
+הצע 6-8 עמודות והסבר בקצרה למה כל עמודה חשובה.</div><div class="template">זו שורת מידע שכתבנו: ____.
+בדוק האם היא כוללת מקור, טענה, ראיה וקשר לשאלת החקר.
+אל תשכתב את הכול - שאל אותנו מה חסר.</div><div class="field"><label>איך השתמשנו ב-AI ומה בדקנו בעצמנו?</label><textarea data-save="aiDisclosure" placeholder="כתבו גילוי נאות קצר לשימוש אחראי ב-AI"></textarea></div><label class="check"><input type="checkbox" data-done="8"> השתמשנו ב-AI בצורה מבוקרת ובדקנו את ההצעות מול המקורות והשאלה.</label></article>
+      </section>
+      <aside class="panel support"><div class="support-grid"><div><h3>מושגים</h3><span class="pill">טענה</span><span class="pill">נתון</span><span class="pill">דוגמה</span><span class="pill">רמת אמינות</span><span class="pill">קשר לשאלה</span><span class="pill">קטגוריות</span></div><div><h3>בדיקת איכות למדריך</h3><div class="rubric"><div><b>חובה:</b> התוצר תואם למערך המקור.</div><div><b>חובה:</b> יש קשר ברור למפגש הקודם ולמפגש הבא.</div><div><b>חובה:</b> הצוות מסביר מה <bdi>AI</bdi> עזר לעשות ומה נבדק עצמאית.</div><div><b>שדרוג:</b> ניסוח קצר וברור שאפשר להעביר לדוח או למצגת.</div></div></div></div></aside>
+    </main><div class="footer-note">המידע נשמר בדפדפן המקומי של המכשיר בלבד. אין להזין מידע אישי או פרטי תלמידים.</div>
+  </div>
+<script>
+const key='omerAiResearchLab.lesson7.v1';
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const state=JSON.parse(localStorage.getItem(key)||'{}');
+function save(){document.querySelectorAll('[data-save]').forEach(el=>state[el.dataset.save]=el.value);document.querySelectorAll('[data-done]').forEach(el=>state['done'+el.dataset.done]=el.checked);localStorage.setItem(key,JSON.stringify(state));renderNav()}
+function load(){document.querySelectorAll('[data-save]').forEach(el=>{if(state[el.dataset.save])el.value=state[el.dataset.save]});document.querySelectorAll('[data-done]').forEach(el=>{el.checked=!!state['done'+el.dataset.done]})}
+function show(i){steps.forEach((s,n)=>s.classList.toggle('active',n===i));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===i));window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){nav.innerHTML='';let done=0;steps.forEach((s,i)=>{const isDone=!!state['done'+i];if(isDone)done++;const b=document.createElement('button');b.textContent=(isDone?'✓ ':'')+s.dataset.title;b.className=isDone?'done':'';b.onclick=()=>show(i);nav.appendChild(b)});document.getElementById('scoreBox').textContent=done+' מתוך '+steps.length+' שלבים סומנו.'}
+function resetWork(){if(confirm('לאפס את העבודה השמורה במפגש 7?')){localStorage.removeItem(key);location.reload()}}
+document.addEventListener('input',e=>{if(e.target.matches('[data-save]'))save()});document.addEventListener('change',e=>{if(e.target.matches('[data-done]'))save()});load();renderNav();show(0);
+</script>
+<script src="/js/feedback-widget.js?v=20261004-ai-research-lab-lesson-7"></script>
+</body>
+</html>
