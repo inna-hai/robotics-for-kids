@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מפגש 3 · הנדסה חברתית ופישינג</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#16110d;--muted:#67584d;--line:#e5d6c8;--page:#faf6f1;--card:#fff;--amber:#f59e0b;--orange:#ea580c;--brown:#6b3f25;--blue:#2563eb;--green:#15803d;--red:#dc2626;--purple:#7c3aed;--dark:#20140e;--shadow:0 18px 46px rgba(68,43,27,.10)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 0,rgba(245,158,11,.16),transparent 27rem),radial-gradient(circle at 90% 12%,rgba(37,99,235,.10),transparent 28rem),linear-gradient(180deg,#fffaf4,#f6efe7 58%,#fbfaf8);line-height:1.65}button,input,textarea,select{font:inherit}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:20;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--brown),var(--amber));color:white;display:grid;place-items:center;font-size:1.8rem;font-weight:900;box-shadow:0 14px 30px rgba(107,63,37,.22)}h1,h2,h3,p{margin-top:0}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 14px;border-radius:999px;background:var(--dark);color:white;text-decoration:none;border:0;font-weight:900;cursor:pointer}.btn.secondary{background:#fff;color:var(--dark);border:1px solid var(--line)}.btn.good{background:var(--green)}.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#21140d,#6b3f25 55%,#d97706);color:white;border-radius:30px;padding:28px;min-height:310px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 24px 70px rgba(74,45,26,.22)}.hero-card:after{content:"🔒";position:absolute;left:30px;bottom:-50px;font-size:12rem;opacity:.08}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 11px;color:#fed7aa;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2.1rem,5vw,4.2rem);line-height:1.04;margin:0 0 12px;letter-spacing:-.035em}.hero p{margin:0;color:#ffedd5;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:rgba(255,255,255,.96);border-radius:24px;padding:16px;box-shadow:var(--shadow);font-weight:800}.stat b{display:block;color:var(--brown);font-size:1.35rem;margin-bottom:3px}.layout{display:grid;grid-template-columns:270px minmax(0,1fr) 310px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#fffaf5;border-radius:16px;padding:10px 12px;font-weight:900;color:#574237;cursor:pointer}.progress-list button.active{background:#fff7ed;border-color:#fdba74;color:#9a3412}.progress-list button.done{background:#f0fdf4;border-color:#86efac;color:#166534}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;position:relative;overflow:hidden}.card h3{margin:0 0 8px;color:var(--brown)}.card p,.card li{color:#5f5147;font-weight:720}.card ul,.card ol{margin:0;padding-inline-start:22px}.signal{border-top:6px solid var(--amber)}.signal.red{border-top-color:var(--red)}.signal.blue{border-top-color:var(--blue)}.signal.purple{border-top-color:var(--purple)}.callout{border-right:6px solid var(--amber);background:#fff7ed;border-radius:20px;padding:14px 16px;font-weight:900;color:#9a3412;margin:14px 0}.warning{border-right-color:var(--red);background:#fff1f2;color:#9f1239}.success{border-right-color:var(--green);background:#f0fdf4;color:#166534}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #d6c4b6;border-radius:16px;padding:11px 12px;background:white;color:var(--ink)}textarea{min-height:88px;resize:vertical}.check{display:flex;gap:8px;align-items:flex-start;background:#fffaf5;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#4f4036;margin-top:14px}.check input{width:auto;margin-top:5px}.trap-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:14px 0}.trap-node{background:#fff7ed;border:1px solid #fdba74;border-radius:16px;padding:10px;text-align:center;font-weight:900}.trap-node:after{content:"←";display:block;color:#ea580c}.trap-node:last-child:after{content:""}.sim-frame{width:100%;height:720px;border:0;border-radius:24px;background:#17110d}.launch-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.builder{background:linear-gradient(145deg,#251710,#4b2f20);color:white;border-radius:24px;padding:18px}.builder h3{color:#fdba74}.builder .field label{color:#ffedd5}.builder input,.builder textarea,.builder select{border-color:#704b33}.preview{background:#fff;color:#172033;border-radius:20px;padding:16px;margin-top:14px}.preview b{color:#9a3412}.oath{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.oath label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:16px;padding:11px;font-weight:800;background:#fffaf5}.oath input{width:auto;margin-top:5px}.footer-note{text-align:center;color:#7c6859;font-weight:900;margin-top:18px}.support-list{display:grid;gap:9px}.support-list div{border:1px solid var(--line);background:#fffaf5;border-radius:16px;padding:11px;font-weight:800}.support-list b{display:block;color:var(--brown)}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.support-list{grid-template-columns:repeat(2,1fr)}.grid3,.grid{grid-template-columns:1fr}.trap-flow{grid-template-columns:1fr}.trap-node:after{content:"↓"}.trap-node:last-child:after{content:""}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 16px,680px)}.panel{padding:14px;border-radius:22px}.oath,.support-list{grid-template-columns:1fr}.sim-frame{height:780px}.brand-mark{width:48px;height:48px}input,textarea,select{font-size:16px}}@media print{body{background:#fff}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note,.sim-frame{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}}
+  </style>
+  <style>
+    .check input:disabled{opacity:1;accent-color:var(--green)}
+    .completion-hint{display:block;color:var(--muted);font-size:.9rem;font-weight:700;margin-top:6px}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ort-courses.html" aria-label="חזרה לקורסי אורט"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">קורסי אורט</span></a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">🚪</div><div><h1>סייבר לרשת אורט · מפגש 3</h1><p>הנדסה חברתית והתחזות · כשהאקר תוקף את האדם</p></div></div>
+      <div class="actions"><a class="btn secondary" href="ort-courses.html">עמוד אורט</a><a class="btn secondary" href="ort-cyber-slides-3.html">מצגת מדריך</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div>
+    </header>
+    <section class="hero">
+      <div class="hero-card"><span class="kicker">מפגש 3 · 75 דקות · כיתות ז׳–ט׳</span><h2>לא שוברים את החלון.<br>גורמים לנו לפתוח את הדלת.</h2><p>נזהה פישינג, התחזות ומניפולציה רגשית; נתנסה בסימולציה; ונבנה תרחיש בטוח שמלמד אחרים לעצור בזמן.</p></div>
+      <div class="goal-card"><div class="stat"><b>מטרת השיעור</b>להבין כיצד תוקפים מנצלים אמון, פחד, לחץ ופיתוי — ואיך מחזירים את השליטה.</div><div class="stat"><b>תוצר סיום</b>תרחיש התחזות לימודי או תרשים ״המסלול למלכודת״, כולל סימנים אדומים ותגובה בטוחה.</div><div class="stat"><b>כלל בטיחות</b>עובדים רק עם שמות, חשבונות וקישורים בדיוניים. לא מזינים סיסמה, קוד או פרט אישי.</div></div>
+    </section>
+    <main class="layout">
+      <aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 7 שלבים סומנו.</div></aside>
+      <section class="panel workspace">
+        <article class="step active" data-title="1. פותחים את הדלת">
+          <h2>שלב א · מי מנסה להיכנס? · 10 דקות</h2><p class="lead">חשבו על בית מוגן: דלת נעולה, חלונות סגורים ואזעקה. מה קורה אם מישהו פשוט משכנע אותנו לפתוח?</p>
+          <div class="grid"><div class="card signal"><h3>פריצה טכנולוגית</h3><p>התוקף מנסה לנצל חולשה במחשב, באתר או ברשת.</p></div><div class="card signal red"><h3>הנדסה חברתית</h3><p>התוקף מנסה לנצל אמון, רגש או לחץ כדי שאנחנו נבצע את הפעולה עבורו.</p></div></div>
+          <div class="field"><label>למה אנשים חכמים עלולים לשתף מידע עם מתחזה?</label><textarea data-save="openingThought" placeholder="חשבו על לחץ, אמון, פחד, סקרנות או רצון לעזור..."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="0" disabled> כתבתי הסבר שמראה מה ההבדל בין פריצה למחשב לבין ״פריצה לאדם״.</label><span class="completion-hint">השלב יסומן אוטומטית לאחר כתיבת תשובה.</span>
+        </article>
+        <article class="step" data-title="2. מהי הנדסה חברתית">
+          <h2>שלב ב · גורמים לנו לפתוח את הדלת · 10 דקות</h2><p class="lead">הנדסה חברתית היא שימוש במניפולציה פסיכולוגית כדי לגרום לנו למסור מידע או לבצע פעולה בלי להבין שמנצלים אותנו.</p>
+          <div class="grid"><div class="card signal"><h3>פישינג</h3><p>קישור או טופס מזויף שמנסה להשיג פרטים. לדוגמה: ״סקין נדיר בחינם״.</p></div><div class="card signal blue"><h3>התחזות</h3><p>מישהו מציג את עצמו כחבר, מורה או שירות מוכר. תמונת פרופיל אינה הוכחת זהות.</p></div><div class="card signal red"><h3>שכנוע רגשי</h3><p>פחד, חמלה, אמון או לחץ זמן מחליפים בדיקה רגועה.</p></div><div class="card signal purple"><h3>פרס או סקר מזויף</h3><p>הבטחה לפרס שדורשת מידע, תשלום קטן או התקנה.</p></div></div>
+          <div class="callout">במילים פשוטות: לא פורצים את הדלת — גורמים לנו לפתוח אותה לבד.</div>
+          <div class="field"><label for="conceptCheck">בדיקת הבנה: איזו דוגמה מתארת הנדסה חברתית?</label><select data-save="conceptCheck" id="conceptCheck"><option value="">בחרו תשובה...</option><option value="technical">ניצול תקלה בתוכנה בלי מעורבות של המשתמש</option><option value="social">התחזות לחבר כדי לשכנע אותי למסור קוד</option><option value="hardware">החלפת רכיב פגום במחשב</option></select></div>
+          <label class="check"><input type="checkbox" data-done="1" disabled> זיהיתי נכון דוגמה להנדסה חברתית.</label><span class="completion-hint" id="conceptHint">השלב יסומן אוטומטית לאחר בחירת התשובה הנכונה.</span>
+        </article>
+        <article class="step" data-title="3. סימנים אדומים">
+          <h2>שלב ב · לוח הבקרה של התוקף</h2><p class="lead">לתוקף לא צריך הרבה. לפעמים מספיק ללחוץ על כפתור רגשי אחד.</p>
+          <div class="grid3"><div class="card signal red"><h3>😨 פחד</h3><p>״החשבון שלך ייחסם״. פחד גורם לפעול לפני שבודקים.</p></div><div class="card signal"><h3>⏱️ לחץ זמן</h3><p>״נותרו 4 דקות״. דחיפות מלאכותית מצמצמת חשיבה ביקורתית.</p></div><div class="card signal purple"><h3>🎁 פרס</h3><p>״זכית!״. פיתוי גורם לנו לרצות להאמין גם בלי ראיות.</p></div></div>
+          <div class="grid"><div class="card"><h3>בדקו את השולח</h3><p>האם הכתובת מדויקת? למשל <b>support@gmai1.com</b> משתמשת בספרה 1 במקום האות l.</p></div><div class="card"><h3>בדקו בערוץ נפרד</h3><p>פנו לאדם במספר או בחשבון שכבר הכרתם — לא דרך פרטי הקשר שבהודעה החשודה.</p></div></div>
+          <div class="field"><label>כתבו שני סימנים אדומים שתבדקו מעכשיו</label><textarea data-save="redFlags"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="2" disabled> כתבתי לפחות שני סימנים אדומים ודרך אימות בטוחה.</label><span class="completion-hint">השלב יסומן אוטומטית לאחר כתיבת תשובה מפורטת.</span>
+        </article>
+        <article class="step" id="simulation" data-title="4. מי נפל בפח">
+          <h2>שלב ג · סימולציית ״מי נפל בפח?״ · 25 דקות</h2><p class="lead">עברו חמישה תרחישים. אחרי כל החלטה תקבלו הסבר ותזהו את המנגנון הרגשי שניסה להפעיל אתכם.</p>
+          <div class="callout warning">לא מזינים מידע אמיתי ולא לוחצים על כתובות שמופיעות בתרחישים. כל השמות והחשבונות בסימולציה בדיוניים.</div>
+          <div class="launch-row"><a class="btn good" href="ort-cyber-phishing-sim.html" target="_blank" rel="noopener noreferrer">פתיחת הסימולציה במסך מלא ↗</a><button class="btn secondary" type="button" onclick="refreshSimulation()">איפוס התצוגה המשובצת</button></div>
+          <iframe class="sim-frame" id="simFrame" src="ort-cyber-phishing-sim.html" title="סימולציית פישינג — מי נפל בפח"></iframe>
+          <label class="check"><input type="checkbox" data-done="3" disabled> סיימתי את כל חמשת תרחישי הסימולציה.</label><span class="completion-hint" id="simulationHint">השלב יסומן אוטומטית בסיום התרחיש החמישי.</span>
+        </article>
+        <article class="step" data-title="5. עוצרים לחשוב">
+          <h2>שלב ג · רפלקציה אחרי הסימולציה</h2><p class="lead">התוקפים משתמשים ברגשות אנושיים. המטרה אינה להאשים את מי שטעה — אלא ללמוד לזהות את הרגע שבו אפשר לעצור.</p>
+          <div class="field"><label>1. מה גרם לי להאמין לשולח?</label><textarea data-save="reflectionBelieve"></textarea></div><div class="field"><label>2. באיזה שלב הבנתי שמשהו חשוד?</label><textarea data-save="reflectionMoment"></textarea></div><div class="field"><label>3. מה אעשה אחרת בפעם הבאה?</label><textarea data-save="reflectionNext"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="4" disabled> השלמתי את שלוש שאלות הרפלקציה.</label><span class="completion-hint">השלב יסומן אוטומטית לאחר מענה על שלוש השאלות.</span>
+        </article>
+        <article class="step" data-title="6. בונים תרחיש בטוח">
+          <h2>שלב ד · בונים את המסלול למלכודת · 20 דקות</h2><p class="lead">עובדים בקבוצה ובוחרים: תרחיש התחזות לימודי או תרשים זרימה. המטרה היא ללמד זיהוי והגנה — לא ליצור הונאה אמיתית.</p>
+          <div class="callout warning">גבול בטיחות: אין להשתמש בשם של אדם אמיתי, לוגו אמיתי, כתובת פעילה, קישור אמיתי, סיסמה או מידע אישי.</div>
+          <div class="trap-flow"><div class="trap-node">הודעה מפתה</div><div class="trap-node">רגש מופעל</div><div class="trap-node">בקשת פעולה</div><div class="trap-node">הסימן האדום</div><div class="trap-node">תגובה בטוחה</div></div>
+          <div class="builder"><h3>בונה התרחיש הקבוצתי</h3><div class="grid"><div><div class="field"><label>מי הדמות הבדיונית שמתחזה?</label><input data-save="builderWho" id="builderWho" placeholder="לדוגמה: מנהל משחק דמיוני"></div><div class="field"><label>איזה רגש מופעל?</label><select data-save="builderEmotion" id="builderEmotion"><option value="">בחרו...</option><option>פחד</option><option>לחץ זמן</option><option>אמון</option><option>חמלה</option><option>פרס והזדמנות</option></select></div><div class="field"><label>מה הבקשה החשודה?</label><textarea data-save="builderRequest" id="builderRequest" placeholder="נסחו בקשה בדיונית, בלי קישור או פרט אמיתי"></textarea></div></div><div><div class="field"><label>אילו סימנים אדומים נזהה?</label><textarea data-save="builderSignals" id="builderSignals"></textarea></div><div class="field"><label>מהי התגובה הבטוחה?</label><textarea data-save="builderSafe" id="builderSafe"></textarea></div><button class="btn" type="button" onclick="renderProduct()">עדכון התוצר</button><div class="preview" id="productPreview">מלאו את השדות ולחצו ״עדכון התוצר״.</div></div></div></div>
+          <label class="check"><input type="checkbox" data-done="5" disabled> בנינו תרחיש/תרשים מלא עם סימנים אדומים ותגובה בטוחה.</label><span class="completion-hint">השלב יסומן אוטומטית לאחר מילוי כל חלקי התוצר ולחיצה על ״עדכון התוצר״.</span>
+        </article>
+        <article class="step" data-title="7. חוקי הבית הבטוח">
+          <h2>שלב ה · נועלים את הבית · 10 דקות</h2><p class="lead">אפשר לגנוב סיסמה גם בלי לפרוץ למחשב — פשוט לגרום לאדם למסור אותה. לכן מוסיפים להרגלים הטכניים גם חשיבה ביקורתית.</p>
+          <div class="grid"><div class="card signal"><h3>עוצרים</h3><p>לא פועלים תחת לחץ, פחד או הבטחת פרס.</p></div><div class="card signal blue"><h3>בודקים</h3><p>בודקים כתובת, שם משתמש והקשר; מאמתים בערוץ נפרד.</p></div><div class="card signal red"><h3>לא משתפים</h3><p>לא מוסרים סיסמה, קוד חד־פעמי, כתובת או פרטי תשלום.</p></div><div class="card signal purple"><h3>מדווחים</h3><p>פונים למורה, להורה או לשירות דרך הערוץ הרשמי.</p></div></div>
+          <h3>החוק האישי שלי</h3><div class="oath"><label><input type="radio" name="oath" value="בודק פעמיים לפני קישור">אני בודק/ת פעמיים לפני לחיצה.</label><label><input type="radio" name="oath" value="לא מוסר מידע בלי אימות">אני לא מוסר/ת מידע בלי אימות.</label><label><input type="radio" name="oath" value="מאמת בערוץ נפרד">אני מאמת/ת זהות בערוץ נפרד.</label><label><input type="radio" name="oath" value="מדווח למבוגר אחראי">אני מדווח/ת כשמשהו מרגיש מוזר.</label></div>
+          <div class="callout success">למפגש הבא: נבדוק איך מידע שאנחנו משתפים ברשת יכול לעזור למתחזה — ואיך מגנים על הזהות הדיגיטלית.</div>
+          <label class="check"><input type="checkbox" data-done="6" disabled> בחרתי כלל אחד שאאמץ מעכשיו.</label><span class="completion-hint">השלב יסומן אוטומטית לאחר בחירת כלל אישי.</span>
+        </article>
+      </section>
+      <aside class="panel support"><h3>ערכת ההגנה שלי</h3><div class="support-list"><div><b>עוצרים</b>לחץ הוא סיבה להאט.</div><div><b>בודקים</b>מי השולח ומה הכתובת.</div><div><b>מאמתים</b>דרך ערוץ נפרד ומוכר.</div><div><b>לא משתפים</b>סיסמה או קוד חד־פעמי.</div><div><b>מדווחים</b>למבוגר אחראי או לשירות הרשמי.</div></div><div class="callout warning">אם כבר לחצתם או מסרתם מידע: לא מסתירים. פונים מיד למבוגר אחראי, מחליפים סיסמה דרך האתר הרשמי ובודקים את החשבון.</div></aside>
+    </main>
+    <p class="footer-note">העבודה נשמרת בדפדפן המקומי בלבד. אין להזין מידע אישי או סיסמאות.</p>
+  </div>
+<script>
+const STORAGE_KEY='ortCyberLesson3.v2';
+const LEGACY_KEY='ortCyberLesson3.v1';
+const SIMULATION_KEY='ortCyberLesson3Simulation';
+const steps=[...document.querySelectorAll('.step')],nav=document.getElementById('nav');
+const builderKeys=['builderWho','builderEmotion','builderRequest','builderSignals','builderSafe'];
+let current=0;
+let state={fields:{},done:Array(steps.length).fill(false),oath:'',productBuilt:false};
+try{
+  const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+  const legacy=JSON.parse(localStorage.getItem(LEGACY_KEY)||'null');
+  const source=saved||legacy;
+  if(source&&source.fields) state={fields:source.fields||{},done:Array(steps.length).fill(false),oath:source.oath||'',productBuilt:Boolean(saved&&saved.productBuilt)};
+}catch{}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function hasText(key,min=5){return String(state.fields[key]||'').trim().length>=min}
+function simulationCompleted(){try{return Boolean(JSON.parse(localStorage.getItem(SIMULATION_KEY)||'null')?.completed)}catch{return false}}
+function completionRules(){return[
+  hasText('openingThought',10),
+  state.fields.conceptCheck==='social',
+  hasText('redFlags',20),
+  simulationCompleted(),
+  ['reflectionBelieve','reflectionMoment','reflectionNext'].every(key=>hasText(key)),
+  state.productBuilt&&builderKeys.every(key=>hasText(key,2)),
+  Boolean(state.oath)
+]}
+function refreshProgress(){
+  const next=completionRules();
+  const changed=next.some((value,i)=>value!==state.done[i]);
+  state.done=next;
+  document.querySelectorAll('[data-done]').forEach(el=>{el.checked=state.done[Number(el.dataset.done)]});
+  const conceptHint=document.getElementById('conceptHint');
+  if(conceptHint&&state.fields.conceptCheck) conceptHint.textContent=state.fields.conceptCheck==='social'?'נכון — התחזות ושכנוע למסור קוד הם הנדסה חברתית.':'נסו שוב: חפשו מצב שבו מפעילים אדם כדי שיבצע פעולה.';
+  const simulationHint=document.getElementById('simulationHint');
+  if(simulationHint&&state.done[3]) simulationHint.textContent='הסימולציה הושלמה — כל הכבוד.';
+  if(changed) save();
+  buildNav();
+}
+function buildNav(){nav.innerHTML='';steps.forEach((step,i)=>{const b=document.createElement('button');b.type='button';b.textContent=step.dataset.title;b.classList.toggle('done',state.done[i]);b.classList.toggle('active',i===current);b.setAttribute('aria-current',i===current?'step':'false');b.addEventListener('click',()=>show(i));nav.appendChild(b)});updateScore()}
+function show(i){
+  current=Math.max(0,Math.min(i,steps.length-1));
+  steps.forEach((s,n)=>s.classList.toggle('active',n===current));
+  buildNav();
+  const heading=steps[current].querySelector('h2');
+  heading.setAttribute('tabindex','-1');
+  steps[current].scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>heading.focus({preventScroll:true}),300);
+  history.replaceState(null,'',current===3?'#simulation':'#step-'+(current+1));
+}
+function updateScore(){document.getElementById('scoreBox').textContent=`${state.done.filter(Boolean).length} מתוך ${steps.length} שלבים הושלמו.`}
+document.querySelectorAll('[data-save]').forEach(el=>{
+  el.value=state.fields[el.dataset.save]||'';
+  const update=()=>{state.fields[el.dataset.save]=el.value;if(builderKeys.includes(el.dataset.save))state.productBuilt=false;save();refreshProgress()};
+  el.addEventListener('input',update);el.addEventListener('change',update);
+});
+document.querySelectorAll('input[name="oath"]').forEach(el=>{el.checked=el.value===state.oath;el.addEventListener('change',()=>{state.oath=el.value;save();refreshProgress()})});
+function renderProduct(){
+  const missing=builderKeys.filter(key=>!hasText(key,2));
+  if(missing.length){state.productBuilt=false;save();refreshProgress();document.getElementById('productPreview').textContent='כדי לעדכן את התוצר, מלאו את כל חמשת החלקים.';return}
+  const val=id=>(document.getElementById(id).value||'').replace(/[<>]/g,'');
+  document.getElementById('productPreview').innerHTML=`<b>התרחיש שלנו</b><br>מתחזה: ${val('builderWho')}<br>הרגש שמופעל: ${val('builderEmotion')}<br>הבקשה: ${val('builderRequest')}<br><b>הסימנים האדומים:</b> ${val('builderSignals')}<br><b>התגובה הבטוחה:</b> ${val('builderSafe')}`;
+  state.productBuilt=true;save();refreshProgress();
+}
+function refreshSimulation(){localStorage.removeItem(SIMULATION_KEY);refreshProgress();const f=document.getElementById('simFrame');f.src=f.src.split('?')[0]+'?reset='+Date.now()}
+function syncSimulation(){refreshProgress()}
+window.addEventListener('message',event=>{if(event.origin===location.origin&&event.data?.type==='ort-cyber-simulation-complete')syncSimulation()});
+window.addEventListener('storage',event=>{if(event.key===SIMULATION_KEY)syncSimulation()});
+window.addEventListener('focus',syncSimulation);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncSimulation()});
+function resetWork(){if(!confirm('לאפס את כל העבודה במפגש 3?'))return;localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(LEGACY_KEY);localStorage.removeItem(SIMULATION_KEY);location.reload()}
+if(location.hash==='#simulation')current=3;else if(location.hash.startsWith('#step-')){const n=Number(location.hash.replace('#step-',''));if(n>=1&&n<=steps.length)current=n-1}
+steps.forEach((s,n)=>s.classList.toggle('active',n===current));
+refreshProgress();
+</script>
+<script src="/js/feedback-widget.js?v=20261018-ort-cyber-lesson-3"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מפגש 1 · האקר מול מגן</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#08111f;--muted:#526070;--line:#d7e2ee;--page:#f4f8fb;--card:#fff;--blue:#2563eb;--cyan:#06b6d4;--green:#16a34a;--teal:#0f766e;--orange:#f97316;--red:#dc2626;--purple:#7c3aed;--dark:#0f172a;--shadow:0 18px 46px rgba(15,23,42,.08)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0,rgba(6,182,212,.15),transparent 28rem),radial-gradient(circle at 88% 8%,rgba(37,99,235,.13),transparent 27rem),linear-gradient(180deg,#f8fbff,#eef7f6 60%,#f8fafc);line-height:1.65}button,input,textarea,select{font:inherit}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:20;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--teal),var(--blue));color:white;display:grid;place-items:center;font-size:1.8rem;font-weight:900;box-shadow:0 14px 30px rgba(15,118,110,.22)}h1,h2,h3,p{margin-top:0}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border-radius:999px;background:var(--dark);color:white;text-decoration:none;border:0;font-family:inherit;font-weight:900;cursor:pointer}.btn.secondary{background:#f8fafc;color:var(--dark);border:1px solid var(--line)}.btn.good{background:var(--green)}.btn.warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#07111f,#123b63 48%,#0f766e);color:white;border-radius:30px;padding:28px;min-height:310px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 24px 70px rgba(15,23,42,.20)}.hero-card:after{content:"";position:absolute;inset:auto -80px -120px auto;width:320px;height:320px;border-radius:999px;background:radial-gradient(circle,rgba(34,211,238,.36),transparent 62%)}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 11px;color:#bae6fd;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2.1rem,5vw,4.35rem);line-height:1.04;margin:0 0 12px;letter-spacing:-.035em}.hero p{margin:0;color:#dbeafe;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:rgba(255,255,255,.95);border-radius:24px;padding:16px;box-shadow:var(--shadow);font-weight:800}.stat b{display:block;color:var(--teal);font-size:1.45rem;margin-bottom:3px}.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#f8fafc;border-radius:16px;padding:10px 12px;font-weight:900;color:#334155;cursor:pointer}.progress-list button.active{background:#ecfeff;border-color:#67e8f9;color:#155e75}.progress-list button.done{background:#dcfce7;border-color:#86efac;color:#166534}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:white;border:1px solid var(--line);border-radius:22px;padding:16px;position:relative;overflow:hidden}.card h3{margin:0 0 8px;color:#0f766e}.card p,.card li{color:#475569;font-weight:730}.card ul,.card ol{margin:0;padding-inline-start:22px}.threat-card{border-top:6px solid var(--teal)}.threat-card.red{border-top-color:var(--red)}.threat-card.orange{border-top-color:var(--orange)}.threat-card.blue{border-top-color:var(--blue)}.threat-card.purple{border-top-color:var(--purple)}.callout{border-right:6px solid var(--cyan);background:#ecfeff;border-radius:20px;padding:14px 16px;font-weight:900;color:#155e75;margin:14px 0}.warning{border-right-color:#f59e0b;background:#fffbeb;color:#92400e}.success{border-right-color:var(--green);background:#f0fdf4;color:#166534}.danger{border-right-color:var(--red);background:#fff1f2;color:#9f1239}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;background:white;color:var(--ink)}textarea{min-height:88px;resize:vertical}.map-board{display:grid;gap:10px}.map-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}.map-cell{min-height:92px;border:2px dashed #bae6fd;background:#f0fdfa;border-radius:18px;padding:10px}.map-cell strong{display:block;color:#0f766e}.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.check{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#334155}.check input{width:auto;margin-top:5px}.prompt-box{direction:rtl;background:#020617;color:#dbeafe;border-radius:18px;padding:16px;white-space:pre-wrap;font-weight:800;line-height:1.7}.app-preview{background:linear-gradient(135deg,#0f172a,#134e4a);color:white;border-radius:24px;padding:18px}.app-preview h3{color:#a7f3d0}.app-screen{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:12px;margin-top:10px}.tag{display:inline-flex;margin:4px 3px;border-radius:999px;background:#eef2ff;color:#3730a3;padding:6px 10px;font-weight:900;font-size:.84rem}.rubric{display:grid;gap:8px}.rubric div{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.rubric b{color:var(--teal)}.summary-box{background:linear-gradient(135deg,#ecfeff,#eef2ff);border:1px solid #bae6fd;border-radius:24px;padding:18px;white-space:pre-wrap;font-weight:800}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}.print-only{display:none}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.grid3,.grid{grid-template-columns:1fr}.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.map-row{grid-template-columns:1fr 1fr}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 18px,680px)}.panel{padding:14px;border-radius:22px}.checks,.support-grid,.map-row{grid-template-columns:1fr}.brand-mark{width:48px;height:48px}.btn{min-height:44px}input,textarea,select{font-size:16px}}@media print{body{background:white}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}.print-only{display:block}}
+    .quiz-shell{background:linear-gradient(145deg,#07111f,#123b63 55%,#0f766e);color:white;border-radius:26px;padding:clamp(18px,3vw,30px);box-shadow:0 22px 55px rgba(15,23,42,.22)}.quiz-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.quiz-progress{font-weight:900;color:#bae6fd}.quiz-meter{height:10px;background:rgba(255,255,255,.16);border-radius:999px;overflow:hidden;margin-bottom:22px}.quiz-meter span{display:block;height:100%;width:10%;background:linear-gradient(90deg,#22d3ee,#86efac);transition:width .25s ease}.quiz-question{font-size:clamp(1.35rem,3vw,2rem);line-height:1.3;margin-bottom:18px}.quiz-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.quiz-option{min-height:76px;border:2px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(255,255,255,.09);color:white;padding:14px;text-align:right;font-weight:900;cursor:pointer;transition:transform .16s,border-color .16s,background .16s}.quiz-option:hover:not(:disabled),.quiz-option:focus-visible:not(:disabled){transform:translateY(-2px);border-color:#67e8f9;background:rgba(255,255,255,.14)}.quiz-option:disabled{cursor:default}.quiz-option.correct{background:#166534;border-color:#86efac}.quiz-option.wrong{background:#991b1b;border-color:#fca5a5}.quiz-option.reveal{border-color:#86efac;box-shadow:inset 0 0 0 2px #86efac}.quiz-feedback{display:none;margin-top:18px;border-radius:18px;padding:16px;background:white;color:var(--ink)}.quiz-feedback.show{display:block}.quiz-feedback.good{border-right:7px solid var(--green)}.quiz-feedback.retry{border-right:7px solid var(--red)}.quiz-feedback h3{margin:0 0 6px}.quiz-feedback p{margin:0;color:#334155;font-weight:750}.quiz-actions{display:flex;justify-content:flex-end;margin-top:14px}.quiz-actions .btn[disabled]{opacity:.45;cursor:not-allowed}.quiz-result{text-align:center;padding:18px}.quiz-result strong{display:block;font-size:clamp(2.5rem,8vw,5rem);line-height:1;color:#a7f3d0;margin:10px 0}.quiz-result p{color:#dbeafe;font-weight:800}.quiz-lock-note{margin:10px 0 0;color:#bae6fd;font-size:.92rem;font-weight:800}@media(max-width:720px){.quiz-options{grid-template-columns:1fr}.quiz-option{min-height:64px}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ort-courses.html" aria-label="חזרה לקורסי אורט"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">קורסי אורט</span></a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">🛡️</div><div><h1>סייבר לרשת אורט · מפגש 1</h1><p>האקר מול מגן · היכרות עם עולם הסייבר ויצירת מפת איומים</p></div></div>
+      <div class="actions"><a class="btn secondary" href="ort-courses.html">עמוד אורט</a><a class="btn secondary" href="ort-cyber-slides-1.html">מצגת מדריך</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div>
+    </header>
+
+    <section class="hero" aria-label="פתיחת מפגש">
+      <div class="hero-card"><span class="kicker">מפגש 1 · 75 דקות · גילאי 13-15 · ORT Cyber</span><h2>האקר מול מגן: מי שומר עלינו ברשת?</h2><p>במפגש הזה נכיר מושגי יסוד בסייבר, נזהה 8 סוגי איומים מרכזיים, נבנה מפת איומים קבוצתית וננסח סימולציות זהירות עם AI.</p></div>
+      <div class="goal-card">
+        <div class="stat"><b>מטרות השיעור</b>להכיר את עולם הסייבר, להבין סוגי איומים מרכזיים ולפתח חשיבה בטוחה וביקורתית ברשת.</div>
+        <div class="stat"><b>תוצר סיום</b>אפליקציה קבוצתית פעילה המציגה מפת איומים, שאלות למשתמש והמלצות להתמודדות בטוחה.</div>
+        <div class="stat"><b>עיקרון מנחה</b>לפני כל לחיצה, הורדה או שיתוף מידע - עוצרים, בודקים ראיות, ושואלים מה יכול להשתבש.</div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 8 שלבים סומנו.</div></aside>
+
+      <section class="panel workspace">
+        <article class="step active" data-title="1. פתיחה">
+          <h2>שלב א · מה עולה לכם כששומעים “סייבר”? · 8 דקות</h2>
+          <p class="lead">מתחילים מסקרנות: סייבר הוא לא רק “האקרים”. הוא עולם של מידע, בחירות, סיכונים והגנה.</p>
+          <div class="grid">
+            <div class="card"><h3>שאלת פתיחה</h3><p>כתבו מילים, סיפורים או דוגמאות שעולות לכם לראש כשאתם שומעים את המילה סייבר.</p><div class="field"><label>המילים שלנו</label><textarea data-save="brainstorm" placeholder="לדוגמה: פריצה, סיסמה, פישינג, משחקים, פרטיות, האקר, מגן..."></textarea></div></div>
+            <div class="card"><h3>הודעה חשודה לדוגמה</h3><p>„זכיתם בפריט נדיר במשחק! לחצו עכשיו על הקישור והתחברו כדי לקבל אותו.” אילו סימני אזהרה אתם מזהים?</p><div class="field"><label>סימני האזהרה שמצאתי</label><textarea data-save="warningSigns" placeholder="לדוגמה: לחץ לפעול מיד, פרס מפתה, קישור לא מוכר, בקשת התחברות..."></textarea></div></div>
+          </div>
+          <label class="check"><input type="checkbox" data-done="0"> השתתפתי בדיון וכתבתי לפחות 3 מילים או סימני אזהרה.</label>
+        </article>
+
+        <article class="step" data-title="2. מושגי יסוד">
+          <h2>שלב ב · מילון סייבר ראשון · 10 דקות לכל שלב ב</h2>
+          <p class="lead">לפני שמגינים צריך לדבר באותה שפה. נבדיל בין סייבר, האקר, מגן סייבר ואיום דיגיטלי.</p>
+          <div class="grid">
+            <div class="card threat-card blue"><h3>סייבר</h3><p>תחום העוסק בהגנה על מחשבים, טלפונים, מערכות ומידע.</p></div>
+            <div class="card threat-card purple"><h3>האקר</h3><p>אדם שמצליח לפרוץ או לבדוק מערכות. לפעמים הוא מזיק, ולפעמים הוא עוזר למצוא חולשות.</p></div>
+            <div class="card threat-card"><h3>מגן סייבר</h3><p>מומחה שמאתר פרצות, מגן על משתמשים ומידע, ומציע דרך פעולה בטוחה.</p></div>
+            <div class="card threat-card orange"><h3>איום דיגיטלי</h3><p>כל סכנה באינטרנט: התחזות, גניבת פרטים, וירוסים, פגיעה בפרטיות או עומס על שירות.</p></div>
+          </div>
+          <div class="field"><label>הגדרה במילים שלי: מגן סייבר הוא...</label><textarea data-save="defenderDefinition"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="1"> אני יודע/ת להסביר את ההבדל בין האקר למגן סייבר.</label>
+        </article>
+
+        <article class="step" data-title="3. מפת איומים">
+          <h2>שלב ב · מפת איומים בזמן אמת</h2>
+          <p class="lead">מפת איומים עוזרת לראות שסייבר הוא עולם גלובלי. התקפות יכולות לצאת ממדינות שונות, להגיע ליעדים שונים, ולפגוע בשירותים אמיתיים.</p>
+          <div class="callout">פתחו את <a href="https://threatmap.checkpoint.com/" target="_blank" rel="noopener noreferrer">מפת האיומים של Check Point ↗</a> וצפו: מאיפה מגיעות התקפות? לאן הן נשלחות? מה רואים כשמתמקדים בישראל?</div>
+          <div class="grid">
+            <div class="card"><h3>תצפית 1</h3><div class="field"><label>מדינה/אזור שראינו במפה</label><input data-save="mapCountry"></div><div class="field"><label>מה הפתיע אותנו?</label><textarea data-save="mapSurprise"></textarea></div></div>
+            <div class="card"><h3>תצפית 2</h3><div class="field"><label>איזה סוג פעילות נראה במפה?</label><input data-save="mapActivity"></div><div class="field"><label>מה הקשר לחיים שלנו?</label><textarea data-save="mapConnection"></textarea></div></div>
+          </div>
+          <label class="check"><input type="checkbox" data-done="2"> צפיתי במפת איומים וכתבתי לפחות שתי תצפיות.</label>
+        </article>
+
+        <article class="step" data-title="4. סוגי איומים">
+          <h2>שלב ב · מזהים 8 סוגי איומים מרכזיים</h2>
+          <p class="lead">הכרת האיומים היא הצעד הראשון בהגנה. לכל איום יש סימנים, סכנה ודרך מניעה.</p>
+          <div class="grid3">
+            <div class="card threat-card red"><h3>פישינג</h3><p>הודעה מזויפת שמתחזה לגורם אמין כדי לגנוב מידע. סימן: לחץ דחוף, פרס, קישור חשוד.</p></div>
+            <div class="card threat-card orange"><h3>תוכנה זדונית</h3><p>אפליקציה או קובץ שנועדו להזיק, לרגל או לגנוב מידע. סימן: הורדה ממקור לא מוכר.</p></div>
+            <div class="card threat-card purple"><h3>גניבת סיסמאות</h3><p>שימוש בסיסמה חלשה, חוזרת או חשופה. סימן: בקשה למסור סיסמה מחוץ לאתר הרשמי.</p></div>
+            <div class="card threat-card blue"><h3>הנדסה חברתית</h3><p>שכנוע פסיכולוגי כדי לגרום לנו למסור מידע או לבצע פעולה. סימן: התחזות ולחץ.</p></div>
+            <div class="card threat-card"><h3>התחזות</h3><p>חשבון או אדם שמציגים את עצמם כמישהו אחר. סימן: פרופיל חדש, בקשה מוזרה, ניסוח לא רגיל.</p></div>
+            <div class="card threat-card red"><h3>גניבת מידע</h3><p>איסוף או העברת מידע אישי ללא הסכמה. סימן: אפליקציה שמבקשת גישה לאנשי קשר או מידע פרטי.</p></div><div class="card threat-card orange"><h3>מתקפת עומס</h3><p>הצפת אתר או שירות בבקשות כדי למנוע שימוש תקין. סימן: משחק או אתר שלא נטען בגלל עומס חריג.</p></div><div class="card threat-card red"><h3>פגיעה בפרטיות</h3><p>מעקב או חשיפת נתונים אישיים ללא ידיעה והסכמה. סימן: אפליקציה שיודעת איפה אתה כל הזמן.</p></div>
+          </div>
+          <div class="field"><label>האיום שהכי רלוונטי לבני נוער בעיניי</label><select data-save="mainThreat"><option value="">בחרו...</option><option>פישינג</option><option>תוכנה זדונית</option><option>גניבת סיסמאות</option><option>הנדסה חברתית</option><option>התחזות</option><option>גניבת מידע</option><option>מתקפת עומס</option><option>פגיעה בפרטיות</option></select></div>
+          <div class="field"><label>למה?</label><textarea data-save="mainThreatWhy"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="3"> בחרתי איום אחד והסברתי למה הוא מסוכן.</label>
+        </article>
+
+        <article class="step" data-title="5. כרטיס סכנה">
+          <h2>שלב ג · יוצרים כרטיס סכנה · 10 דקות</h2>
+          <p class="lead">כל תלמיד או קבוצה יוצרים כרטיס אחד. הכרטיסים מתחברים למפת איומים קבוצתית.</p>
+          <div class="map-board">
+            <div class="map-row">
+              <div class="map-cell"><strong>שם האיום</strong><textarea data-save="cardName" placeholder="לדוגמה: פישינג"></textarea></div>
+              <div class="map-cell"><strong>מה זה אומר?</strong><textarea data-save="cardMeaning"></textarea></div>
+              <div class="map-cell"><strong>למה זה מסוכן?</strong><textarea data-save="cardDanger"></textarea></div>
+              <div class="map-cell"><strong>איך נמנעים?</strong><textarea data-save="cardPrevent"></textarea></div>
+            </div>
+          </div>
+          <div class="callout warning">דוגמה: הודעה מזויפת מהבנק - לא לוחצים על קישורים חשודים, בודקים את הכתובת ונכנסים דרך האתר הרשמי.</div>
+          <label class="check"><input type="checkbox" data-done="4"> הכנתי כרטיס סכנה עם שם, הסבר, סיכון ודרך מניעה.</label>
+        </article>
+
+        <article class="step" data-title="6. בניית אפליקציה">
+          <h2>שלב ד · בונים את “מגן הסייבר הצעיר” · 27 דקות</h2>
+          <p class="lead">עובדים בקבוצה ובונים אפליקציה פעילה שמציגה את האיומים מהכרטיסיות, שואלת את המשתמש שאלה ומחזירה תגובה או המלצת הגנה.</p>
+          <div class="grid">
+            <div class="card"><h3>תוצר חובה</h3><ol><li>איומים מהכרטיסיות של הקבוצה</li><li>תיאור קצר וברור לכל איום</li><li>שאלה למשתמש</li><li>תגובה או המלצת הגנה</li></ol><div class="field"><label>כלי הבנייה שהתבנית שלו נמסרה בכיתה</label><input data-save="buildTool" placeholder="Glide / Lovable"></div></div>
+            <div class="app-preview"><h3>תצוגת אפליקציה לדוגמה</h3><div class="app-screen"><b id="previewThreat">איום: פישינג</b><p id="previewDesc">הודעה מזויפת שמנסה לגנוב מידע.</p><p><b>שאלה:</b> קיבלת קישור לפרס. מה תעשה?</p><p><b>תגובה:</b> עוצרים, בודקים כתובת, לא מוסרים פרטים.</p></div></div>
+          </div>
+          <div class="field"><label>פרומפט בנייה — מעתיקים לכלי שהמדריך פתח עבור הקבוצה</label><textarea data-save="appPrompt" placeholder="בנה אפליקציה בעברית בשם מגן הסייבר הצעיר. האפליקציה מציגה כרטיסי איומים... "></textarea></div>
+          <div class="actions"><button class="btn secondary" onclick="buildAppPrompt()">בנה פרומפט לפי הכרטיס שלי</button></div>
+          <div class="checks"><label class="check"><input type="checkbox" data-save-check="appThreats"> הוספנו את איומי הקבוצה</label><label class="check"><input type="checkbox" data-save-check="appQuestion"> יש שאלה ותגובה בטוחה</label><label class="check"><input type="checkbox" data-save-check="appTested"> בדקנו שהאפליקציה פועלת</label><label class="check"><input type="checkbox" data-save-check="appExtension"> רשות: הוספנו ציון סיכון, תמונה או תגובה מותאמת</label></div>
+          <label class="check"><input type="checkbox" data-done="5"> בנינו ובדקנו אפליקציה קבוצתית פעילה.</label>
+        </article>
+
+        <article class="step" data-title="7. חידון מסכם">
+          <h2>חידון מסכם אישי · 10 שאלות</h2>
+          <p class="lead">עונים לפי הסדר. אחרי כל תשובה תקבלו משוב והסבר, ורק אז תוכלו לעבור לשאלה הבאה.</p>
+          <div class="quiz-shell" id="quizShell" aria-live="polite">
+            <div id="quizPlay">
+              <div class="quiz-head"><span class="quiz-progress" id="quizProgress">שאלה 1 מתוך 10</span><span id="quizScoreLive">0 תשובות נכונות</span></div>
+              <div class="quiz-meter" aria-hidden="true"><span id="quizMeter"></span></div>
+              <h3 class="quiz-question" id="quizQuestion"></h3>
+              <div class="quiz-options" id="quizOptions"></div>
+              <div class="quiz-feedback" id="quizFeedback" role="status"></div>
+              <div class="quiz-actions"><button class="btn good" id="quizNext" type="button" disabled>לשאלה הבאה</button></div>
+              <p class="quiz-lock-note">לא ניתן לדלג קדימה: הכפתור ייפתח רק לאחר בחירת תשובה.</p>
+            </div>
+            <div class="quiz-result" id="quizResult" hidden></div>
+          </div>
+          <label class="check"><input type="checkbox" data-done="6" id="quizDone" disabled> השלמתי את כל 10 שאלות החידון.</label>
+        </article>
+
+        <article class="step" data-title="8. סימולציית AI וסיכום">
+          <h2>שלבים ה–ו · סימולציית AI וסיכום · 20 דקות</h2>
+          <p class="lead">אחרי החידון מסיימים בתרגול חשיבה ביקורתית: מתארים מצב, מבקשים מ-AI לנתח אותו, ואז בודקים אם ההמלצה זהירה ומבוססת.</p>
+          <div class="grid"><div class="card"><h3>תרחיש 1</h3><p>קיבלת הודעת ווטסאפ מחבר שאומרת שזכית באייפון ויש בה קישור. מה תעשה?</p></div><div class="card"><h3>תרחיש 2</h3><p>מורה שולח מייל עם קובץ ללא שם ברור. האם לפתוח?</p></div></div>
+          <div class="field"><label>התרחיש שבחרתי</label><textarea data-save="scenarioChoice"></textarea></div>
+          <div class="field"><label>החלטה בטוחה</label><textarea data-save="safeDecision" placeholder="מה עושים לפני שלוחצים או פותחים?"></textarea></div>
+          <div class="callout danger">לא משתפים עם כלי AI שם מלא, טלפון, סיסמה, צילום מסך אישי או תוכן של הודעה פרטית. התשובה של ה־AI היא הצעה לבדיקה — לא סמכות סופית.</div>
+          <div class="checks"><label class="check"><input type="checkbox" data-save-check="exitThreat"> אני יודע/ת לתת שם לאיום אחד</label><label class="check"><input type="checkbox" data-save-check="exitEvidence"> אני מחפש/ת ראיות לפני פעולה</label><label class="check"><input type="checkbox" data-save-check="exitAvoid"> אני יודע/ת דרך מניעה אחת</label><label class="check"><input type="checkbox" data-save-check="exitPrivacy"> אני שומר/ת על פרטיות</label></div>
+          <div class="summary-box" id="summaryBox">כרטיס הסיכום יופיע כאן אחרי מילוי השדות.</div>
+          <div class="actions"><button class="btn good" onclick="renderSummary()">יצירת סיכום</button><button class="btn secondary" onclick="copySummary()">העתקת סיכום</button></div>
+          <div class="callout success">למפגש הבא: נבנה מחולל סיסמאות חזקות ונבין מה הופך סיסמה לבטוחה.</div><div class="callout warning">משימת המשך רשות: מצאו הודעה או מייל חשודים בלי לחשוף פרטים אישיים, וכתבו מדוע לדעתכם הם מסוכנים.</div>
+          <label class="check"><input type="checkbox" data-done="7"> סיימתי סימולציה וכרטיס יציאה.</label>
+        </article>
+      </section>
+
+      <aside class="panel support"><div class="support-grid"><div><h3>מושגי מפתח</h3><span class="tag">סייבר</span><span class="tag">האקר</span><span class="tag">מגן סייבר</span><span class="tag">איום דיגיטלי</span><span class="tag">פישינג</span><span class="tag">פרטיות</span></div><div><h3>בדיקת איכות</h3><div class="rubric"><div><b>ראיה:</b> האם זיהינו סימנים ולא ניחשנו?</div><div><b>זהירות:</b> האם נמנענו מלחיצה או שיתוף מידע?</div><div><b>הסבר:</b> האם אפשר להסביר את האיום לחבר?</div><div><b>תוצר:</b> האם הכרטיס ברור ושימושי?</div></div></div></div></aside>
+    </main>
+    <div class="footer-note">העבודה נשמרת בדפדפן המקומי בלבד. אין שליחת מידע לשרת.</div>
+  </div>
+<script>
+const key='ortCyber.lesson1.v1';
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const state=JSON.parse(localStorage.getItem(key)||'{}');
+if(state.lesson1FlowVersion!==2){const oldSimulationDone=!!state.done6;const oldQuizDone=!!state.done7;state.done6=oldQuizDone||!!state.quizCompleted;state.done7=oldSimulationDone;state.lesson1FlowVersion=2;localStorage.setItem(key,JSON.stringify(state))}
+function save(){document.querySelectorAll('[data-save]').forEach(el=>state[el.dataset.save]=el.value);document.querySelectorAll('[data-save-check]').forEach(el=>state[el.dataset.saveCheck]=el.checked);document.querySelectorAll('[data-done]').forEach(el=>state['done'+el.dataset.done]=el.checked);localStorage.setItem(key,JSON.stringify(state));renderNav();renderPreview()}
+function load(){document.querySelectorAll('[data-save]').forEach(el=>{if(state[el.dataset.save])el.value=state[el.dataset.save]});document.querySelectorAll('[data-save-check]').forEach(el=>{el.checked=!!state[el.dataset.saveCheck]});document.querySelectorAll('[data-done]').forEach(el=>{el.checked=!!state['done'+el.dataset.done]})}
+function show(i){steps.forEach((s,n)=>s.classList.toggle('active',n===i));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===i));window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){nav.innerHTML='';let done=0;steps.forEach((s,i)=>{const isDone=!!state['done'+i];if(isDone)done++;const b=document.createElement('button');b.textContent=(isDone?'✓ ':'')+s.dataset.title;b.className=isDone?'done':'';b.onclick=()=>show(i);nav.appendChild(b)});document.getElementById('scoreBox').textContent=done+' מתוך '+steps.length+' שלבים סומנו.'}
+function val(name){return document.querySelector(`[data-save="${name}"]`)?.value.trim()||''}
+function buildAppPrompt(){const threat=val('cardName')||'פישינג';const meaning=val('cardMeaning')||'הודעה מזויפת שמנסה לגרום למשתמש למסור מידע';const danger=val('cardDanger')||'גניבת מידע אישי או סיסמאות';const prevent=val('cardPrevent')||'לא לוחצים על קישור חשוד ובודקים מקור רשמי';const prompt=`בנה אפליקציה בעברית בשם "מגן הסייבר הצעיר".\nהאפליקציה מיועדת לתלמידי חטיבה.\nהיא מציגה כרטיס איום בשם: ${threat}.\nהסבר קצר: ${meaning}.\nלמה זה מסוכן: ${danger}.\nאיך נמנעים: ${prevent}.\nהוסף שאלה למשתמש, משוב בטוח, ועיצוב של מפת איומים.\nאל תבקש פרטים אישיים מהמשתמש.`;document.querySelector('[data-save="appPrompt"]').value=prompt;save()}
+function renderPreview(){const name=val('cardName')||'פישינג';const meaning=val('cardMeaning')||'הודעה מזויפת שמנסה לגנוב מידע.';document.getElementById('previewThreat').textContent='איום: '+name;document.getElementById('previewDesc').textContent=meaning}
+function renderSummary(){const text=`סיכום מפגש 1 - האקר מול מגן\n\nמילים שעלו לנו: ${val('brainstorm')||'לא מולא'}\nאיום שבחרתי: ${val('mainThreat')||val('cardName')||'לא מולא'}\nלמה הוא מסוכן: ${val('cardDanger')||val('mainThreatWhy')||'לא מולא'}\nדרך מניעה: ${val('cardPrevent')||'לא מולא'}\nהחלטה בטוחה בסימולציה: ${val('safeDecision')||'לא מולא'}\n\nהעיקרון שלי: לפני פעולה ברשת - לעצור, לבדוק ראיות, ולא למסור מידע אישי.`;document.getElementById('summaryBox').textContent=text;state.summary=text;localStorage.setItem(key,JSON.stringify(state))}
+function copySummary(){renderSummary();navigator.clipboard?.writeText(document.getElementById('summaryBox').textContent)}
+const quizQuestions=[
+  {question:'מהו “איום דיגיטלי”?',options:['כל תוכנה המותקנת במחשב','כל סכנה באינטרנט','משחק מחשב קשה ברמות','חיבור Wi‑Fi'],correct:1,explanation:'איום דיגיטלי הוא סכנה שעלולה לפגוע במכשיר, במידע, בפרטיות או בשירות מקוון. לא כל תוכנה או חיבור לרשת הם איום.'},
+  {question:'מהו האקר לפי המושגים שהוצגו בשיעור?',options:['אדם שכותב תוכנות עזר למשתמשים','אדם שמתקן תקלות חומרה במחשבים','מומחה שמפתח מכשירים חדשים לחיבור לרשת','אדם שמנסה לפרוץ או לבדוק מערכות — לפעמים מזיק ולפעמים עוזר'],correct:3,explanation:'האקר משתמש בידע טכנולוגי כדי לפרוץ או לבדוק מערכות. הכוונה וההרשאה חשובות: יש האקרים שפוגעים, ויש חוקרי אבטחה שמסייעים למצוא חולשות.'},
+  {question:'מהי מתקפת פישינג?',options:['ניסיון לגנוב מידע דרך התחזות','וירוס במחשב','עומס על שרת','תקלה באינטרנט'],correct:0,explanation:'בפישינג מתחזים לגורם אמין כדי לגרום לנו ללחוץ, להתחבר או למסור מידע. סימנים נפוצים: לחץ לפעול מיד, פרס מפתה וכתובת חשודה.'},
+  {question:'מהי תוכנה זדונית (Malware)?',options:['תוכנה שמזיקה או מרגלת','תוכנה שעוזרת למחשב','אנטי־וירוס','תוכנה למשחקים'],correct:0,explanation:'תוכנה זדונית נועדה להזיק, לרגל, לשבש פעולה או לגנוב מידע. לכן מורידים קבצים ואפליקציות רק ממקור מוכר.'},
+  {question:'מהי הנדסה חברתית?',options:['בניית אפליקציות','חיבור רשת','תיקון מחשב','שכנוע אדם למסור מידע או לבצע פעולה'],correct:3,explanation:'הנדסה חברתית תוקפת את שיקול הדעת האנושי: המתחזה משתמש באמון, פחד, לחץ או סקרנות כדי להשיג מידע או פעולה.'},
+  {question:'מה עלול לקרות אם מישהו משיג את הסיסמה שלך?',options:['כלום','המחשב יכבה','הוא יוכל להיכנס לחשבון שלך','הוא ינתק אותך מהאינטרנט'],correct:2,explanation:'מי שמחזיק בסיסמה עלול להיכנס לחשבון, לקרוא מידע או להתחזות לבעל החשבון. משתמשים בסיסמה ייחודית ומפעילים אימות דו־שלבי.'},
+  {question:'מהי מתקפת DDoS?',options:['גניבת מידע','הצפת אתר או שירות בבקשות רבות','תוכנה זדונית','יצירת סיסמה'],correct:1,explanation:'במתקפת DDoS תוקפים רבים מציפים שירות בבקשות, עד שהוא נעשה איטי או לא זמין למשתמשים רגילים.'},
+  {question:'מתי בקשת הרשאה של אפליקציה עלולה להיות מסוכנת?',options:['כאשר היא מבקשת גישה למצלמה שנחוצה לשיחת וידאו','כאשר היא גדולה','כאשר היא מבקשת גישה למידע אישי שאינו נחוץ לפעולתה','כאשר היא חדשה'],correct:2,explanation:'בודקים אם ההרשאה באמת קשורה לפעולת האפליקציה. בקשה למידע אישי, מיקום, אנשי קשר או מצלמה ללא צורך ברור היא סימן אזהרה.'},
+  {question:'מה הדבר הכי חשוב לזכור באינטרנט?',options:['לחשוב לפני פעולה','להוריד כל אפליקציה','ללחוץ מהר','לזכור רק את הסיסמה'],correct:0,explanation:'לפני לחיצה, הורדה או שיתוף מידע עוצרים, בודקים את המקור וחושבים מה עלול להשתבש. פעולה מהירה היא בדיוק מה שתוקפים מנסים לעודד.'},
+  {question:'מהי המטרה המרכזית של המפגשים שלנו בנושא סייבר?',options:['להציג רק את ההיסטוריה של האינטרנט','ללמד לתכנת אפליקציות מורכבות','להכיר את עולם הסייבר, איומים מרכזיים וחשיבה בטוחה ברשת','ללמד לפרוץ למערכות מחשב'],correct:2,explanation:'המטרה היא לזהות איומים, להבין כיצד הם פועלים ולבחור פעולה בטוחה ואחראית. הכלים והאפליקציות עוזרים לנו לתרגל את החשיבה הזאת.'}
+];
+let quizIndex=Number.isInteger(state.quizIndex)?Math.min(state.quizIndex,quizQuestions.length-1):0;
+let quizScore=Number.isInteger(state.quizScore)?state.quizScore:0;
+let quizAnswered=false;
+function renderQuiz(){
+  if(state.quizCompleted){showQuizResult();return}
+  const q=quizQuestions[quizIndex];quizAnswered=false;
+  document.getElementById('quizProgress').textContent=`שאלה ${quizIndex+1} מתוך ${quizQuestions.length}`;
+  document.getElementById('quizScoreLive').textContent=`${quizScore} תשובות נכונות`;
+  document.getElementById('quizMeter').style.width=`${((quizIndex+1)/quizQuestions.length)*100}%`;
+  document.getElementById('quizQuestion').textContent=q.question;
+  const options=document.getElementById('quizOptions');options.innerHTML='';
+  q.options.forEach((option,index)=>{const button=document.createElement('button');button.type='button';button.className='quiz-option';button.textContent=option;button.onclick=()=>answerQuiz(index);options.appendChild(button)});
+  const feedback=document.getElementById('quizFeedback');feedback.className='quiz-feedback';feedback.innerHTML='';
+  const next=document.getElementById('quizNext');next.disabled=true;next.textContent=quizIndex===quizQuestions.length-1?'לסיום החידון':'לשאלה הבאה';
+}
+function answerQuiz(selected){
+  if(quizAnswered)return;quizAnswered=true;const q=quizQuestions[quizIndex];const correct=selected===q.correct;if(correct)quizScore++;
+  [...document.getElementById('quizOptions').children].forEach((button,index)=>{button.disabled=true;if(index===q.correct)button.classList.add(index===selected?'correct':'reveal');if(index===selected&&index!==q.correct)button.classList.add('wrong')});
+  const feedback=document.getElementById('quizFeedback');feedback.className=`quiz-feedback show ${correct?'good':'retry'}`;
+  feedback.innerHTML=`<h3>${correct?'נכון!':'לא בדיוק — התשובה הנכונה היא: '+q.options[q.correct]}</h3><p>${q.explanation}</p>`;
+  document.getElementById('quizScoreLive').textContent=`${quizScore} תשובות נכונות`;document.getElementById('quizNext').disabled=false;
+}
+function nextQuiz(){
+  if(!quizAnswered)return;
+  if(quizIndex<quizQuestions.length-1){quizIndex++;state.quizIndex=quizIndex;state.quizScore=quizScore;localStorage.setItem(key,JSON.stringify(state));renderQuiz();return}
+  state.quizCompleted=true;state.quizIndex=quizIndex;state.quizScore=quizScore;state.done6=true;localStorage.setItem(key,JSON.stringify(state));document.getElementById('quizDone').checked=true;renderNav();showQuizResult();
+}
+function showQuizResult(){
+  const score=Number.isInteger(state.quizScore)?state.quizScore:quizScore;document.getElementById('quizPlay').hidden=true;const result=document.getElementById('quizResult');result.hidden=false;
+  const message=score===10?'שליטה מצוינת במושגי המפגש.':score>=7?'הבנה טובה מאוד — כדאי לחזור על ההסברים בשאלות שטעית בהן.':'זה זמן טוב לחזור למילון האיומים ולנסות שוב.';
+  result.innerHTML=`<h3>סיימתם את החידון!</h3><strong>${score}/10</strong><p>${message}</p><button class="btn secondary" type="button" onclick="restartQuiz()">ניסיון חדש</button>`;
+}
+function restartQuiz(){quizIndex=0;quizScore=0;quizAnswered=false;delete state.quizCompleted;state.quizIndex=0;state.quizScore=0;state.done6=false;localStorage.setItem(key,JSON.stringify(state));document.getElementById('quizDone').checked=false;document.getElementById('quizPlay').hidden=false;document.getElementById('quizResult').hidden=true;renderNav();renderQuiz()}
+function resetWork(){if(confirm('לאפס את העבודה השמורה במפגש 1?')){localStorage.removeItem(key);location.reload()}}
+document.getElementById('quizNext').addEventListener('click',nextQuiz);document.addEventListener('input',e=>{if(e.target.matches('[data-save]'))save()});document.addEventListener('change',e=>{if(e.target.matches('[data-done],[data-save-check]'))save()});load();renderNav();renderPreview();renderQuiz();if(state.summary)document.getElementById('summaryBox').textContent=state.summary;show(0);
+</script>
+<script src="/js/feedback-widget.js?v=20261014-ort-cyber-lesson-1"></script>
+</body>
+</html>
