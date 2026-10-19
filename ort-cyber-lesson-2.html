@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מפגש 2 · סיסמאות ואבטחת חשבונות</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#08111f;--muted:#526070;--line:#d7e2ee;--page:#f5f7fb;--card:#fff;--blue:#2563eb;--cyan:#06b6d4;--green:#16a34a;--teal:#0f766e;--orange:#f97316;--red:#dc2626;--purple:#7c3aed;--dark:#0f172a;--yellow:#facc15;--shadow:0 18px 46px rgba(15,23,42,.08)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 0,rgba(37,99,235,.14),transparent 28rem),radial-gradient(circle at 90% 7%,rgba(124,58,237,.13),transparent 26rem),linear-gradient(180deg,#fbfdff,#eef6ff 58%,#f8fafc);line-height:1.65}button,input,textarea,select{font:inherit}a{color:inherit}.shell{width:min(1320px,calc(100% - 28px));margin:0 auto;padding:18px 0 42px}.topbar{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:20;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--purple),var(--blue));color:white;display:grid;place-items:center;font-size:1.8rem;font-weight:900;box-shadow:0 14px 30px rgba(37,99,235,.22)}h1,h2,h3,p{margin-top:0}.brand h1{margin:0;font-size:clamp(1.25rem,2.4vw,2rem);line-height:1.15}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:9px 14px;border-radius:999px;background:var(--dark);color:white;text-decoration:none;border:0;font-family:inherit;font-weight:900;cursor:pointer}.btn.secondary{background:#f8fafc;color:var(--dark);border:1px solid var(--line)}.btn.good{background:var(--green)}.btn.warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.btn.link{background:#eef2ff;color:#3730a3;border:1px solid #c7d2fe}.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:16px;align-items:stretch;margin-top:16px}.hero-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#07111f,#172554 46%,#581c87);color:white;border-radius:30px;padding:28px;min-height:310px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 24px 70px rgba(15,23,42,.20)}.hero-card:after{content:"";position:absolute;inset:auto -80px -120px auto;width:330px;height:330px;border-radius:999px;background:radial-gradient(circle,rgba(167,139,250,.38),transparent 62%)}.kicker{display:inline-flex;align-self:flex-start;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 11px;color:#d8b4fe;font-weight:900;margin-bottom:10px}.hero h2{font-size:clamp(2.1rem,5vw,4.35rem);line-height:1.04;margin:0 0 12px;letter-spacing:-.035em}.hero p{margin:0;color:#e0e7ff;font-weight:800;font-size:1.08rem}.goal-card{display:grid;gap:10px}.stat{border:1px solid var(--line);background:rgba(255,255,255,.95);border-radius:24px;padding:16px;box-shadow:var(--shadow);font-weight:800}.stat b{display:block;color:var(--purple);font-size:1.45rem;margin-bottom:3px}.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}.sidebar,.support{position:sticky;top:104px;align-self:start}.progress-list{display:grid;gap:8px}.progress-list button{text-align:right;border:1px solid var(--line);background:#f8fafc;border-radius:16px;padding:10px 12px;font-weight:900;color:#334155;cursor:pointer}.progress-list button.active{background:#eef2ff;border-color:#c4b5fd;color:#5b21b6}.progress-list button.done{background:#dcfce7;border-color:#86efac;color:#166534}.step{display:none}.step.active{display:block}.step h2{margin:0 0 8px;font-size:clamp(1.7rem,3vw,2.55rem);line-height:1.12}.lead{color:var(--muted);font-weight:800;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{background:white;border:1px solid var(--line);border-radius:22px;padding:16px;position:relative;overflow:hidden}.card h3{margin:0 0 8px;color:#4c1d95}.card p,.card li{color:#475569;font-weight:730}.card ul,.card ol{margin:0;padding-inline-start:22px}.callout{border-right:6px solid var(--purple);background:#f5f3ff;border-radius:20px;padding:14px 16px;font-weight:900;color:#5b21b6;margin:14px 0}.warning{border-right-color:#f59e0b;background:#fffbeb;color:#92400e}.success{border-right-color:var(--green);background:#f0fdf4;color:#166534}.danger{border-right-color:var(--red);background:#fff1f2;color:#9f1239}.external-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.tool-link{display:flex;gap:10px;align-items:flex-start;text-decoration:none;background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:12px;transition:.18s ease}.tool-link:hover{transform:translateY(-2px);border-color:#a5b4fc;box-shadow:0 12px 30px rgba(37,99,235,.10)}.tool-link strong{display:block;color:#1e1b4b}.tool-link span{color:#64748b;font-weight:800;font-size:.92rem}.field{margin:12px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;background:white;color:var(--ink)}textarea{min-height:88px;resize:vertical}.check{display:flex;gap:8px;align-items:flex-start;background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px;font-weight:800;color:#334155}.check input{width:auto;margin-top:5px}.mini-table{width:100%;border-collapse:separate;border-spacing:0 8px}.mini-table th{font-size:.85rem;color:#64748b;text-align:right}.mini-table td{background:#f8fafc;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font-weight:800}.mini-table td:first-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}.mini-table td:last-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px}.strength{background:linear-gradient(135deg,#0f172a,#312e81);color:white;border-radius:24px;padding:18px}.strength h3{color:#c4b5fd}.meter{height:16px;background:rgba(255,255,255,.13);border-radius:999px;overflow:hidden;margin:10px 0}.meter span{display:block;height:100%;width:0;background:linear-gradient(90deg,#fb7185,#facc15,#34d399);transition:.25s}.result{white-space:pre-wrap;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:12px;font-weight:800;color:#e0e7ff}.game-board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.guess-card{border:1px dashed #c4b5fd;background:#faf5ff;border-radius:18px;padding:12px}.prompt-box{direction:rtl;background:#020617;color:#dbeafe;border-radius:18px;padding:16px;white-space:pre-wrap;font-weight:800;line-height:1.7}.tag{display:inline-flex;margin:4px 3px;border-radius:999px;background:#eef2ff;color:#3730a3;padding:6px 10px;font-weight:900;font-size:.84rem}.rubric{display:grid;gap:8px}.rubric div{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:10px}.rubric b{color:#4c1d95}.summary-box{background:linear-gradient(135deg,#f5f3ff,#ecfeff);border:1px solid #c4b5fd;border-radius:24px;padding:18px;white-space:pre-wrap;font-weight:800}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}.print-only{display:none}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar,.support{position:static}.hero{grid-template-columns:1fr}.grid3,.grid,.external-tools{grid-template-columns:1fr}.support-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}}@media(max-width:720px){.topbar{grid-template-columns:1fr}.actions .btn{width:100%}.shell{width:min(100% - 18px,680px)}.panel{padding:14px;border-radius:22px}.support-grid,.game-board{grid-template-columns:1fr}.brand-mark{width:48px;height:48px}.btn{min-height:44px}input,textarea,select{font-size:16px}}@media print{body{background:white}.topbar,.sidebar,.support,.actions,.platform-home-link,.footer-note{display:none!important}.shell{width:100%;padding:0}.layout{display:block}.panel{box-shadow:none;border:0}.step{display:block;break-inside:avoid;margin-bottom:20px}.print-only{display:block}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ort-courses.html" aria-label="חזרה לקורסי אורט"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">קורסי אורט</span></a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">🔐</div><div><h1>סייבר לרשת אורט · מפגש 2</h1><p>סיסמאות ואבטחת חשבונות · מחולל, סימולטור זמן פריצה ו-2FA</p></div></div>
+      <div class="actions"><a class="btn secondary" href="ort-courses.html">עמוד אורט</a><a class="btn secondary" href="ort-cyber-slides-2.html">מצגת מדריך</a><a class="btn good" href="https://first-crack-quest.base44.app/" target="_blank" rel="noopener noreferrer">פעילות: מי פורץ ראשון? ↗</a><button class="btn" onclick="window.print()">הדפסה / PDF</button><button class="btn secondary" onclick="resetWork()">איפוס</button></div>
+    </header>
+
+    <section class="hero" aria-label="פתיחת מפגש">
+      <div class="hero-card"><span class="kicker">מפגש 2 · 75 דקות · גילאי 13-15 · ORT Cyber</span><h2>כמה זמן לוקח לפרוץ סיסמה?</h2><p>במפגש הזה נבין למה אורך וגיוון תווים חשובים, נשחק משחק פיצוח בטוח, נבנה מחולל/סימולטור סיסמאות ונכיר אימות דו-שלבי.</p></div>
+      <div class="goal-card">
+        <div class="stat"><b>תוצר סיום</b>מחולל סיסמאות או סימולטור זמן פריצה ב-Google Sheets / Glide / כלי No-Code.</div>
+        <div class="stat"><b>כלל בטיחות</b>לא מקלידים סיסמאות אמיתיות בשום כלי. עובדים רק עם דוגמאות מדומות.</div>
+        <div class="stat"><b>מיומנות מרכזית</b>תרגום רעיון אבטחתי לנוסחה, ממשק ופידבק ברור למשתמש.</div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <aside class="panel sidebar"><h3>התקדמות</h3><div class="progress-list" id="nav"></div><div class="callout success" id="scoreBox">0 מתוך 7 שלבים סומנו.</div></aside>
+
+      <section class="panel workspace">
+        <article class="step active" data-title="1 · פתיחה">
+          <h2>שלב 1 · כמה חזקה הסיסמה שלך?</h2>
+          <p class="lead">כל תלמיד עונה באופן אישי בלומדה על הרגלי אבטחה בלבד. התשובות נשמרות במכשיר ואינן נשלחות או מוצגות לכיתה.</p>
+          <div class="callout danger">חשוב: הסקר אינו מבקש את הסיסמה שלכם. אין להקליד סיסמה אמיתית באף אתר או לומדה.</div>
+          <div class="grid">
+            <div class="card"><h3>סקר אישי ופרטי</h3><div class="field"><label>מהו טווח האורך של הסיסמה באחד החשבונות החשובים שלכם? אין לכתוב אותה.</label><select data-save="surveyLength"><option value="">בחרו...</option><option>עד 6 תווים</option><option>7–9 תווים</option><option>10–11 תווים</option><option>12 תווים ומעלה</option></select></div><div class="field"><label>האם אותה סיסמה משמשת בכמה שירותים?</label><select data-save="surveyReuse"><option value="">בחרו...</option><option>כן</option><option>לפעמים</option><option>לא</option></select></div><div class="field"><label>האם מופעל 2FA בחשבון חשוב אחד לפחות?</label><select data-save="survey2fa"><option value="">בחרו...</option><option>כן</option><option>לא</option><option>לא יודע/ת</option></select></div><div class="actions"><button class="btn good" type="button" onclick="renderOpeningSurvey()">הצגת משוב אישי</button></div></div>
+            <div class="card"><h3>המשוב שלי</h3><div class="callout" id="openingSurveyResult">ענו על שלוש השאלות לקבלת צעד מומלץ — בלי לחשוף את הסיסמה.</div><div class="field"><label>מה גיליתי על הרגלי הסיסמאות שלי?</label><textarea data-save="openingReflection"></textarea></div></div>
+          </div>
+          <label class="check"><input type="checkbox" data-done="0"> השלמתי את הסקר האישי בלי לחשוף סיסמה אמיתית.</label>
+        </article>
+
+        <article class="step" data-title="2 · מושגים">
+          <h2>שלב 2 · מושגי יסוד באבטחת סיסמאות</h2>
+          <p class="lead">סיסמה חזקה היא שילוב של אורך, מגוון תווים והתנהגות נכונה סביב החשבון.</p>
+          <div class="grid">
+            <div class="card"><h3>סיסמה חלשה</h3><p>סיסמה שקל לנחש: 123456, תאריך לידה, שם חיית מחמד או אותה סיסמה בכל מקום.</p></div>
+            <div class="card"><h3>Brute Force</h3><p>ניסיון אוטומטי של כל הצירופים האפשריים. בשיעור מדגימים רעיון בלבד, לא כלי פריצה.</p></div>
+            <div class="card"><h3>מרחב חיפוש</h3><p>מספר האפשרויות שצריך לבדוק. ככל שהאורך וגודל האלפבית גדלים - המרחב קופץ.</p></div>
+            <div class="card"><h3>כוח עיבוד</h3><p>כמה ניסיונות לשנייה מחשב יכול לבצע. יותר ניסיונות לשנייה מקצרים את זמן הפיצוח.</p></div>
+          </div>
+          <table class="mini-table" aria-label="דוגמאות מרחב חיפוש"><thead><tr><th>דוגמה</th><th>מרחב חיפוש</th><th>ב-10,000 ניסיונות/שנייה</th></tr></thead><tbody><tr><td>4 ספרות</td><td>10⁴ = 10,000</td><td>בערך שנייה</td></tr><tr><td>6 ספרות</td><td>10⁶ = 1,000,000</td><td>בערך 100 שניות</td></tr><tr><td>6 אותיות קטנות</td><td>26⁶</td><td>הרבה יותר - מיליונים/מאות מיליונים</td></tr></tbody></table>
+          <label class="check"><input type="checkbox" data-done="1"> אני יודע/ת להסביר מהו Brute Force ומהו מרחב חיפוש.</label>
+        </article>
+
+        <article class="step" data-title="3 · סימולטור">
+          <h2>שלב 3 · סימולטור חוזק סיסמה מדומה</h2>
+          <p class="lead">הכלי הבא מחשב הערכה חינוכית לפי אורך, סוגי תווים וניסיונות לשנייה. לא מקלידים סיסמה אמיתית.</p>
+          <div class="grid">
+            <div class="card">
+              <h3>בחרו פרמטרים</h3>
+              <div class="field"><label>אורך הסיסמה</label><input type="number" min="1" max="32" value="8" data-save="length" id="passLength"></div>
+              <label class="check"><input type="checkbox" id="lower" checked data-save-check="lower"> אותיות קטנות (26)</label>
+              <label class="check"><input type="checkbox" id="upper" data-save-check="upper"> אותיות גדולות (26)</label>
+              <label class="check"><input type="checkbox" id="digits" checked data-save-check="digits"> מספרים (10)</label>
+              <label class="check"><input type="checkbox" id="symbols" data-save-check="symbols"> סימנים (20)</label>
+              <div class="field"><label>ניסיונות לשנייה</label><select id="rate" data-save="rate"><option value="10000">10,000</option><option value="1000000">1,000,000</option><option value="100000000">100,000,000</option></select></div>
+              <div class="actions"><button class="btn good" onclick="calcStrength()">חשב זמן פריצה משוער</button></div>
+            </div>
+            <div class="strength"><h3>תוצאה חינוכית</h3><div class="meter"><span id="meter"></span></div><div class="result" id="strengthResult">בחרו פרמטרים ולחצו חישוב.</div></div>
+          </div>
+          <div class="callout warning">הסימולטור הוא המחשה בלבד. חוזק אמיתי תלוי גם בדליפות מידע, שימוש חוזר בסיסמאות, שמירת סיסמאות ו-2FA.</div>
+          <label class="check"><input type="checkbox" data-done="2"> בדקתי לפחות שני שילובים והבנתי מה משתנה כשמוסיפים אורך וסוגי תווים.</label>
+        </article>
+
+        <article class="step" data-title="4 · מי פורץ ראשון">
+          <h2>שלב 4 · משחק לימודי: מי פורץ ראשון?</h2>
+          <p class="lead">משחק רב-משתתפים שממחיש כיצד ניחושים ו-Brute Force יכולים לחשוף סיסמאות, ומדוע סיסמאות חזקות ו-2FA חשובים.</p>
+          <div class="actions"><a class="btn good" href="https://first-crack-quest.base44.app/" target="_blank" rel="noopener noreferrer">פתחו את המשחק המוכן במסך מלא ↗</a></div>
+          <div class="callout danger">המשחק הוא סימולציה חינוכית בלבד. לא מזינים סיסמאות אמיתיות, לא מתחברים לחשבונות, ולא משתמשים בכלי פריצה אמיתיים.</div>
+          <div class="grid">
+            <div class="card"><h3>מהלך המשחק</h3><ol><li>השחקן מזין שם ומגיע ללובי.</li><li>בוחרים חדר ומצטרפים אליו - עד 5 חדרים ועד 5 שחקנים בחדר.</li><li>המארח בוחר רמת קושי ומתחיל.</li><li>המחשב מגריל סיסמה, והשחקנים מנחשים.</li><li>הראשון שמנחש נכון מנצח.</li><li>בסיום מוצגים הסיסמה, נתוני המשחק והסבר חינוכי.</li></ol></div>
+            <div class="card"><h3>הנחיות למדריך</h3><ul><li>הקצו 15 דקות לפעילות ולדיון.</li><li>חלקו את הכיתה לכ־4 קבוצות.</li><li>התחילו ב־4 ספרות ועלו לרמה מאתגרת יותר.</li><li>בקשו מכל קבוצה להסביר את אסטרטגיית הניחוש שלה.</li><li>סיימו בחיבור בין מספר הניסיונות, מרחב החיפוש וחוזק הסיסמה.</li></ul></div>
+          </div>
+          <div class="game-board" aria-label="רמות קושי מי פורץ ראשון">
+            <div class="guess-card"><h3>4 ספרות</h3><p>10,000 אפשרויות. מתאים לפתיחה מהירה.</p></div>
+            <div class="guess-card"><h3>6 ספרות</h3><p>1,000,000 אפשרויות. מדגים קפיצה גדולה במרחב החיפוש.</p></div>
+            <div class="guess-card"><h3>תאריך לידה</h3><p>מצב שממחיש למה מידע אישי הוא רמז מסוכן.</p></div>
+          </div>
+          <div class="field"><label>דיון: איזו אסטרטגיה עבדה הכי טוב ולמה?</label><textarea data-save="gameInsight"></textarea></div>
+          <div class="field"><label>איזה מסר בטיחות למדנו מהמשחק?</label><textarea data-save="gameSafety" placeholder="לדוגמה: לא משתמשים בסיסמה קצרה או במידע אישי שקל לנחש."></textarea></div>
+          <label class="check"><input type="checkbox" data-done="3"> שיחקתי ב„מי פורץ ראשון?” והבנתי את מגבלות הבטיחות.</label>
+        </article>
+
+        <article class="step" data-title="5 · בניית תוצר">
+          <h2>שלב 5 · בונים מחולל סיסמאות או סימולטור זמן פריצה</h2>
+          <p class="lead">המשימה המרכזית: לבנות כלי פשוט שמדגים כיצד אורך, מגוון תווים וכוח עיבוד משפיעים על חוזק הסיסמה — באמצעות דוגמאות מדומות בלבד.</p>
+          <div class="external-tools">
+            <div class="tool-link"><b>📗 Google Sheets</b><span>חישוב מרחב האפשרויות וזמן הפריצה המשוער.</span></div>
+            <div class="tool-link"><b>📱 Glide</b><span>הפיכת גיליון מוכן לממשק עם שדות קלט ופלט.</span></div>
+            <div class="tool-link"><b>✨ Lovable</b><span>חלופה לבניית מחולל או סימולטור אינטראקטיבי.</span></div>
+            <div class="tool-link"><b>🧩 תבנית המדריך</b><span>יש לעבוד מתוך הקישור או התבנית שהמדריך משתף לכיתה.</span></div>
+          </div>
+          <div class="grid">
+            <div class="card"><h3>אפשרות א · מחולל</h3><ul><li>בחירת אורך הסיסמה.</li><li>אותיות קטנות וגדולות.</li><li>מספרים וסימנים.</li><li>יצירת סיסמה מדומה.</li><li>הסבר למה היא חזקה.</li></ul></div>
+            <div class="card"><h3>אפשרות ב · סימולטור</h3><ul><li>אורך וסוגי תווים.</li><li>גודל מרחב האפשרויות.</li><li>מספר ניסיונות בשנייה.</li><li>זמן פריצה משוער.</li><li>תוצאה קריאה: שניות, דקות או שנים.</li></ul></div>
+          </div>
+          <div class="grid" style="margin-top:12px">
+            <div class="card"><h3>הלוגיקה</h3><ul><li>גודל אלפבית = סכום סוגי התווים שנבחרו.</li><li>מספר אפשרויות = גודל האלפבית בחזקת האורך.</li><li>זמן משוער = מספר אפשרויות ÷ ניסיונות בשנייה.</li></ul></div>
+            <div class="card"><h3>דיפרנציאציה</h3><ul><li>קבוצות מתחילות: תבנית מוכנה והזנת נתונים.</li><li>קבוצות מתקדמות: מחוון כוח עיבוד או גרף.</li><li>אם יש זמן: שילוב מחולל וסימולטור באותו כלי.</li></ul></div>
+          </div>
+          <div class="callout danger">אין להזין סיסמאות אמיתיות. הכלי הוא סימולציה חינוכית ואינו מתחבר לחשבונות או לרשתות אמיתיות.</div>
+          <div class="field"><label>התוצר של הקבוצה שלנו</label><select data-save="productType"><option value="">בחרו...</option><option>מחולל סיסמאות חזקות</option><option>סימולטור זמן פריצה</option><option>מחולל + סימולטור זמן פריצה</option></select></div>
+          <div class="field"><label>תכנון ממשק קצר</label><textarea data-save="productPlan" placeholder="אילו נתונים המשתמש יבחר? מה הכלי יחשב או ייצור? איזה הסבר יופיע בתוצאה?"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="4"> בחרתי תוצר ותכננתי את הקלט, החישוב וההסבר למשתמש.</label>
+        </article>
+
+        <article class="step" data-title="6 · 2FA">
+          <h2>שלב 6 · אימות דו-שלבי: שכבת הגנה נוספת</h2>
+          <p class="lead">2FA משלב משהו שיודעים — הסיסמה — עם משהו שיש לנו, כמו טלפון, אפליקציית Authenticator או מפתח אבטחה. גם אם הסיסמה דולפת, עדיין חסר לתוקף השלב השני.</p>
+          <div class="grid3">
+            <div class="card"><h3>סיסמה בלבד</h3><p>אם הסיסמה נגנבה, התוקף יכול לנסות להיכנס.</p></div>
+            <div class="card"><h3>סיסמה + SMS</h3><p>יותר טוב מסיסמה בלבד, אך פחות חזק מאפליקציית אימות.</p></div>
+            <div class="card"><h3>Authenticator / מפתח חומרה</h3><p>שכבת הגנה חזקה יותר, במיוחד לחשבונות חשובים.</p></div>
+          </div>
+          <div class="callout">הדגמה מומלצת: להראות מסך הגדרות 2FA של חשבון דמה או צילום מסך, בלי לחשוף פרטים אישיים.</div>
+          <div class="callout warning">לא מאשרים בקשת התחברות שלא יזמנו. קודי גיבוי שומרים במקום פרטי ובטוח ולא משתפים.</div>
+          <div class="field"><label>איזו שכבת הגנה הייתי מוסיף/ה לחשבון חשוב?</label><textarea data-save="twoFaChoice"></textarea></div>
+          <label class="check"><input type="checkbox" data-done="5"> אני יודע/ת להסביר למה 2FA חשוב גם כשיש סיסמה חזקה.</label>
+        </article>
+
+        <article class="step" data-title="7 · סיכום">
+          <h2>שלב 7 · הצגה, תובנות ומשימת המשך</h2>
+          <p class="lead">כל קבוצה מציגה בקצרה מה בנתה ומה למדה על אורך, שונות תווים ו-2FA.</p>
+          <div class="grid"><div class="card"><h3>שאלות הצגה</h3><ul><li>מה הכלי שלנו מחשב או מייצר?</li><li>מה המשתמש לומד ממנו?</li><li>איך מנענו הכנסת סיסמה אמיתית?</li><li>איזה שיפור נוסיף אם יש זמן?</li></ul></div><div class="card"><h3>מקרה קריפטו · כספת ומפתח</h3><p><b>ארנק קריפטו</b> הוא כמו כספת דיגיטלית. ה־private key או ה־seed phrase הם מפתח־על: מי שמחזיק בהם יכול לשלוט בארנק, ובדרך כלל אין כפתור „שכחתי מפתח”.</p><ul><li>לא מצלמים, לא משתפים ולא שומרים seed phrase במסמך ענן.</li><li>שומרים גיבוי פיזי במקום פרטי ובטוח, בעזרת מבוגר אחראי.</li><li>2FA מגן על חשבון בבורסת קריפטו או על המייל — אך לא מציל seed phrase שכבר נחשף.</li></ul></div></div>
+          <div class="callout warning"><b>שאלת דיון:</b> אם מפתח אחד פותח כספת ששווה הרבה כסף — איך הייתם מגנים עליו, ומה אסור לעשות איתו?</div>
+          <div class="field"><label>חמש נקודות שאני לוקח/ת מהשיעור</label><textarea data-save="takeaways"></textarea></div>
+          <div class="summary-box" id="summaryBox">כרטיס הסיכום יופיע כאן אחרי מילוי השדות.</div>
+          <div class="actions"><button class="btn good" onclick="renderSummary()">יצירת סיכום</button><button class="btn secondary" onclick="copySummary()">העתקת סיכום</button></div>
+          <div class="callout success">משימת המשך: הפעילו או בדקו אימות דו-שלבי בחשבון אישי, רק באישור הורה. חלופה: כתבו סיסמה מדומה חזקה והסבירו מדוע היא חזקה.</div>
+          <label class="check"><input type="checkbox" data-done="6"> הצגתי תובנה אחת וסיימתי כרטיס סיכום.</label>
+        </article>
+      </section>
+
+      <aside class="panel support"><div class="support-grid"><div><h3>מושגי מפתח</h3><span class="tag">סיסמה חזקה</span><span class="tag">Brute Force</span><span class="tag">מרחב חיפוש</span><span class="tag">כוח עיבוד</span><span class="tag">2FA</span><span class="tag">Authenticator</span></div><div><h3>בדיקת איכות</h3><div class="rubric"><div><b>בטיחות:</b> לא הוקלדה סיסמה אמיתית.</div><div><b>לוגיקה:</b> החישוב משתמש באורך, אלפבית וניסיונות לשנייה.</div><div><b>הסבר:</b> המשתמש מבין למה התוצאה חזקה/חלשה.</div><div><b>הגנה:</b> מופיע מסר על 2FA ושימוש ייחודי בסיסמאות.</div></div></div></div></aside>
+    </main>
+    <div class="footer-note">העבודה נשמרת בדפדפן המקומי בלבד. אין שליחת מידע לשרת.</div>
+  </div>
+<script>
+const key='ortCyber.lesson2.v1';
+const steps=[...document.querySelectorAll('.step')];
+const nav=document.getElementById('nav');
+const state=JSON.parse(localStorage.getItem(key)||'{}');
+function save(){document.querySelectorAll('[data-save]').forEach(el=>state[el.dataset.save]=el.value);document.querySelectorAll('[data-save-check]').forEach(el=>state[el.dataset.saveCheck]=el.checked);document.querySelectorAll('[data-done]').forEach(el=>state['done'+el.dataset.done]=el.checked);localStorage.setItem(key,JSON.stringify(state));renderNav()}
+function load(){document.querySelectorAll('[data-save]').forEach(el=>{if(state[el.dataset.save]!==undefined)el.value=state[el.dataset.save]});document.querySelectorAll('[data-save-check]').forEach(el=>{el.checked=state[el.dataset.saveCheck]!==undefined?!!state[el.dataset.saveCheck]:el.checked});document.querySelectorAll('[data-done]').forEach(el=>{el.checked=!!state['done'+el.dataset.done]})}
+function show(i){steps.forEach((s,n)=>s.classList.toggle('active',n===i));[...nav.children].forEach((b,n)=>b.classList.toggle('active',n===i));window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){nav.innerHTML='';let done=0;steps.forEach((s,i)=>{const isDone=!!state['done'+i];if(isDone)done++;const b=document.createElement('button');b.textContent=(isDone?'✓ ':'')+s.dataset.title;b.className=isDone?'done':'';b.onclick=()=>show(i);nav.appendChild(b)});document.getElementById('scoreBox').textContent=done+' מתוך '+steps.length+' שלבים סומנו.'}
+function val(name){return document.querySelector(`[data-save="${name}"]`)?.value.trim()||''}
+function renderOpeningSurvey(){const length=val('surveyLength'),reuse=val('surveyReuse'),twoFa=val('survey2fa');const result=document.getElementById('openingSurveyResult');if(!length||!reuse||!twoFa){result.textContent='ענו על כל שלוש השאלות כדי לקבל משוב אישי.';return}const next=[];if(length!=='12 תווים ומעלה')next.push('לעבור לסיסמה או לצירוף מילים ארוך יותר — רצוי 12 תווים ומעלה');if(reuse!=='לא')next.push('להשתמש בסיסמה ייחודית לכל שירות חשוב, בעזרת מנהל סיסמאות');if(twoFa!=='כן')next.push('לבדוק עם הורה או מבוגר אחראי כיצד להפעיל 2FA בחשבון חשוב');result.textContent=next.length?'הצעד הבא שלכם: '+next.join('; ')+'.':'הרגלי הבסיס נראים טובים: אורך, ייחודיות ו־2FA. המשיכו לשמור סיסמאות באופן פרטי.';save()}
+function niceTime(seconds){if(!Number.isFinite(seconds)||seconds<=0)return 'לא ניתן לחשב';if(seconds<1)return 'פחות משנייה';if(seconds<60)return Math.round(seconds).toLocaleString('he-IL')+' שניות';if(seconds<3600)return Math.round(seconds/60).toLocaleString('he-IL')+' דקות';if(seconds<86400)return Math.round(seconds/3600).toLocaleString('he-IL')+' שעות';if(seconds<31536000)return Math.round(seconds/86400).toLocaleString('he-IL')+' ימים';return Math.round(seconds/31536000).toLocaleString('he-IL')+' שנים'}
+function calcStrength(){const length=Math.max(1,Math.min(32,Number(document.getElementById('passLength').value)||1));let alphabet=0;const parts=[];if(document.getElementById('lower').checked){alphabet+=26;parts.push('אותיות קטנות')}if(document.getElementById('upper').checked){alphabet+=26;parts.push('אותיות גדולות')}if(document.getElementById('digits').checked){alphabet+=10;parts.push('מספרים')}if(document.getElementById('symbols').checked){alphabet+=20;parts.push('סימנים')}const rate=Number(document.getElementById('rate').value)||10000;const combos=alphabet>0?Math.pow(alphabet,length):0;const seconds=combos/rate;const score=Math.max(5,Math.min(100,Math.log10(Math.max(combos,1))*7));document.getElementById('meter').style.width=score+'%';document.getElementById('strengthResult').textContent=`אורך: ${length}\nסוגי תווים: ${parts.join(', ')||'לא נבחרו'}\nגודל אלפבית: ${alphabet}\nמספר אפשרויות משוער: ${combos.toLocaleString('he-IL',{maximumFractionDigits:0})}\nבקצב ${rate.toLocaleString('he-IL')} ניסיונות/שנייה: ${niceTime(seconds)}\n\nמסקנה: הוספת אורך ומגוון תווים מגדילה את מרחב החיפוש בצורה חדה.`;save()}
+function renderSummary(){const text=`סיכום מפגש 2 - סיסמאות ואבטחת חשבונות\n\nמה גיליתי: ${val('openingReflection')||'לא מולא'}\nתובנה ממשחק הפיצוח: ${val('gameInsight')||'לא מולא'}\nהתוצר שלנו: ${val('productType')||'לא נבחר'}\nתכנון הכלי: ${val('productPlan')||'לא מולא'}\nבחירת 2FA: ${val('twoFaChoice')||'לא מולא'}\nחמש נקודות: ${val('takeaways')||'לא מולא'}\n\nכלל בטיחות: לא משתמשים באותה סיסמה בכל מקום, לא משתפים סיסמאות, ומפעילים 2FA לחשבונות חשובים.`;document.getElementById('summaryBox').textContent=text;state.summary=text;localStorage.setItem(key,JSON.stringify(state))}
+function copySummary(){renderSummary();navigator.clipboard?.writeText(document.getElementById('summaryBox').textContent)}
+function resetWork(){if(confirm('לאפס את העבודה השמורה במפגש 2?')){localStorage.removeItem(key);location.reload()}}
+document.addEventListener('input',e=>{if(e.target.matches('[data-save]'))save()});document.addEventListener('change',e=>{if(e.target.matches('[data-done],[data-save-check],[data-save]'))save();if(e.target.closest('#passLength,#lower,#upper,#digits,#symbols,#rate'))calcStrength();if(e.target.matches('[data-save="surveyLength"],[data-save="surveyReuse"],[data-save="survey2fa"]'))renderOpeningSurvey()});load();renderNav();if(state.summary)document.getElementById('summaryBox').textContent=state.summary;calcStrength();if(val('surveyLength')&&val('surveyReuse')&&val('survey2fa'))renderOpeningSurvey();show(0);
+</script>
+<script src="/js/feedback-widget.js?v=20261014-ort-cyber-lesson-2"></script>
+</body>
+</html>

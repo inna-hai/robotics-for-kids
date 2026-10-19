@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מי פורץ ראשון? · פעילות מפגש 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/platform-home-link.css">
+  <style>
+    :root{--ink:#07111f;--muted:#5b6778;--line:#d9e2ef;--card:#fff;--bg:#f5f8ff;--blue:#2563eb;--purple:#7c3aed;--green:#16a34a;--orange:#f97316;--red:#dc2626;--dark:#0f172a;--shadow:0 20px 54px rgba(15,23,42,.10)}*{box-sizing:border-box}body{margin:0;font-family:Rubik,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 0,rgba(124,58,237,.17),transparent 28rem),radial-gradient(circle at 90% 10%,rgba(37,99,235,.16),transparent 28rem),linear-gradient(180deg,#fbfdff,#edf4ff);line-height:1.6}button,input,select{font:inherit}button{cursor:pointer}.shell{width:min(1240px,calc(100% - 24px));margin:0 auto;padding:18px 0 40px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:28px;padding:14px 16px;box-shadow:var(--shadow);position:sticky;top:10px;z-index:10;backdrop-filter:blur(12px)}.brand{display:flex;align-items:center;gap:12px}.mark{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--purple),var(--blue));color:white;display:grid;place-items:center;font-size:1.8rem;font-weight:900}.brand h1{margin:0;font-size:clamp(1.35rem,2.6vw,2.2rem);line-height:1.1}.brand p{margin:3px 0 0;color:var(--muted);font-weight:800}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:999px;min-height:42px;padding:10px 15px;background:var(--dark);color:white;font-weight:900;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn.secondary{background:#f8fafc;color:var(--dark);border:1px solid var(--line)}.btn.good{background:var(--green)}.btn.warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}.btn.danger{background:var(--red)}.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;margin-top:16px}.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow)}.hero-main{background:linear-gradient(135deg,#020617,#172554 52%,#581c87);color:white;border-radius:30px;padding:28px;box-shadow:0 24px 70px rgba(15,23,42,.22);overflow:hidden;position:relative}.hero-main:after{content:"";position:absolute;inset:auto -90px -120px auto;width:350px;height:350px;border-radius:999px;background:radial-gradient(circle,rgba(167,139,250,.36),transparent 62%)}.kicker{display:inline-flex;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 12px;color:#ddd6fe;font-weight:900;margin-bottom:12px}.hero h2{font-size:clamp(2.35rem,6vw,4.9rem);line-height:.98;margin:0 0 12px;letter-spacing:-.04em}.hero p{margin:0;color:#e0e7ff;font-weight:800;font-size:1.08rem}.grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;margin-top:16px}.room-grid{display:grid;gap:10px}.room{border:1px solid var(--line);border-radius:20px;padding:14px;background:#f8fafc;text-align:right;transition:.18s ease}.room:hover{transform:translateY(-2px);border-color:#a5b4fc}.room.active{background:#eef2ff;border-color:#8b5cf6}.room h3{margin:0 0 6px}.room p{margin:0;color:#64748b;font-weight:800}.screen{display:none}.screen.active{display:block}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px}.card h3{margin:0 0 8px;color:#4c1d95}.field{margin:10px 0}.field label{display:block;font-weight:900;margin-bottom:6px}input,select{width:100%;border:1px solid #cbd5e1;border-radius:16px;padding:11px 12px;background:#fff;color:var(--ink)}.players{display:grid;gap:8px}.player{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:10px;background:#f8fafc}.avatar{width:38px;height:38px;border-radius:14px;background:linear-gradient(135deg,var(--purple),var(--blue));color:white;display:grid;place-items:center;font-weight:900}.badge{border-radius:999px;background:#eef2ff;color:#3730a3;padding:5px 9px;font-size:.82rem;font-weight:900}.badge.green{background:#dcfce7;color:#166534}.badge.orange{background:#fff7ed;color:#9a3412}.game-head{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}.stat{border:1px solid var(--line);background:#f8fafc;border-radius:20px;padding:12px;text-align:center;font-weight:900}.stat b{display:block;font-size:1.45rem;color:#4c1d95}.guess-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}.log{max-height:330px;overflow:auto;background:#020617;color:#dbeafe;border-radius:22px;padding:14px;font-weight:800;line-height:1.7}.log div{border-bottom:1px solid rgba(255,255,255,.08);padding:6px 0}.result{background:linear-gradient(135deg,#f5f3ff,#ecfeff);border:1px solid #c4b5fd;border-radius:24px;padding:18px;white-space:pre-wrap;font-weight:850}.callout{border-right:6px solid var(--purple);background:#f5f3ff;border-radius:20px;padding:14px 16px;font-weight:900;color:#5b21b6;margin:12px 0}.danger-box{border-right-color:var(--red);background:#fff1f2;color:#9f1239}.admin-table{width:100%;border-collapse:separate;border-spacing:0 8px}.admin-table th{text-align:right;color:#64748b;font-size:.85rem}.admin-table td{background:#f8fafc;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font-weight:800}.admin-table td:first-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}.admin-table td:last-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px}.footer-note{text-align:center;color:#64748b;font-weight:900;margin-top:18px}@media(max-width:980px){.hero,.grid{grid-template-columns:1fr}.cards,.game-head,.guess-row{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.actions .btn{width:100%}}@media(max-width:620px){.shell{width:min(100% - 16px,620px)}.panel,.hero-main{border-radius:22px;padding:14px}.mark{width:48px;height:48px}.btn{width:100%}}
+  </style>
+</head>
+<body>
+  <a class="platform-home-link" href="ort-cyber-lesson-2.html" aria-label="חזרה למפגש 2"><span class="platform-home-icon" aria-hidden="true">🏠</span><span class="platform-home-text">מפגש 2</span></a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="mark">🔐</div><div><h1>מי פורץ ראשון?</h1><p>פעילות משחק למפגש 2 · סיסמאות, ניחושים ו-Brute Force</p></div></div>
+      <div class="actions"><a class="btn secondary" href="ort-cyber-lesson-2.html">חזרה ללומדה</a><a class="btn secondary" href="ort-cyber-slides-2.html">מצגת</a><button class="btn warn" onclick="showAdmin()">ניהול מדריך</button><button class="btn danger" onclick="resetAll()">איפוס הכול</button></div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-main"><span class="kicker">משחק כיתתי · עד 5 חדרים · עד 5 שחקנים בחדר</span><h2>נחשו את הסיסמה המדומה לפני כולם</h2><p>המטרה אינה לפרוץ לחשבונות אמיתיים, אלא להבין למה סיסמאות קצרות, תאריכי לידה ושימוש חוזר בסיסמאות מסוכנים.</p></div>
+      <div class="panel"><h3>חוקי בטיחות</h3><div class="callout danger-box">לא מקלידים סיסמה אמיתית. לא מתחברים לחשבון אמיתי. לא משתמשים בכלי פריצה. זה משחק למידה בלבד.</div><ul><li>כל סיסמה במשחק מוגרלת ומדומה.</li><li>יש מגבלת קצב: ניסיון אחד כל 2 שניות לשחקן.</li><li>שמות עוברים סינון בסיסי.</li><li>בסיום מוצג הסבר חינוכי על מרחב חיפוש וזמן פריצה.</li></ul></div>
+    </section>
+
+    <main class="grid">
+      <aside class="panel"><h2>חדרים</h2><div id="rooms" class="room-grid"></div><div class="callout">הפעילות נשמרת בדפדפן המקומי של מחשב המדריך. אם רוצים משחק מכמה מכשירים בזמן אמת, נצטרך בהמשך שרת/Realtime DB.</div></aside>
+      <section class="panel">
+        <div id="screenLobby" class="screen active">
+          <h2>1 · הצטרפות ללובי</h2>
+          <p>בחרו חדר, הזינו שם תלמיד/קבוצה והצטרפו. השחקן הראשון בחדר הוא המארח.</p>
+          <div class="cards">
+            <div class="card"><h3>פרטי שחקן</h3><div class="field"><label>שם שחקן/קבוצה</label><input id="playerName" maxlength="24" placeholder="לדוגמה: צוות כחול"></div><div class="field"><label>חדר נבחר</label><select id="roomSelect"></select></div><button class="btn good" onclick="joinRoom()">הצטרפות לחדר</button></div>
+            <div class="card"><h3>הוראות</h3><ol><li>בוחרים חדר פנוי או פעיל.</li><li>עד 5 שחקנים בכל חדר.</li><li>המארח בוחר רמת קושי.</li><li>כולם מנחשים סיסמה מדומה.</li><li>הראשון שמנחש נכון מנצח.</li></ol></div>
+          </div>
+        </div>
+
+        <div id="screenWaiting" class="screen">
+          <h2>2 · חדר המתנה</h2>
+          <div class="cards"><div class="card"><h3 id="waitingTitle">חדר</h3><div class="players" id="waitingPlayers"></div></div><div class="card"><h3>הגדרות מארח</h3><div class="field"><label>רמת קושי</label><select id="difficulty"><option value="4">4 ספרות - 10,000 אפשרויות</option><option value="6">6 ספרות - 1,000,000 אפשרויות</option><option value="birth">תאריך לידה מדומה - 365 אפשרויות</option></select></div><button class="btn good" onclick="startGame()">התחלת משחק</button><button class="btn secondary" onclick="goLobby()">חזרה ללובי</button></div></div>
+        </div>
+
+        <div id="screenGame" class="screen">
+          <h2>3 · המשחק התחיל</h2>
+          <div class="game-head"><div class="stat"><b id="timer">00:00</b>זמן</div><div class="stat"><b id="difficultyLabel">4 ספרות</b>רמה</div><div class="stat"><b id="attemptsTotal">0</b>ניסיונות</div><div class="stat"><b id="rateHint">2 שנ׳</b>המתנה בין ניסיונות</div></div>
+          <div class="guess-row"><div class="field"><label>שחקן</label><select id="guessPlayer"></select></div><div class="field"><label>ניחוש</label><input id="guessInput" inputmode="numeric" placeholder="הקלידו ניחוש"></div><button class="btn good" onclick="submitGuess()">שליחת ניחוש</button></div>
+          <div class="cards" style="margin-top:12px"><div class="card"><h3>שחקנים</h3><div class="players" id="gamePlayers"></div></div><div class="card"><h3>יומן ניחושים</h3><div class="log" id="guessLog"></div></div></div>
+        </div>
+
+        <div id="screenResults" class="screen">
+          <h2>4 · תוצאות והסבר חינוכי</h2>
+          <div class="result" id="resultBox"></div>
+          <div class="actions" style="margin-top:12px"><button class="btn good" onclick="playAgain()">משחק חוזר באותו חדר</button><button class="btn secondary" onclick="goLobby()">חזרה ללובי</button></div>
+        </div>
+
+        <div id="screenAdmin" class="screen">
+          <h2>ניהול מדריך</h2>
+          <p>בגרסה מקומית זו הניהול פתוח במחשב המדריך. בגרסה מרובת מכשירים יש לחייב משתמש מחובר עם תפקיד מנהל.</p>
+          <table class="admin-table"><thead><tr><th>חדר</th><th>מצב</th><th>שחקנים</th><th>רמה</th><th>פעולות</th></tr></thead><tbody id="adminRows"></tbody></table>
+          <div class="callout">נקודות לאימות בפיתוח המשך: הרשאת מנהל, טיפול ב-Rate Limit בקריאות ניהול מרובות, והגדרה סופית של 5 שחקנים בכל חדר.</div>
+        </div>
+      </section>
+    </main>
+    <div class="footer-note">גרסה לימודית מקומית. אין שליחת מידע לשרת ואין שימוש בסיסמאות אמיתיות.</div>
+  </div>
+<script>
+const STORAGE_KEY='ortCyber.whoCracksFirst.v1';
+const RATE_LIMIT_MS=2000;
+let currentRoomId=1,currentPlayerId=null,timerId=null;
+function defaultRooms(){return Array.from({length:5},(_,i)=>({id:i+1,status:'open',difficulty:'4',secret:'',startedAt:null,endedAt:null,winnerId:null,players:[],guesses:[]}))}
+let rooms=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||defaultRooms();
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(rooms));renderRooms();renderAdmin()}
+function sanitizeName(name){return (name||'').replace(/[<>"'`]/g,'').replace(/\s+/g,' ').trim().slice(0,24)}
+function room(){return rooms.find(r=>r.id===currentRoomId)}
+function roomOptions(diff){if(diff==='4')return 10000;if(diff==='6')return 1000000;return 365}
+function niceTime(seconds){if(seconds<1)return 'פחות משנייה';if(seconds<60)return Math.round(seconds).toLocaleString('he-IL')+' שניות';if(seconds<3600)return Math.round(seconds/60).toLocaleString('he-IL')+' דקות';if(seconds<86400)return Math.round(seconds/3600).toLocaleString('he-IL')+' שעות';if(seconds<31536000)return Math.round(seconds/86400).toLocaleString('he-IL')+' ימים';return Math.round(seconds/31536000).toLocaleString('he-IL')+' שנים'}
+function label(diff){return diff==='4'?'4 ספרות':diff==='6'?'6 ספרות':'תאריך לידה מדומה'}
+function makeSecret(diff){if(diff==='4')return String(Math.floor(Math.random()*10000)).padStart(4,'0');if(diff==='6')return String(Math.floor(Math.random()*1000000)).padStart(6,'0');const day=String(Math.floor(Math.random()*28)+1).padStart(2,'0');const month=String(Math.floor(Math.random()*12)+1).padStart(2,'0');return day+month}
+function validGuess(diff,guess){const len=diff==='6'?6:4;return /^\d+$/.test(guess)&&guess.length===len}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));if(id==='screenGame')startTimer();else stopTimer()}
+function renderRooms(){const wrap=document.getElementById('rooms');const select=document.getElementById('roomSelect');wrap.innerHTML='';select.innerHTML='';rooms.forEach(r=>{const b=document.createElement('button');b.className='room'+(r.id===currentRoomId?' active':'');b.innerHTML=`<h3>חדר ${r.id}</h3><p>${r.players.length}/5 שחקנים · ${r.status==='playing'?'במשחק':r.status==='ended'?'הסתיים':'פתוח'}</p>`;b.onclick=()=>{currentRoomId=r.id;renderRooms();if(currentPlayerId&&room().players.some(p=>p.id===currentPlayerId))showWaiting()};wrap.appendChild(b);const opt=document.createElement('option');opt.value=r.id;opt.textContent=`חדר ${r.id} - ${r.players.length}/5`;select.appendChild(opt)});select.value=currentRoomId}
+function joinRoom(){currentRoomId=Number(document.getElementById('roomSelect').value);const r=room();if(r.players.length>=5){alert('החדר מלא. אפשר עד 5 שחקנים בחדר.');return}const name=sanitizeName(document.getElementById('playerName').value);if(name.length<2){alert('הקלידו שם שחקן/קבוצה תקין.');return}currentPlayerId='p'+Date.now()+Math.random().toString(16).slice(2);r.players.push({id:currentPlayerId,name,attempts:0,lastGuessAt:0,host:r.players.length===0});save();showWaiting()}
+function showWaiting(){const r=room();document.getElementById('waitingTitle').textContent=`חדר ${r.id} · ${r.players.length}/5`;document.getElementById('difficulty').value=r.difficulty;renderPlayers('waitingPlayers',r);show('screenWaiting')}
+function renderPlayers(targetId,r){const target=document.getElementById(targetId);target.innerHTML='';r.players.forEach((p,i)=>{const row=document.createElement('div');row.className='player';row.innerHTML=`<span class="avatar">${i+1}</span><strong>${p.name}</strong><span class="badge ${p.host?'green':''}">${p.host?'מארח':p.attempts+' ניסיונות'}</span>`;target.appendChild(row)})}
+function startGame(){const r=room();if(!r.players.length){alert('צריך לפחות שחקן אחד.');return}r.difficulty=document.getElementById('difficulty').value;r.secret=makeSecret(r.difficulty);r.status='playing';r.startedAt=Date.now();r.endedAt=null;r.winnerId=null;r.guesses=[];r.players.forEach(p=>{p.attempts=0;p.lastGuessAt=0});save();showGame()}
+function showGame(){const r=room();document.getElementById('difficultyLabel').textContent=label(r.difficulty);document.getElementById('guessInput').placeholder=r.difficulty==='6'?'לדוגמה: 493027':'לדוגמה: 0427';const select=document.getElementById('guessPlayer');select.innerHTML='';r.players.forEach(p=>{const opt=document.createElement('option');opt.value=p.id;opt.textContent=p.name;select.appendChild(opt)});renderGame();show('screenGame')}
+function renderGame(){const r=room();renderPlayers('gamePlayers',r);document.getElementById('attemptsTotal').textContent=r.guesses.length;const log=document.getElementById('guessLog');log.innerHTML=r.guesses.slice(-40).reverse().map(g=>`<div>${new Date(g.time).toLocaleTimeString('he-IL')} · <b>${g.player}</b>: ${g.guess} - ${g.feedback}</div>`).join('')||'<div>עדיין אין ניחושים.</div>'}
+function submitGuess(){const r=room();if(r.status!=='playing'){alert('המשחק לא פעיל.');return}const player=r.players.find(p=>p.id===document.getElementById('guessPlayer').value);const guess=document.getElementById('guessInput').value.trim();if(!player)return;if(!validGuess(r.difficulty,guess)){alert(`ניחוש לא תקין. ברמה ${label(r.difficulty)} צריך ${r.difficulty==='6'?6:4} ספרות.`);return}const now=Date.now();if(now-player.lastGuessAt<RATE_LIMIT_MS){alert('יש מגבלת קצב: המתינו 2 שניות בין ניסיונות.');return}player.lastGuessAt=now;player.attempts++;let feedback='רחוק';const delta=Math.abs(Number(r.secret)-Number(guess));if(guess===r.secret)feedback='נכון';else if(delta<10)feedback='קרוב מאוד';else if(delta<100)feedback='קרוב יחסית';r.guesses.push({time:now,player:player.name,playerId:player.id,guess,feedback});document.getElementById('guessInput').value='';if(guess===r.secret){r.status='ended';r.endedAt=now;r.winnerId=player.id;save();showResults();return}save();renderGame()}
+function showResults(){const r=room();const winner=r.players.find(p=>p.id===r.winnerId);const elapsed=Math.max(1,Math.round(((r.endedAt||Date.now())-(r.startedAt||Date.now()))/1000));const options=roomOptions(r.difficulty);const brute=niceTime(options/10000);document.getElementById('resultBox').textContent=`הזוכה: ${winner?winner.name:'אין'}\nהסיסמה המדומה: ${r.secret}\nרמת קושי: ${label(r.difficulty)}\nמספר אפשרויות: ${options.toLocaleString('he-IL')}\nניסיונות במשחק: ${r.guesses.length}\nמשך משחק: ${niceTime(elapsed)}\n\nסימולציית Brute Force: בקצב 10,000 ניסיונות בשנייה, בדיקה מלאה של כל האפשרויות הייתה לוקחת בערך ${brute}.\n\nהסבר: ככל שהסיסמה ארוכה יותר ומגוונת יותר, מספר האפשרויות גדל מאוד. תאריך לידה ומספרים קצרים הם דפוסים שקל לנחש. בחשבונות אמיתיים משתמשים בסיסמה חזקה, סיסמה ייחודית לכל שירות ואימות דו-שלבי.`;show('screenResults')}
+function playAgain(){const r=room();r.status='open';r.secret='';r.startedAt=null;r.endedAt=null;r.winnerId=null;r.guesses=[];r.players.forEach(p=>{p.attempts=0;p.lastGuessAt=0});save();showWaiting()}
+function goLobby(){currentPlayerId=null;show('screenLobby');renderRooms()}
+function startTimer(){stopTimer();timerId=setInterval(()=>{const r=room();const start=r.startedAt||Date.now();const sec=Math.max(0,Math.floor((Date.now()-start)/1000));document.getElementById('timer').textContent=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')},500)}
+function stopTimer(){if(timerId)clearInterval(timerId);timerId=null}
+function showAdmin(){renderAdmin();show('screenAdmin')}
+function renderAdmin(){const body=document.getElementById('adminRows');if(!body)return;body.innerHTML='';rooms.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td>חדר ${r.id}</td><td>${r.status}</td><td>${r.players.length}/5</td><td>${label(r.difficulty)}</td><td><button class="btn secondary" onclick="adminOpen(${r.id})">פתח</button> <button class="btn danger" onclick="adminReset(${r.id})">איפוס</button></td>`;body.appendChild(tr)})}
+function adminOpen(id){currentRoomId=id;const r=room();if(r.status==='playing')showGame();else if(r.status==='ended')showResults();else showWaiting();renderRooms()}
+function adminReset(id){if(!confirm('לאפס את חדר '+id+'?'))return;rooms[id-1]=defaultRooms()[id-1];save();showAdmin()}
+function resetAll(){if(!confirm('לאפס את כל החדרים והנתונים?'))return;rooms=defaultRooms();currentPlayerId=null;save();show('screenLobby')}
+renderRooms();renderAdmin();
+</script>
+<script src="/js/feedback-widget.js?v=20261014-who-cracks-first"></script>
+</body>
+</html>

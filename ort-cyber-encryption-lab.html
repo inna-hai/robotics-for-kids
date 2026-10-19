@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <title>הדמיית גלישה: הודעה גלויה מול הודעה מוצפנת (קיסר / הצבה / אקרוסטיכון)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --muted: #9ca3af;
+      --ok: #16a34a;
+      --warn: #ef4444;
+      --accent: #2563eb;
+      --surface: #1f2937;
+      --card: #0b1220;
+    }
+    body {
+      margin: 0; padding: 0;
+      font-family: "Assistant", -apple-system, system-ui, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+      background: radial-gradient(1200px 800px at 80% -10%, #0b1a3a 0%, #0a1226 40%, var(--bg) 70%);
+      color: #e5e7eb;
+    }
+    header {
+      padding: 20px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    h1 { margin: 0 0 4px; font-weight: 800; font-size: 22px; }
+    header p { margin: 0; color: var(--muted); }
+    main { max-width: 1080px; margin: 24px auto; padding: 0 16px 32px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    }
+    .card h2 { margin: 0 0 12px; font-size: 18px; }
+    label { font-weight: 700; display: inline-block; margin-bottom: 6px; }
+    input[type="text"], textarea, select, input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: #0d1426;
+      color: #e5e7eb;
+      outline: none;
+    }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    button {
+      padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18);
+      background: linear-gradient(180deg, #172554, #0b1328);
+      color: #e5e7eb; font-weight: 700; cursor: pointer;
+      transition: 0.2s transform ease, 0.2s background ease;
+    }
+    button:hover { transform: translateY(-1px); background: linear-gradient(180deg, #1d4ed8, #0b1328); }
+    button.secondary { background: linear-gradient(180deg, #064e3b, #071a16); }
+    small.muted { color: var(--muted); }
+    .log {
+      background: #0a1222;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 12px; height: 220px; overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 14px; line-height: 1.45;
+    }
+    .log .line { padding: 6px 8px; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .accent { color: #93c5fd; }
+    .pill {
+      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px;
+      border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06);
+      margin-left: 6px;
+    }
+    .mapping {
+      background: #081021; padding: 8px; border-radius: 8px; margin-top: 8px; overflow: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+    footer { max-width: 1080px; margin: 16px auto 32px; padding: 0 16px; color: var(--muted); }
+    .net {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px;
+    }
+    .node {
+      background: #0d172c; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 10px; text-align: center; font-weight: 700;
+    }
+    .node small { display: block; color: var(--muted); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>הדמיית גלישה: הודעה גלויה מול הודעה מוצפנת</h1>
+    <p>המחשה חינוכית לצפנים בסיסיים: קיסר, הצבה, ואקרוסטיכון. המטרה: להבין מה "רואה" מי שנמצא בדרך.</p>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="card">
+        <h2>קלט והגדרות</h2>
+        <label for="message">הודעה לשיגור</label>
+        <input id="message" type="text" placeholder="לדוגמה: שלום, הפגישה ב-17:00" />
+
+        <div class="row" style="margin-top:10px;">
+          <div>
+            <label for="mode">שיטת השיגור</label>
+            <select id="mode">
+              <option value="plain">ללא VPN (ללא הצפנה)</option>
+              <option value="caesar">עם VPN – צופן קיסר (הדמיה)</option>
+              <option value="subst">עם VPN – צופן הצבה (הדמיה)</option>
+              <option value="acrostic">עם VPN – אקרוסטיכון (הסתרת מסר)</option>
+            </select>
+            <small class="muted">הצפנה כאן להדגמה בלבד.</small>
+          </div>
+          <div id="caesarBox" style="display:none;">
+            <label for="shift">היסט בקיסר</label>
+            <input id="shift" type="number" min="1" max="10" value="2" />
+          </div>
+        </div>
+
+        <div id="substBox" class="mapping" style="display:none;">
+          <strong>מפתח צופן הצבה (דוגמה קבועה)</strong>
+          <div id="substMapText"></div>
+          <small class="muted">אפשר להסביר בכיתה שמפתח אחר ייתן תוצאה אחרת.</small>
+        </div>
+
+        <div id="acrosticBox" style="display:none; margin-top:10px;">
+          <label for="acrosticCover">טקסט כיסוי (אופציונלי)</label>
+          <input id="acrosticCover" type="text" placeholder="משפט כיסוי חופשי; אם ריק – תיווצר שורה אוטומטית" />
+          <small class="muted">האקרוסטיכון בונה משפט שבכל מילה האות הראשונה מרכיבה את המסר.</small>
+        </div>
+
+        <div class="controls">
+          <button id="sendPlain">שליחה ללא VPN</button>
+          <button id="sendVpn" class="secondary">שליחה עם VPN (הצפנה)</button>
+        </div>
+
+        <div class="net">
+          <div class="node">שולח<small>המכשיר שלך</small></div>
+          <div class="node">נתב/ספק<small>תחנת מעבר</small></div>
+          <div class="node">מרגל בדרך<small>תוקף ברשת ציבורית</small></div>
+          <div class="node">מקבל<small>היעד</small></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>יומן רשת</h2>
+        <div id="log" class="log"></div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>הסבר למדריך</h2>
+      <p><strong>צופן קיסר:</strong> הזזה של כל תו במסר במספר קבוע של צעדים. מי שמחזיק את ערך ההיסט יכול להחזיר לאחור.</p>
+      <p><strong>צופן הצבה:</strong> לכל אות מוצמדת אות אחרת לפי מפתח קבוע (מילון). בלי המפתח, המסר נראה אקראי.</p>
+      <p><strong>אקרוסטיכון:</strong> הסתרת מסר בתוך משפט רגיל באמצעות האותיות הראשונות של מילים. זו הדגמה ל"הסתרה" ולא להצפנה קריפטוגרפית חזקה.</p>
+      <p>בהדמיה זו, "ללא VPN" משגר טקסט גלוי שכל תחנה בדרך יכולה לקרוא; "עם VPN" מציג טקסט בלתי קריא למי שבדרך, ורק המקבל רואה את הגרסה הקריאה.</p>
+    </section>
+  </main>
+
+  <footer>
+    שים לב: הצפנים כאן מיועדים להמחשה פדגוגית בלבד. VPN אמיתי משתמש בהצפנה מודרנית ופרוטוקולים ייעודיים.
+  </footer>
+
+  <script>
+    // ----- Hebrew alphabet helper (basic) -----
+    const HEB = "אבגדהוזחטיכלמנסעפצקרשת";
+    // Include common Latin letters+digits to keep demo robust
+    const LATLOW = "abcdefghijklmnopqrstuvwxyz";
+    const LATHI  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const DIGITS = "0123456789";
+
+    // ----- Substitution mapping (fixed demo) -----
+    // Hebrew mapping (simple rotation/permutation for demo)
+    const HEB_MAP = (() => {
+      const src = HEB;
+      const dst = "קרשתאבגדהוזחטיכלמנסעפצ"; // a permutation demo
+      const map = {};
+      for (let i=0;i<src.length;i++) map[src[i]] = dst[i];
+      return map;
+    })();
+    // Latin mapping (keyword-based permutation for demo)
+    function buildLatinSubstMap() {
+      const keyword = "SECURITY";
+      const alphabet = LATLOW;
+      // Create a simple monoalphabetic mapping from a keyword
+      let keyStream = "";
+      for (const ch of keyword.toLowerCase()) if (!keyStream.includes(ch) && alphabet.includes(ch)) keyStream += ch;
+      for (const ch of alphabet) if (!keyStream.includes(ch)) keyStream += ch;
+      // map lower
+      const map = {};
+      for (let i=0;i<alphabet.length;i++) map[alphabet[i]] = keyStream[i];
+      // map upper similarly
+      const ALPHAU = LATHI;
+      const keyUpper = keyStream.toUpperCase();
+      for (let i=0;i<ALPHAU.length;i++) map[ALPHAU[i]] = keyUpper[i];
+      return map;
+    }
+    const LAT_MAP = buildLatinSubstMap();
+
+    function renderSubstMap() {
+      const box = document.getElementById("substMapText");
+      const rows = [];
+      const hebRow = [...HEB].map(ch=>`${ch}→${HEB_MAP[ch]}`).join("  ");
+      const latRow = [...LATLOW].map(ch=>`${ch}→${LAT_MAP[ch]}`).join("  ");
+      const LATRowU = [...LATHI].map(ch=>`${ch}→${LAT_MAP[ch]}`).join("  ");
+      rows.push("עברית:  " + hebRow);
+      rows.push("לטינית (קטנות):  " + latRow);
+      rows.push("לטינית (גדולות): " + LATRowU);
+      box.textContent = rows.join("\n");
+    }
+    renderSubstMap();
+
+    // ----- Caesar cipher (supports Hebrew + Latin) -----
+    function caesarShiftChar(ch, shift) {
+      const alphabets = [HEB, LATLOW, LATHI, DIGITS];
+      for (const A of alphabets) {
+        const idx = A.indexOf(ch);
+        if (idx >= 0) {
+          const s = ((idx + shift) % A.length + A.length) % A.length;
+          return A[s];
+        }
+      }
+      return ch; // punctuation/space unchanged
+    }
+    function caesarEncrypt(text, shift) {
+      return [...text].map(ch => caesarShiftChar(ch, shift)).join("");
+    }
+
+    // ----- Substitution cipher -----
+    function substEncrypt(text) {
+      let out = "";
+      for (const ch of text) {
+        if (HEB_MAP[ch]) out += HEB_MAP[ch];
+        else if (LAT_MAP[ch]) out += LAT_MAP[ch];
+        else out += ch;
+      }
+      return out;
+    }
+
+    // ----- Acrostic encode: create a cover sentence where initial letters form the message -----
+    const WORD_BANK = {
+      'א': ["אולי","אור","אמתית","אבטחה","אינטרנט"],
+      'ב': ["ברשת","בקלות","בזהירות","בנתיב","בחכמה"],
+      'ג': ["גלישה","גם","גיבוי","גבוהה","גשם"],
+      'ד': ["דפדפן","דיון","דוגמה","דרך","דקה"],
+      'ה': ["היום","הצפנה","הודעה","המסר","הבנה"],
+      'ו': ["וכך","ובלי","ואז","ופשוט","וודאות"],
+      'ז': ["זהירות","זמין","זוכרים","זריזות","זיהוי"],
+      'ח': ["חשוב","חלון","חשאי","חיבור","חזק"],
+      'ט': ["טוב","טכנולוגיה","טווח","טקסט","טרמינל"],
+      'י': ["ידוע","יוצא","יותר","ימנע","יימסר"],
+      'כ': ["כדי","כעת","כך","כוונה","כרטיס"],
+      'ל': ["ללא","לאט","לוגית","למדו","להבין"],
+      'מ': ["מידע","מסר","מוצפן","מהר","מוסתר"],
+      'נ': ["נתב","נתיב","נכון","נמנע","נשלח"],
+      'ס': ["סיסמה","סוד","סיבה","סינון","סופי"],
+      'ע': ["עצירה","עבור","עכשיו","עלול","עצמאי"],
+      'פ': ["פרטיות","פישינג","פעולה","פענוח","פשוט"],
+      'צ': ["ציבורי","צופן","צעד","צומת","צד"],
+      'ק': ["קל","קלט","קריאה","קישור","קבוע"],
+      'ר': ["רשת","רגע","רואה","רוחב","רגיש"],
+      'ש': ["שלום","שולח","שכבה","שימוש","שאלה"],
+      'ת': ["תלמיד","תוקף","תקשורת","תמיד","תעלה"]
+    };
+    function acrosticEncode(msg, cover) {
+      // Build sentence: pick a word starting with each character of msg
+      const words = [];
+      for (const rawCh of msg) {
+        const ch = normalizeHebChar(rawCh);
+        const bank = WORD_BANK[ch] || WORD_BANK[closestKey(ch)] || ["תלמיד"];
+        words.push(bank[Math.floor(Math.random()*bank.length)]);
+      }
+      let sentence = words.join(" ");
+      if (cover && cover.trim().length > 0) {
+        // If cover provided, append it to look natural
+        sentence += " — " + cover.trim();
+      }
+      return sentence;
+    }
+    function normalizeHebChar(ch){
+      // Normalize final forms to base letter for bank matching
+      const map = {'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+      return map[ch] || ch;
+    }
+    function closestKey(ch){
+      // fallback for non-Hebrew letters: map to generic keys
+      if (/[a-zA-Z]/.test(ch)) return 'ל';
+      if (/[0-9]/.test(ch)) return 'מ';
+      return 'ת';
+    }
+
+    // ----- UI state -----
+    const modeEl = document.getElementById('mode');
+    const shiftEl = document.getElementById('shift');
+    const caesarBox = document.getElementById('caesarBox');
+    const substBox = document.getElementById('substBox');
+    const acrosticBox = document.getElementById('acrosticBox');
+    modeEl.addEventListener('change', () => {
+      caesarBox.style.display = (modeEl.value === 'caesar') ? 'block' : 'none';
+      substBox.style.display  = (modeEl.value === 'subst')  ? 'block' : 'none';
+      acrosticBox.style.display = (modeEl.value === 'acrostic') ? 'block' : 'none';
+    });
+
+    const logEl = document.getElementById('log');
+    function log(line, cls="") {
+      const div = document.createElement('div');
+      div.className = "line " + cls;
+      div.textContent = line;
+      logEl.appendChild(div);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+    function clearLog(){ logEl.innerHTML = ""; }
+
+    // ----- Send flows -----
+    document.getElementById('sendPlain').addEventListener('click', () => {
+      const msg = document.getElementById('message').value || "שלום, הפגישה ב-17:00";
+      clearLog();
+      log("שולח (ללא VPN): " + msg, "warn");
+      log("נתב/ספק רואה: " + msg);
+      log("מרגל בדרך רואה: " + msg);
+      log("מקבל מקבל: " + msg, "ok");
+    });
+
+    document.getElementById('sendVpn').addEventListener('click', () => {
+      const msg = document.getElementById('message').value || "שלום, הפגישה ב-17:00";
+      const mode = modeEl.value;
+      clearLog();
+
+      let cipher = "";
+      let humanNote = "";
+      if (mode === 'caesar') {
+        const s = parseInt(shiftEl.value || "2", 10);
+        cipher = caesarEncrypt(msg, s);
+        humanNote = "צופן קיסר, היסט " + s;
+      } else if (mode === 'subst') {
+        cipher = substEncrypt(msg);
+        humanNote = "צופן הצבה (מפתח דוגמה קבוע)";
+      } else if (mode === 'acrostic') {
+        const cover = document.getElementById('acrosticCover').value || "";
+        cipher = acrosticEncode(msg, cover);
+        humanNote = "אקרוסטיכון (מסר חבוי באותיות ראשונות של מילים)";
+      } else {
+        // default to caesar
+        cipher = caesarEncrypt(msg, 2);
+        humanNote = "צופן קיסר, היסט 2";
+      }
+
+      log("שולח מפעיל VPN: התוכן מוצפן (" + humanNote + ")", "ok");
+      log("נתב/ספק רואה מחרוזת לא קריאה: " + cipher, "accent");
+      log("מרגל בדרך רואה רק טקסט לא קריא/כיסוי: " + cipher, "accent");
+      log("מקבל מפענח ורואה את התוכן הקריא: " + msg, "ok");
+    });
+  </script>
+</body>
+</html>

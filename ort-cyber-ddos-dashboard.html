@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>דשבורד הגנת שרתים · ORT Cyber</title>
+  <style>
+    :root{--bg:#07111f;--panel:#101d31;--card:#15253d;--line:#2e4565;--ink:#f2f7ff;--muted:#a9bad0;--cyan:#43d9ff;--green:#53e39a;--yellow:#ffd166;--red:#ff637d;--violet:#a88cff}
+    *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;font-family:Rubik,Arial,sans-serif;background:radial-gradient(circle at 12% 0,#12315a 0,transparent 28rem),linear-gradient(160deg,#06101d,#0b1425 58%,#10152a);color:var(--ink);line-height:1.55;min-height:100vh}
+    button{font:inherit}.shell{width:min(1280px,calc(100% - 24px));margin:auto;padding:16px 0 32px}.top{display:flex;gap:14px;align-items:center;background:rgba(10,22,39,.92);border:1px solid var(--line);border-radius:24px;padding:16px;position:sticky;top:8px;z-index:5;backdrop-filter:blur(14px)}
+    .pulse{width:14px;height:14px;border-radius:50%;background:var(--green);box-shadow:0 0 18px var(--green);flex:0 0 auto}.top h1{margin:0;font-size:clamp(1.2rem,3vw,2rem)}.top p{margin:2px 0 0;color:var(--muted);font-weight:700}.edu{margin-inline-start:auto;background:#1e3150;border:1px solid #3c5b83;border-radius:999px;padding:7px 11px;color:#cdeaff;font-weight:900;font-size:.85rem}
+    .controls,.defenses{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid var(--line);border-radius:14px;background:#1c304d;color:var(--ink);padding:10px 14px;min-height:46px;font-weight:900;cursor:pointer}.btn:hover{border-color:var(--cyan)}.btn.primary{background:var(--cyan);color:#04121f}.btn.attack{background:#351627;border-color:#7f2b48;color:#ffd8e1}.btn.attack[aria-pressed="true"]{background:var(--red);color:#25020a;animation:pulse 1s infinite}.btn.defense[aria-pressed="true"]{background:#123f32;border-color:var(--green);color:#c7ffe3}.btn:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+    .metrics{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:14px}.metric,.panel{background:rgba(16,29,49,.96);border:1px solid var(--line);border-radius:20px;padding:15px}.metric span{display:block;color:var(--muted);font-weight:800}.metric strong{font-size:clamp(1.45rem,3vw,2.25rem);color:var(--cyan)}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px;margin-top:12px}.panel h2,.panel h3{margin:0 0 10px}.status{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}.status-light{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;font-size:2rem;background:#153e31;border:3px solid var(--green);box-shadow:0 0 25px rgba(83,227,154,.25)}.status-light.warn{background:#463a16;border-color:var(--yellow)}.status-light.danger{background:#481a27;border-color:var(--red)}.status-copy strong{display:block;font-size:1.35rem}.status-copy span{color:var(--muted);font-weight:700}
+    .chart{height:210px;display:flex;gap:5px;align-items:end;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 8px 0;overflow:hidden}.bar{flex:1;min-width:4px;border-radius:5px 5px 0 0;background:linear-gradient(var(--cyan),#397be8);transition:height .35s}.bar.warn{background:linear-gradient(var(--yellow),#ef8f36)}.bar.danger{background:linear-gradient(var(--red),#c62d5b)}
+    .servers{display:grid;gap:10px}.server{display:grid;grid-template-columns:90px 1fr 48px;gap:8px;align-items:center}.track{height:14px;border-radius:999px;background:#081322;border:1px solid var(--line);overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width .35s}.fill.warn{background:var(--yellow)}.fill.danger{background:var(--red)}
+    .log{max-height:230px;overflow:auto;display:grid;gap:6px}.entry{border-right:4px solid var(--cyan);background:#0b1728;border-radius:10px;padding:7px 10px;color:#dce8f8}.entry.warn{border-color:var(--yellow)}.entry.danger{border-color:var(--red)}.entry.good{border-color:var(--green)}
+    .mission{margin-top:12px}.mission ol{margin:0;padding-inline-start:22px}.mission li{margin:6px 0;color:#d9e5f4}.done-note{display:none;margin-top:10px;background:#123f32;border:1px solid var(--green);border-radius:14px;padding:10px;color:#c9ffe4;font-weight:900}.done-note.show{display:block}.hint{color:var(--muted);font-size:.92rem}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @keyframes pulse{50%{box-shadow:0 0 22px rgba(255,99,125,.7)}}
+    @media(max-width:980px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.grid{grid-template-columns:1fr}.top{position:static}.edu{display:none}}
+    @media(max-width:620px){.shell{width:min(100% - 14px,620px)}.top{align-items:flex-start}.pulse{margin-top:6px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{padding:12px}.controls .btn,.defenses .btn{flex:1 1 145px}.server{grid-template-columns:74px 1fr 42px}.chart{height:160px}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="top"><span class="pulse" id="pulse" aria-hidden="true"></span><div><h1>מרכז ניטור והגנת שרתים</h1><p>סימולציה לימודית בלבד — אינה שולחת תעבורה אמיתית.</p></div><span class="edu">ORT Cyber · מפגש 7</span></header>
+  <section class="controls" aria-label="פקדי הסימולציה">
+    <button class="btn primary" id="trafficBtn" type="button" aria-pressed="false">▶ התחלת תעבורה רגילה</button>
+    <button class="btn attack" id="attackBtn" type="button" aria-pressed="false">⚠ הפעלת מתקפת DDoS מדומה</button>
+    <button class="btn" id="resetBtn" type="button">↻ איפוס</button>
+  </section>
+  <section class="defenses" aria-label="מנגנוני הגנה">
+    <button class="btn defense" type="button" data-defense="rateLimit" aria-pressed="false">⏱ Rate Limiting</button>
+    <button class="btn defense" type="button" data-defense="loadBalance" aria-pressed="false">⚖ Load Balancing</button>
+    <button class="btn defense" type="button" data-defense="queue" aria-pressed="false">🎫 Queue Processing</button>
+    <button class="btn defense" type="button" data-defense="scrubbing" aria-pressed="false">🧽 Scrubbing Center</button>
+  </section>
+  <section class="metrics" aria-label="מדדי השרת">
+    <div class="metric"><span>בקשות לשנייה</span><strong id="rps">0</strong></div>
+    <div class="metric"><span>סה״כ בקשות</span><strong id="total">0</strong></div>
+    <div class="metric"><span>נחסמו</span><strong id="blocked">0</strong></div>
+    <div class="metric"><span>ממתינות בתור</span><strong id="queued">0</strong></div>
+    <div class="metric"><span>זמן תגובה</span><strong id="latency">42ms</strong></div>
+  </section>
+  <section class="grid">
+    <div class="panel"><div class="status"><div class="status-light" id="statusLight">✓</div><div class="status-copy"><strong id="statusTitle">הכול תקין</strong><span id="statusText">השרת מוכן לקבל בקשות.</span></div></div><h2 style="margin-top:18px">גרף עומס חי</h2><div class="chart" id="chart" aria-label="גרף עומס ב־24 המדידות האחרונות"></div></div>
+    <div class="panel"><h2>חלוקת עומס בין שרתים</h2><div class="servers" id="servers"></div><p class="hint">כאשר Load Balancing כבוי, כל התעבורה מגיעה לשרת אחד.</p></div>
+    <div class="panel"><h2>לוג אירועים</h2><div class="log" id="log" role="log" aria-live="polite"><div class="entry">המערכת מוכנה. התחילו בתעבורה רגילה.</div></div></div>
+    <div class="panel mission"><h2>משימת המגן</h2><ol><li>הפעילו תעבורה רגילה וצפו במדדים.</li><li>הפעילו מתקפת DDoS מדומה.</li><li>הפעילו לפחות שני מנגנוני הגנה.</li><li>ייצבו את השירות במשך חמש מדידות רצופות.</li></ol><p class="hint" id="missionHint">טרם התחלתם.</p><div class="done-note" id="doneNote" role="status">✅ המשימה הושלמה: זיהיתם עומס והצלחתם לייצב את השירות.</div></div>
+  </section>
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
+</main>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY='ortCyberDdosDashboard.v1';
+  const els={traffic:document.getElementById('trafficBtn'),attack:document.getElementById('attackBtn'),reset:document.getElementById('resetBtn'),rps:document.getElementById('rps'),total:document.getElementById('total'),blocked:document.getElementById('blocked'),queued:document.getElementById('queued'),latency:document.getElementById('latency'),light:document.getElementById('statusLight'),title:document.getElementById('statusTitle'),text:document.getElementById('statusText'),chart:document.getElementById('chart'),servers:document.getElementById('servers'),log:document.getElementById('log'),mission:document.getElementById('missionHint'),done:document.getElementById('doneNote'),announcer:document.getElementById('announcer')};
+  const fresh=()=>({running:false,attack:false,defenses:{rateLimit:false,loadBalance:false,queue:false,scrubbing:false},rps:0,total:0,blocked:0,queue:0,history:Array(24).fill(0),sawNormal:false,sawAttack:false,stableTicks:0,complete:false});
+  let state=fresh(),timer=null;
+  const random=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+  function addLog(text,type=''){const line=document.createElement('div');line.className='entry '+type;const time=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',second:'2-digit'});line.textContent=`${time} · ${text}`;els.log.prepend(line);while(els.log.children.length>14)els.log.lastElementChild.remove()}
+  function announce(text){els.announcer.textContent='';requestAnimationFrame(()=>{els.announcer.textContent=text})}
+  function defenseCount(){return Object.values(state.defenses).filter(Boolean).length}
+  function capacity(){return state.defenses.loadBalance?660:220}
+  function tick(){
+    if(!state.running){state.rps=0;render();return}
+    let incoming=random(28,62)+(state.attack?random(470,680):0),blockedNow=0;
+    if(state.attack&&state.defenses.scrubbing){const scrubbed=Math.round((incoming-50)*.58);blockedNow+=Math.max(0,scrubbed);incoming-=Math.max(0,scrubbed)}
+    if(state.defenses.rateLimit&&incoming>190){blockedNow+=incoming-190;incoming=190}
+    const cap=capacity();let demand=incoming;
+    if(state.defenses.queue){const pulled=Math.min(state.queue,Math.max(0,cap-incoming));state.queue-=pulled;demand+=pulled;if(incoming>cap)state.queue=Math.min(1800,state.queue+incoming-cap);demand=Math.min(demand,cap)}
+    state.rps=demand;state.total+=incoming+blockedNow;state.blocked+=blockedNow;state.history=[...state.history.slice(1),Math.min(900,demand)];state.sawNormal=true;if(state.attack)state.sawAttack=true;
+    const ratio=demand/cap,isStable=state.attack&&ratio<.86&&defenseCount()>=2;
+    state.stableTicks=isStable?state.stableTicks+1:0;if(state.sawNormal&&state.sawAttack&&state.stableTicks>=5&&!state.complete){state.complete=true;localStorage.setItem(STORAGE_KEY,JSON.stringify({complete:true,at:Date.now()}));window.parent.postMessage({type:'ort-cyber-ddos-complete'},location.origin);addLog('השרת שרד את המתקפה והמשימה הושלמה','good');announce('המשימה הושלמה')}
+    render();
+  }
+  function currentStatus(){const ratio=state.rps/capacity();if(!state.running)return{level:'ok',icon:'✓',title:'הכול תקין',text:'השרת מוכן לקבל בקשות.'};if(ratio>1.18)return{level:'danger',icon:'×',title:'השרת קרס!',text:'כמות הבקשות גבוהה בהרבה מיכולת העיבוד.'};if(ratio>.86)return{level:'danger',icon:'!',title:'חשד למתקפת DDoS',text:'התעבורה חריגה והזמינות בסכנה.'};if(ratio>.62)return{level:'warn',icon:'!',title:'עומס גבוה — האתר איטי',text:'זמן התגובה עולה. יש להפעיל הגנות.'};return{level:'ok',icon:'✓',title:state.attack?'המערכת מסננת ומאזנת עומסים':'הכול תקין',text:state.attack?'ההגנות שומרות על זמינות השירות.':'בקשות אמיתיות מטופלות בקצב תקין.'}}
+  function renderServers(){const count=state.defenses.loadBalance?3:1,loads=[];for(let i=0;i<3;i++)loads.push(i<count?Math.round(state.rps/count+(i===0?6:i===1?-4:-2)):0);els.servers.replaceChildren(...loads.map((load,i)=>{const pct=Math.min(100,Math.round(load/220*100)),row=document.createElement('div');row.className='server';const name=document.createElement('b'),track=document.createElement('div'),fill=document.createElement('div'),value=document.createElement('span');name.textContent=`שרת ${i+1}`;track.className='track';fill.className='fill'+(pct>95?' danger':pct>72?' warn':'');fill.style.width=`${pct}%`;track.appendChild(fill);value.textContent=`${pct}%`;row.append(name,track,value);return row}))}
+  function renderChart(){const max=900;els.chart.replaceChildren(...state.history.map(value=>{const bar=document.createElement('div');const pct=Math.max(2,Math.round(value/max*100));bar.className='bar'+(value>500?' danger':value>260?' warn':'');bar.style.height=`${pct}%`;bar.title=`${value} בקשות לשנייה`;return bar}))}
+  function render(){const status=currentStatus();els.rps.textContent=state.rps.toLocaleString('he-IL');els.total.textContent=state.total.toLocaleString('he-IL');els.blocked.textContent=state.blocked.toLocaleString('he-IL');els.queued.textContent=state.queue.toLocaleString('he-IL');els.latency.textContent=`${Math.round(42+Math.min(950,state.rps/capacity()*420))}ms`;els.light.className='status-light '+(status.level==='danger'?'danger':status.level==='warn'?'warn':'');els.light.textContent=status.icon;els.title.textContent=status.title;els.text.textContent=status.text;els.traffic.setAttribute('aria-pressed',String(state.running));els.traffic.textContent=state.running?'⏸ עצירת תעבורה':'▶ התחלת תעבורה רגילה';els.attack.setAttribute('aria-pressed',String(state.attack));els.attack.textContent=state.attack?'■ עצירת מתקפה מדומה':'⚠ הפעלת מתקפת DDoS מדומה';document.querySelectorAll('[data-defense]').forEach(btn=>btn.setAttribute('aria-pressed',String(state.defenses[btn.dataset.defense])));renderServers();renderChart();els.done.classList.toggle('show',state.complete);els.mission.textContent=state.complete?'כל ארבעת שלבי המשימה הושלמו.':!state.sawNormal?'שלב הבא: הפעילו תעבורה רגילה.':!state.sawAttack?'שלב הבא: הפעילו מתקפה מדומה.':defenseCount()<2?'שלב הבא: הפעילו לפחות שני מנגנוני הגנה.':`ייצוב השירות: ${Math.min(5,state.stableTicks)} מתוך 5 מדידות.`}
+  els.traffic.addEventListener('click',()=>{state.running=!state.running;if(!state.running)state.attack=false;addLog(state.running?'תעבורה רגילה החלה':'התעבורה נעצרה');render()});
+  els.attack.addEventListener('click',()=>{if(!state.running)state.running=true;state.attack=!state.attack;state.sawAttack=state.sawAttack||state.attack;addLog(state.attack?'זוהתה עלייה חדה ממקורות רבים — מתקפה מדומה הופעלה':'המתקפה המדומה נעצרה',state.attack?'danger':'good');announce(state.attack?'מתקפת DDoS מדומה הופעלה':'המתקפה נעצרה');render()});
+  document.querySelectorAll('[data-defense]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.defense;state.defenses[key]=!state.defenses[key];const names={rateLimit:'Rate Limiting',loadBalance:'Load Balancing',queue:'Queue Processing',scrubbing:'Scrubbing Center'};addLog(`${names[key]} ${state.defenses[key]?'הופעל':'כובה'}`,state.defenses[key]?'good':'');render()}));
+  els.reset.addEventListener('click',()=>{state=fresh();els.log.replaceChildren();addLog('המערכת אופסה ומוכנה לניסוי חדש');render()});
+  timer=window.setInterval(tick,700);window.addEventListener('beforeunload',()=>clearInterval(timer));render();
+})();
+</script>
+</body>
+</html>
