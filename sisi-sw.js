@@ -1,5 +1,7 @@
 const VERSION = '20261020-1';
 const CACHE_NAME = `sisi-offline-${VERSION}`;
+const MINECRAFT_VERSION = '20261020-1';
+const MINECRAFT_CACHE_NAME = `minecraft-offline-${MINECRAFT_VERSION}`;
 const QUEUE_DB = 'sisi-offline-progress';
 const QUEUE_STORE = 'requests';
 
@@ -19,6 +21,16 @@ const PACK_URLS = [
   ]),
   ...Array.from({ length: 12 }, (_, index) =>
     `/assets/sisi-space-lesson1/mission-${String(index + 1).padStart(2, '0')}.svg`),
+];
+
+const MINECRAFT_PACK_URLS = [
+  '/minecraft.html', '/minecraft-play.html', '/minecraft.webmanifest',
+  '/assets/course-covers/minecraft.svg',
+  '/css/platform-home-link.css', '/css/quick-classroom-embed.css',
+  '/js/minecraft-lessons-20260820-stairs.js',
+  '/js/vendor/blockly/blockly.min.js', '/js/vendor/blockly/msg/he.js',
+  '/js/quick-classroom-embed.js', '/js/classroom-storage-scope.js',
+  '/js/classroom-session.js', '/js/feedback-widget.js',
 ];
 
 function openQueue() {
@@ -127,6 +139,33 @@ async function downloadPack() {
   await notifyClients({ type: 'SISI_CACHE_READY', version: VERSION, total: uniqueUrls.length });
 }
 
+async function downloadMinecraftPack() {
+  const cache = await caches.open(MINECRAFT_CACHE_NAME);
+  const uniqueUrls = [...new Set(MINECRAFT_PACK_URLS)];
+  let completed = 0;
+  const failures = [];
+  for (const url of uniqueUrls) {
+    try {
+      const response = await fetch(url, { credentials: 'include', cache: 'reload' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      await cache.put(url, response);
+    } catch (error) {
+      failures.push({ url, message: String(error?.message || error) });
+    }
+    completed += 1;
+    await notifyClients({ type: 'MINECRAFT_CACHE_PROGRESS', completed, total: uniqueUrls.length });
+  }
+  if (failures.length) {
+    await notifyClients({ type: 'MINECRAFT_CACHE_ERROR', failures });
+    return;
+  }
+  await cache.put('/minecraft-offline-ready.json', new Response(JSON.stringify({
+    version: MINECRAFT_VERSION,
+    cachedAt: new Date().toISOString(),
+  }), { headers: { 'Content-Type': 'application/json' } }));
+  await notifyClients({ type: 'MINECRAFT_CACHE_READY', version: MINECRAFT_VERSION, total: uniqueUrls.length });
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(self.skipWaiting());
 });
@@ -135,17 +174,25 @@ self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.filter(key => key.startsWith('sisi-offline-') && key !== CACHE_NAME).map(key => caches.delete(key)));
+    await Promise.all(keys.filter(key => key.startsWith('minecraft-offline-') && key !== MINECRAFT_CACHE_NAME).map(key => caches.delete(key)));
     await self.clients.claim();
   })());
 });
 
 self.addEventListener('message', event => {
   if (event.data?.type === 'SISI_CACHE_DOWNLOAD') event.waitUntil(downloadPack());
+  if (event.data?.type === 'MINECRAFT_CACHE_DOWNLOAD') event.waitUntil(downloadMinecraftPack());
   if (event.data?.type === 'SISI_SYNC_NOW') event.waitUntil(flushProgressQueue());
   if (event.data?.type === 'SISI_CACHE_CLEAR') {
     event.waitUntil((async () => {
       await caches.delete(CACHE_NAME);
       await notifyClients({ type: 'SISI_CACHE_CLEARED' });
+    })());
+  }
+  if (event.data?.type === 'MINECRAFT_CACHE_CLEAR') {
+    event.waitUntil((async () => {
+      await caches.delete(MINECRAFT_CACHE_NAME);
+      await notifyClients({ type: 'MINECRAFT_CACHE_CLEARED' });
     })());
   }
 });

@@ -1,0 +1,20 @@
+{
+  "name": "מיינקראפט קידס — מתכנתים קסמים",
+  "short_name": "מיינקראפט קידס",
+  "description": "15 שיעורי תכנות לילדים עם Blockly, כולל עבודה ללא אינטרנט",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "/minecraft.html?source=offline-app",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#7ddf64",
+  "theme_color": "#2f8f2f",
+  "icons": [
+    {
+      "src": "/assets/course-covers/minecraft.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
