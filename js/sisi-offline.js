@@ -14,7 +14,7 @@
   }
 
   async function readyMarker() {
-    const cache = await caches.open('sisi-offline-20261020-1');
+    const cache = await caches.open('sisi-offline-20261020-2');
     return cache.match('/sisi-offline-ready.json');
   }
 

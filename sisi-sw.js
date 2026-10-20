@@ -1,6 +1,6 @@
-const VERSION = '20261020-1';
+const VERSION = '20261020-2';
 const CACHE_NAME = `sisi-offline-${VERSION}`;
-const MINECRAFT_VERSION = '20261020-1';
+const MINECRAFT_VERSION = '20261020-2';
 const MINECRAFT_CACHE_NAME = `minecraft-offline-${MINECRAFT_VERSION}`;
 const QUEUE_DB = 'sisi-offline-progress';
 const QUEUE_STORE = 'requests';
@@ -15,6 +15,7 @@ const PACK_URLS = [
   '/css/quick-classroom-embed.css', '/css/how-to.css', '/css/platform-home-link.css',
   '/js/quick-classroom-embed.js', '/js/classroom-storage-scope.js',
   '/js/classroom-session.js', '/js/course-certificate.js', '/js/feedback-widget.js',
+  '/js/clear-lesson-solution.js',
   ...LESSONS.flatMap(name => [
     `/${name}.html`, `/${name}-play.html`, `/css/${name}.css`,
     `/js/${name}-lessons.js`, `/js/${name}-play.js`,
@@ -29,8 +30,15 @@ const MINECRAFT_PACK_URLS = [
   '/css/platform-home-link.css', '/css/quick-classroom-embed.css',
   '/js/minecraft-lessons-20260820-stairs.js',
   '/js/vendor/blockly/blockly.min.js', '/js/vendor/blockly/msg/he.js',
+  '/js/vendor/blockly/media/click.mp3', '/js/vendor/blockly/media/delete.mp3',
+  '/js/vendor/blockly/media/disconnect.mp3', '/js/vendor/blockly/media/drop.mp3',
+  '/js/vendor/blockly/media/delete-icon.svg', '/js/vendor/blockly/media/foldout-icon.svg',
+  '/js/vendor/blockly/media/resize-handle.svg', '/js/vendor/blockly/media/sprites.svg',
+  '/js/vendor/blockly/media/handclosed.cur', '/js/vendor/blockly/media/handdelete.cur',
+  '/js/vendor/blockly/media/handopen.cur',
   '/js/quick-classroom-embed.js', '/js/classroom-storage-scope.js',
   '/js/classroom-session.js', '/js/feedback-widget.js',
+  '/js/clear-lesson-solution.js',
 ];
 
 function openQueue() {

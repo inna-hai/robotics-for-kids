@@ -15,7 +15,7 @@
 
   async function refreshStatus() {
     try {
-      const cache = await caches.open('minecraft-offline-20261020-1');
+      const cache = await caches.open('minecraft-offline-20261020-2');
       const marker = await cache.match('/minecraft-offline-ready.json');
       if (!marker) {
         setStatus('מיינקראפט קידס עדיין לא הורדה. יש להתחבר לאינטרנט וללחוץ על הורדה.');
