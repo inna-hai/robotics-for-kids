@@ -18,11 +18,12 @@
     .browser{background:white;border:3px solid #bfdbfe;border-radius:26px;overflow:hidden;box-shadow:0 20px 50px rgba(37,99,235,.18)}.browser-top{height:46px;background:#e0f2fe;display:flex;align-items:center;gap:8px;padding:0 16px}.dot{width:13px;height:13px;border-radius:50%;background:#fb7185}.dot:nth-child(2){background:#fbbf24}.dot:nth-child(3){background:#4ade80}.browser-page{padding:28px;text-align:center;background:linear-gradient(135deg,#eff6ff,#fdf2f8)}.browser-page .avatar{font-size:4rem}.browser-page h3{font-size:clamp(1.6rem,2.8vw,2.5rem);margin:8px}.browser-page p{font-size:clamp(1rem,1.5vw,1.25rem)}.fake-button{display:inline-block;background:#7c3aed;color:white;border-radius:999px;padding:12px 22px;font-weight:900}
     .stack{display:grid;gap:10px}.block{position:relative;border-radius:14px;padding:14px 20px;color:white;font-size:clamp(1rem,1.7vw,1.38rem);font-weight:900;box-shadow:0 8px 18px rgba(15,23,42,.15)}.block:after{content:"";position:absolute;bottom:-7px;right:42px;width:34px;height:14px;background:inherit;border-radius:0 0 9px 9px}.block:last-child:after{display:none}.b1{background:#2563eb}.b2{background:#8b5cf6}.b3{background:#ec4899}.b4{background:#f97316}.b5{background:#16a34a}
     .formula{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:clamp(1.5rem,3vw,2.7rem);font-weight:900}.formula span{background:white;border:3px solid #bae6fd;border-radius:22px;padding:20px}.formula .equals{background:transparent;border:0;padding:0}.stop{position:absolute;left:26px;top:24px;font-size:clamp(2.5rem,6vw,5rem);transform:rotate(-8deg)}
+    .html-tag{direction:ltr;display:inline-block;background:#0f172a;color:#e2e8f0;border-radius:18px;padding:12px 18px;font:800 clamp(1rem,2vw,1.55rem)/1.5 ui-monospace,Consolas,monospace}.html-tag .bracket{color:#60a5fa}.html-tag .tag-name{color:#fb923c}.html-tag .content{color:#fef08a}.map-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center}.map-arrow{font-size:clamp(2rem,4vw,4rem);color:#2563eb;font-weight:900}.blockly-solution{background:#f8fafc;border:3px solid #cbd5e1;border-radius:26px;padding:24px;min-height:300px;display:grid;align-content:center;gap:11px}.blockly-block{position:relative;width:min(100%,520px);padding:14px 22px;border-radius:9px;color:white;font-size:clamp(1rem,1.75vw,1.45rem);font-weight:900;box-shadow:inset 0 -4px rgba(0,0,0,.14),0 8px 18px rgba(15,23,42,.13);text-align:right}.blockly-block:before{content:"";position:absolute;top:-1px;right:42px;width:34px;height:8px;background:#f8fafc;border-radius:0 0 7px 7px}.blockly-block:after{content:"";position:absolute;bottom:-7px;right:42px;width:34px;height:11px;background:inherit;border-radius:0 0 7px 7px;z-index:2}.blockly-block:last-child:after{display:none}.blockly-start{background:#2563eb}.blockly-content{background:#8b5cf6;margin-right:24px}.blockly-visual{background:#db2777;margin-right:24px}.blockly-action{background:#ea580c;margin-right:24px}.blockly-end{background:#16a34a;margin-right:24px}.solution-box{filter:blur(12px);opacity:.25;transition:.25s;pointer-events:none}.solution-box.revealed{filter:none;opacity:1;pointer-events:auto}.reveal{border:0;border-radius:999px;background:linear-gradient(135deg,#f97316,#facc15);color:#431407;padding:13px 22px;font:900 1.05rem Rubik;cursor:pointer;box-shadow:0 9px 24px rgba(249,115,22,.25)}.concept-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.concept-piece{border-radius:22px;padding:20px;text-align:center;color:white;box-shadow:0 12px 28px rgba(15,23,42,.15)}.concept-piece b{display:block;font-size:clamp(1.5rem,2.5vw,2.2rem);margin-bottom:7px}.concept-piece span{font-size:clamp(1rem,1.5vw,1.25rem);font-weight:700}.html-piece{background:linear-gradient(135deg,#f97316,#ef4444)}.css-piece{background:linear-gradient(135deg,#2563eb,#06b6d4)}.js-piece{background:linear-gradient(135deg,#eab308,#f97316);color:#422006}.spotlight{background:#fff;border:3px solid #fbcfe8;border-radius:28px;padding:24px;box-shadow:0 18px 42px rgba(219,39,119,.12)}
     .steps{counter-reset:step;display:grid;gap:16px;max-width:930px}.step{counter-increment:step;display:grid;grid-template-columns:62px 1fr;gap:16px;align-items:center;background:#fff;border:2px solid #dbeafe;border-radius:22px;padding:16px 20px;font-size:clamp(1.12rem,2vw,1.65rem);font-weight:800}.step:before{content:counter(step);width:52px;height:52px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,#2563eb,#22d3ee);color:white;font-size:1.6rem}
     .question{font-size:clamp(1.8rem,4vw,3.6rem);font-weight:900;text-align:center;margin:16px auto 28px}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;width:100%}.choice{border:3px solid #dbeafe;background:white;border-radius:24px;padding:22px 14px;font:900 clamp(1.05rem,2vw,1.55rem) Rubik;color:var(--ink);cursor:pointer}.choice:hover{transform:translateY(-3px);border-color:#60a5fa}.choice.correct{background:#dcfce7;border-color:#22c55e;color:#166534}.choice.wrong{background:#fee2e2;border-color:#fb7185;color:#991b1b}.feedback{min-height:44px;margin-top:20px;text-align:center;font-size:clamp(1.1rem,2vw,1.5rem);font-weight:900}
     .challenge{background:linear-gradient(135deg,#fff7ed,#fdf2f8);border:3px dashed #fb923c;border-radius:28px;padding:25px;max-width:920px}.challenge h3{font-size:clamp(1.5rem,3vw,2.5rem);margin:0 0 10px}.challenge p{margin:0}
     .nav{position:fixed;z-index:20;inset:auto 20px 18px;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:12px;color:white}.nav button,.nav a{border:0;border-radius:999px;padding:12px 20px;background:white;color:#1e3a8a;font:900 1rem Rubik;text-decoration:none;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.2)}.nav button:disabled{opacity:.4;cursor:not-allowed}.counter{justify-self:center;font-weight:900;background:rgba(0,0,0,.28);padding:10px 16px;border-radius:999px}.progress{position:fixed;top:0;right:0;height:6px;background:linear-gradient(90deg,#fb923c,#22d3ee);transition:width .25s ease;z-index:30}.hint{position:absolute;bottom:18px;right:28px;color:#64748b;font-size:.86rem;font-weight:700}
-    @media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:10px 8px 126px}.slide{height:auto;min-height:calc(100svh - 145px);border-radius:22px;padding:25px 17px}.slide.active{justify-content:flex-start}.two,.three,.choices{grid-template-columns:1fr}.giant{font-size:5rem}.nav{inset:auto 7px max(7px,env(safe-area-inset-bottom));grid-template-columns:1fr 1fr;background:rgba(8,21,47,.95);padding:8px;border-radius:17px}.nav button{width:100%;min-height:44px}.counter{display:none}.nav a{padding:9px;font-size:.82rem;text-align:center}.hint{display:none}}
+    @media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:10px 8px 126px}.slide{height:auto;min-height:calc(100svh - 145px);border-radius:22px;padding:25px 17px}.slide.active{justify-content:flex-start}.two,.three,.choices,.concept-strip{grid-template-columns:1fr}.map-grid{grid-template-columns:1fr}.map-arrow{transform:rotate(90deg);text-align:center}.giant{font-size:5rem}.nav{inset:auto 7px max(7px,env(safe-area-inset-bottom));grid-template-columns:1fr 1fr;background:rgba(8,21,47,.95);padding:8px;border-radius:17px}.nav button{width:100%;min-height:44px}.counter{display:none}.nav a{padding:9px;font-size:.82rem;text-align:center}.hint{display:none}}
     @media(prefers-reduced-motion:reduce){.slide.active{animation:none}}
   </style>
 </head>
@@ -62,6 +63,32 @@
     </section>
 
     <section class="slide">
+      <div class="eyebrow">מכירים את HTML</div>
+      <div class="two">
+        <div>
+          <h2>HTML אומר לדפדפן<br><span class="accent">מה יש בעמוד</span></h2>
+          <p class="lead">כל חלק בעמוד מקבל תגית. התגית נפתחת, מחזיקה תוכן ונסגרת.</p>
+          <div class="html-tag"><span class="bracket">&lt;</span><span class="tag-name">h1</span><span class="bracket">&gt;</span><span class="content">האתר שלי</span><span class="bracket">&lt;/</span><span class="tag-name">h1</span><span class="bracket">&gt;</span></div>
+        </div>
+        <div class="spotlight center">
+          <div style="font-size:4.5rem">🏷️</div>
+          <p><strong>חשבו על תגית כמו מדבקה:</strong></p>
+          <p>“זה כותרת” · “זה משפט” · “זה כפתור”</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">מהבלוק אל הקוד</div>
+      <h2>הבלוק כותב HTML בשבילנו</h2>
+      <div class="map-grid">
+        <div class="blockly-solution"><div class="blockly-block blockly-content">כותרת&nbsp;&nbsp; העולם המופלא שלי</div></div>
+        <div class="map-arrow">←</div>
+        <div class="spotlight center"><div class="html-tag"><span class="bracket">&lt;</span><span class="tag-name">h1</span><span class="bracket">&gt;</span><span class="content">העולם המופלא שלי</span><span class="bracket">&lt;/</span><span class="tag-name">h1</span><span class="bracket">&gt;</span></div><p style="margin-top:20px">אותו רעיון — בשתי שפות.</p></div>
+      </div>
+    </section>
+
+    <section class="slide">
       <div class="eyebrow">בונים לפי סדר</div>
       <div class="two">
         <div>
@@ -85,6 +112,23 @@
         <div class="step">כתבו כותרת משלכם ולחצו <strong>הרצה</strong>.</div>
       </div>
       <p class="lead" style="margin-top:22px"><strong>עוצרים כאן.</strong> מרימים יד כשהכותרת מופיעה בתצוגה.</p>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">פתרון Blockly — מגלים רק אחרי שניסינו</div>
+      <div class="two">
+        <div>
+          <h2>כך נראית התחלה נכונה</h2>
+          <p class="lead">לחצו להצגת הפתרון, והשוו לשרשרת שבניתם.</p>
+          <button class="reveal" type="button" data-reveal="lessonOneSolution">👀 הצגת הפתרון</button>
+        </div>
+        <div class="blockly-solution solution-box" id="lessonOneSolution">
+          <div class="blockly-block blockly-start">עמוד האתר שלי</div>
+          <div class="blockly-block blockly-content">כותרת&nbsp;&nbsp; העולם שלי</div>
+          <div class="blockly-block blockly-content">פסקה&nbsp;&nbsp; כאן אני מספר/ת על עצמי</div>
+          <div class="blockly-block blockly-visual">סמל גדול&nbsp;&nbsp; 🚀</div>
+        </div>
+      </div>
     </section>
 
     <section class="slide center">
@@ -119,6 +163,17 @@
       <p class="lead" style="margin-top:22px">לא עוברים לשיעור הבא — משדרגים את מה שכבר בנינו.</p>
     </section>
 
+    <section class="slide">
+      <div class="eyebrow">שלוש השפות של אתר</div>
+      <h2>היום פגשנו את שלושתן</h2>
+      <div class="concept-strip">
+        <div class="concept-piece html-piece"><b>HTML 🧱</b><span>מה יש בעמוד: כותרת, פסקה וכפתור</span></div>
+        <div class="concept-piece css-piece"><b>CSS 🎨</b><span>איך העמוד נראה: צבעים, גודל וצורה</span></div>
+        <div class="concept-piece js-piece"><b>JavaScript ⚡</b><span>מה קורה בלחיצה: פעולה ושינוי</span></div>
+      </div>
+      <p class="lead" style="margin-top:30px"><strong>בשיעור הזה בנינו בעיקר את המבנה.</strong> בשיעורים הבאים נעצב ונפעיל אותו.</p>
+    </section>
+
     <section class="slide center">
       <div class="eyebrow">סיכום בדקה</div>
       <h2>מה למדנו היום?</h2>
@@ -133,7 +188,7 @@
 
   <nav class="nav" aria-label="ניווט במצגת">
     <button id="prev" type="button">→ הקודם</button>
-    <span class="counter" id="counter">1 / 9</span>
+    <span class="counter" id="counter"></span>
     <button id="next" type="button">הבא ←</button>
     <a href="webcode-play.html?lesson=1">💻 לפתיחת התרגיל</a>
   </nav>
@@ -145,6 +200,7 @@
     prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
     document.addEventListener('keydown',event=>{if(['ArrowLeft',' ','PageDown'].includes(event.key)){event.preventDefault();move(1)}if(['ArrowRight','PageUp'].includes(event.key)){event.preventDefault();move(-1)}if(event.key==='Home'){current=0;render()}if(event.key==='End'){current=slides.length-1;render()}});
     document.querySelectorAll('.choice').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.choice').forEach(choice=>choice.classList.remove('correct','wrong'));const correct=button.dataset.answer==='correct';button.classList.add(correct?'correct':'wrong');document.getElementById('quizFeedback').textContent=correct?'בדיוק! רק בלוקים שמחוברים לשרשרת משפיעים על העמוד. 🎉':'נסו שוב — חשבו מה גורם לבלוק להשתתף בתוכנית.';}));
+    document.querySelectorAll('[data-reveal]').forEach(button=>button.addEventListener('click',()=>{const box=document.getElementById(button.dataset.reveal);box.classList.toggle('revealed');button.textContent=box.classList.contains('revealed')?'🙈 הסתרת הפתרון':'👀 הצגת הפתרון';}));
     let touchX=null;document.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});document.addEventListener('touchend',event=>{if(touchX===null)return;const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>60)move(delta<0?1:-1);touchX=null},{passive:true});render();
   </script>
 </body>
