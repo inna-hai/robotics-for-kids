@@ -345,8 +345,9 @@
       $('concept').textContent = lesson.concept;
       $('mission').textContent = lesson.mission;
       const slidesLink = $('slidesLink');
-      slidesLink.href = lesson.id === 1 ? 'webcode-class-slides-1.html' : `webcode-slides.html?lesson=${lesson.id}`;
-      slidesLink.textContent = lesson.id === 1 ? '🎬 מצגת כיתה' : '📽️ מצגת מדריך';
+      const classroomSlides = { 1: 'webcode-class-slides-1.html', 2: 'webcode-class-slides-2.html' };
+      slidesLink.href = classroomSlides[lesson.id] || `webcode-slides.html?lesson=${lesson.id}`;
+      slidesLink.textContent = classroomSlides[lesson.id] ? '🎬 מצגת כיתה' : '📽️ מצגת מדריך';
       if($('topRunButton')) $('topRunButton').style.display = lesson.realBlocklyBuilder ? 'none' : '';
       if($('blocklyTopHint') && lesson.blocklyLessonBuilder) $('blocklyTopHint').textContent = '“עמוד האתר שלי” כבר נמצא במשטח — גררו את בלוקי השיעור וחברו אותם פיזית מתחתיו';
       const saved = repairSavedCodeState(loadSavedState());
