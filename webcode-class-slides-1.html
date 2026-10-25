@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebCode — מצגת כיתה לשיעור 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#102044;--blue:#2563eb;--cyan:#22d3ee;--orange:#fb923c;--pink:#f472b6;--green:#22c55e;--paper:#fff;--muted:#64748b}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Rubik,Arial,sans-serif;background:#08152f;color:var(--ink)}
+    body{overflow:hidden;background:radial-gradient(circle at 12% 12%,#164e63 0,transparent 28%),radial-gradient(circle at 88% 8%,#7c2d12 0,transparent 30%),linear-gradient(135deg,#08152f,#172554)}
+    .deck{height:100svh;padding:24px 28px 94px;display:grid;place-items:center}
+    .slide{display:none;width:min(1240px,100%);height:min(760px,calc(100svh - 126px));overflow:auto;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(240,249,255,.97));border:1px solid rgba(255,255,255,.8);border-radius:34px;padding:clamp(28px,4vw,58px);box-shadow:0 30px 90px rgba(0,0,0,.38);position:relative}
+    .slide.active{display:flex;flex-direction:column;justify-content:center;animation:arrive .32s ease both}@keyframes arrive{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;width:max-content;padding:8px 14px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:clamp(.86rem,1.3vw,1.05rem);font-weight:900;margin-bottom:16px}
+    h1,h2,p{margin-top:0}h1{font-size:clamp(2.7rem,7vw,6.3rem);line-height:.98;margin-bottom:22px;letter-spacing:-.04em}h2{font-size:clamp(2.2rem,5vw,4.5rem);line-height:1.06;margin-bottom:22px;letter-spacing:-.035em}p{font-size:clamp(1.25rem,2.2vw,2rem);line-height:1.48;margin-bottom:18px}.lead{max-width:900px;color:#334155}.accent{color:#ea580c}.blue{color:#2563eb}.center{text-align:center;align-items:center}.giant{font-size:clamp(5rem,15vw,11rem);line-height:1;margin-bottom:16px;filter:drop-shadow(0 16px 18px rgba(37,99,235,.18))}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(20px,4vw,54px);align-items:center}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.panel{padding:22px;border-radius:24px;background:white;border:2px solid #dbeafe;box-shadow:0 14px 34px rgba(30,64,175,.10)}.panel strong{display:block;font-size:clamp(1.3rem,2vw,1.8rem);margin-bottom:8px}.panel p{font-size:clamp(1rem,1.55vw,1.35rem);margin:0;color:#475569}.panel.orange{border-color:#fed7aa}.panel.green{border-color:#bbf7d0}
+    .browser{background:white;border:3px solid #bfdbfe;border-radius:26px;overflow:hidden;box-shadow:0 20px 50px rgba(37,99,235,.18)}.browser-top{height:46px;background:#e0f2fe;display:flex;align-items:center;gap:8px;padding:0 16px}.dot{width:13px;height:13px;border-radius:50%;background:#fb7185}.dot:nth-child(2){background:#fbbf24}.dot:nth-child(3){background:#4ade80}.browser-page{padding:28px;text-align:center;background:linear-gradient(135deg,#eff6ff,#fdf2f8)}.browser-page .avatar{font-size:4rem}.browser-page h3{font-size:clamp(1.6rem,2.8vw,2.5rem);margin:8px}.browser-page p{font-size:clamp(1rem,1.5vw,1.25rem)}.fake-button{display:inline-block;background:#7c3aed;color:white;border-radius:999px;padding:12px 22px;font-weight:900}
+    .stack{display:grid;gap:10px}.block{position:relative;border-radius:14px;padding:14px 20px;color:white;font-size:clamp(1rem,1.7vw,1.38rem);font-weight:900;box-shadow:0 8px 18px rgba(15,23,42,.15)}.block:after{content:"";position:absolute;bottom:-7px;right:42px;width:34px;height:14px;background:inherit;border-radius:0 0 9px 9px}.block:last-child:after{display:none}.b1{background:#2563eb}.b2{background:#8b5cf6}.b3{background:#ec4899}.b4{background:#f97316}.b5{background:#16a34a}
+    .formula{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;font-size:clamp(1.5rem,3vw,2.7rem);font-weight:900}.formula span{background:white;border:3px solid #bae6fd;border-radius:22px;padding:20px}.formula .equals{background:transparent;border:0;padding:0}.stop{position:absolute;left:26px;top:24px;font-size:clamp(2.5rem,6vw,5rem);transform:rotate(-8deg)}
+    .steps{counter-reset:step;display:grid;gap:16px;max-width:930px}.step{counter-increment:step;display:grid;grid-template-columns:62px 1fr;gap:16px;align-items:center;background:#fff;border:2px solid #dbeafe;border-radius:22px;padding:16px 20px;font-size:clamp(1.12rem,2vw,1.65rem);font-weight:800}.step:before{content:counter(step);width:52px;height:52px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,#2563eb,#22d3ee);color:white;font-size:1.6rem}
+    .question{font-size:clamp(1.8rem,4vw,3.6rem);font-weight:900;text-align:center;margin:16px auto 28px}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;width:100%}.choice{border:3px solid #dbeafe;background:white;border-radius:24px;padding:22px 14px;font:900 clamp(1.05rem,2vw,1.55rem) Rubik;color:var(--ink);cursor:pointer}.choice:hover{transform:translateY(-3px);border-color:#60a5fa}.choice.correct{background:#dcfce7;border-color:#22c55e;color:#166534}.choice.wrong{background:#fee2e2;border-color:#fb7185;color:#991b1b}.feedback{min-height:44px;margin-top:20px;text-align:center;font-size:clamp(1.1rem,2vw,1.5rem);font-weight:900}
+    .challenge{background:linear-gradient(135deg,#fff7ed,#fdf2f8);border:3px dashed #fb923c;border-radius:28px;padding:25px;max-width:920px}.challenge h3{font-size:clamp(1.5rem,3vw,2.5rem);margin:0 0 10px}.challenge p{margin:0}
+    .nav{position:fixed;z-index:20;inset:auto 20px 18px;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:12px;color:white}.nav button,.nav a{border:0;border-radius:999px;padding:12px 20px;background:white;color:#1e3a8a;font:900 1rem Rubik;text-decoration:none;cursor:pointer;box-shadow:0 8px 26px rgba(0,0,0,.2)}.nav button:disabled{opacity:.4;cursor:not-allowed}.counter{justify-self:center;font-weight:900;background:rgba(0,0,0,.28);padding:10px 16px;border-radius:999px}.progress{position:fixed;top:0;right:0;height:6px;background:linear-gradient(90deg,#fb923c,#22d3ee);transition:width .25s ease;z-index:30}.hint{position:absolute;bottom:18px;right:28px;color:#64748b;font-size:.86rem;font-weight:700}
+    @media(max-width:760px){body{overflow:auto}.deck{height:auto;min-height:100svh;padding:10px 8px 126px}.slide{height:auto;min-height:calc(100svh - 145px);border-radius:22px;padding:25px 17px}.slide.active{justify-content:flex-start}.two,.three,.choices{grid-template-columns:1fr}.giant{font-size:5rem}.nav{inset:auto 7px max(7px,env(safe-area-inset-bottom));grid-template-columns:1fr 1fr;background:rgba(8,21,47,.95);padding:8px;border-radius:17px}.nav button{width:100%;min-height:44px}.counter{display:none}.nav a{padding:9px;font-size:.82rem;text-align:center}.hint{display:none}}
+    @media(prefers-reduced-motion:reduce){.slide.active{animation:none}}
+  </style>
+</head>
+<body>
+  <div class="progress" id="progress"></div>
+  <main class="deck" id="deck">
+    <section class="slide active center">
+      <div class="eyebrow">WebCode • שיעור 1</div>
+      <div class="giant">🧩➡️🌐</div>
+      <h1>בונים עמוד Web<br><span class="accent">מבלוקים!</span></h1>
+      <p class="lead">היום לא רק נצפה באתר — נרכיב אחד בעצמנו.</p>
+      <span class="hint">לחצו על “הבא” או על מקש הרווח</span>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">המשימה שלנו</div>
+      <div class="two">
+        <div>
+          <h2>איך ייראה העמוד שלכם?</h2>
+          <p class="lead">לכל אחד ואחת יהיה עמוד אישי עם כותרת, משפט, סמל, כפתור וחתימה.</p>
+          <p><strong class="blue">אין תשובה אחת נכונה.</strong><br>העמוד צריך להיראות כמוכם.</p>
+        </div>
+        <div class="browser" aria-label="דוגמה לעמוד אישי">
+          <div class="browser-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+          <div class="browser-page"><div class="avatar">🚀</div><h3>החלל של נועה</h3><p>אני אוהבת כוכבים, רובוטים והרפתקאות</p><span class="fake-button">גלו סוד</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide center">
+      <div class="eyebrow">רעיון אחד חשוב</div>
+      <h2>בלוק מחובר = משהו מופיע בעמוד</h2>
+      <div class="formula">
+        <span>🧩 בלוק כותרת</span><b>+</b><span>🔗 חיבור לשרשרת</span><b class="equals">=</b><span>🌐 כותרת באתר</span>
+      </div>
+      <p class="lead" style="margin-top:30px">בלוק שמונח בצד ולא מחובר — לא משתתף בתוכנית.</p>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">בונים לפי סדר</div>
+      <div class="two">
+        <div>
+          <h2>השרשרת היא הסיפור של העמוד</h2>
+          <p class="lead">מה שמופיע ראשון בשרשרת, יופיע ראשון בעמוד.</p>
+          <p><strong>שאלת כיתה:</strong> איפה כדאי לשים את החתימה?</p>
+        </div>
+        <div class="stack" aria-label="שרשרת בלוקים">
+          <div class="block b1">עמוד האתר שלי</div><div class="block b2">כותרת: העולם שלי</div><div class="block b3">פסקה: כמה מילים עליי</div><div class="block b4">כפתור: לחצו כאן</div><div class="block b5">חתימה: נבנה על ידי...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="stop">✋</div>
+      <div class="eyebrow">עכשיו כולם יחד</div>
+      <h2>בונים את הבסיס</h2>
+      <div class="steps">
+        <div class="step">פתחו את תרגיל 1.</div>
+        <div class="step">גררו בלוק <strong>כותרת</strong> וחברו אותו ל“עמוד האתר שלי”.</div>
+        <div class="step">כתבו כותרת משלכם ולחצו <strong>הרצה</strong>.</div>
+      </div>
+      <p class="lead" style="margin-top:22px"><strong>עוצרים כאן.</strong> מרימים יד כשהכותרת מופיעה בתצוגה.</p>
+    </section>
+
+    <section class="slide center">
+      <div class="eyebrow">בודקים שהבנו</div>
+      <div class="question">חיברתי בלוק כותרת, אבל הוא לא הופיע באתר. מה בודקים קודם?</div>
+      <div class="choices">
+        <button class="choice" data-answer="wrong">מחליפים מחשב</button>
+        <button class="choice" data-answer="correct">שהבלוק מחובר לשרשרת</button>
+        <button class="choice" data-answer="wrong">לוחצים מהר יותר</button>
+      </div>
+      <div class="feedback" id="quizFeedback" aria-live="polite"></div>
+    </section>
+
+    <section class="slide">
+      <div class="eyebrow">ממשיכים לבנות</div>
+      <h2>מעמוד ריק לעמוד אישי</h2>
+      <div class="three">
+        <article class="panel"><strong>1. תוכן 📝</strong><p>כותרת, פסקה ושני רעיונות שמספרים מי אתם.</p></article>
+        <article class="panel orange"><strong>2. מראה 🎨</strong><p>סמל ופלטת צבעים שמתאימים לנושא שבחרתם.</p></article>
+        <article class="panel green"><strong>3. פעולה ✨</strong><p>כפתור שאפשר ללחוץ עליו ולראות תגובה.</p></article>
+      </div>
+      <p class="lead" style="margin-top:26px">אחרי כל בלוק: <strong>מחברים → מריצים → מסתכלים מה השתנה.</strong></p>
+    </section>
+
+    <section class="slide center">
+      <div class="eyebrow">סיימתם לפני כולם?</div>
+      <div class="giant">🏆</div>
+      <div class="challenge">
+        <h3>אתגר הבונוס: כרטיס גיבור־על</h3>
+        <p>שנו את הכותרת לשם של גיבור, הוסיפו שני כוחות מיוחדים, בחרו סמל מתאים וכתבו על הכפתור משפט מסתורי.</p>
+      </div>
+      <p class="lead" style="margin-top:22px">לא עוברים לשיעור הבא — משדרגים את מה שכבר בנינו.</p>
+    </section>
+
+    <section class="slide center">
+      <div class="eyebrow">סיכום בדקה</div>
+      <h2>מה למדנו היום?</h2>
+      <div class="three" style="width:100%">
+        <article class="panel"><strong>🧩 בלוק</strong><p>הוראה שמוסיפה משהו לעמוד.</p></article>
+        <article class="panel orange"><strong>🔗 שרשרת</strong><p>הסדר שבו בנינו את העמוד.</p></article>
+        <article class="panel green"><strong>🌐 תצוגה חיה</strong><p>המקום שבו רואים מיד את התוצאה.</p></article>
+      </div>
+      <p style="margin-top:28px"><strong>משפט יציאה:</strong> “חיברתי בלוק ___ ולכן בעמוד קרה ___.”</p>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="ניווט במצגת">
+    <button id="prev" type="button">→ הקודם</button>
+    <span class="counter" id="counter">1 / 9</span>
+    <button id="next" type="button">הבא ←</button>
+    <a href="webcode-play.html?lesson=1">💻 לפתיחת התרגיל</a>
+  </nav>
+  <script>
+    const slides=[...document.querySelectorAll('.slide')];let current=0;
+    const prev=document.getElementById('prev'),next=document.getElementById('next'),counter=document.getElementById('counter'),progress=document.getElementById('progress');
+    function render(){slides.forEach((slide,index)=>slide.classList.toggle('active',index===current));counter.textContent=`${current+1} / ${slides.length}`;progress.style.width=`${((current+1)/slides.length)*100}%`;prev.disabled=current===0;next.disabled=current===slides.length-1;}
+    function move(amount){current=Math.max(0,Math.min(slides.length-1,current+amount));render()}
+    prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
+    document.addEventListener('keydown',event=>{if(['ArrowLeft',' ','PageDown'].includes(event.key)){event.preventDefault();move(1)}if(['ArrowRight','PageUp'].includes(event.key)){event.preventDefault();move(-1)}if(event.key==='Home'){current=0;render()}if(event.key==='End'){current=slides.length-1;render()}});
+    document.querySelectorAll('.choice').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('.choice').forEach(choice=>choice.classList.remove('correct','wrong'));const correct=button.dataset.answer==='correct';button.classList.add(correct?'correct':'wrong');document.getElementById('quizFeedback').textContent=correct?'בדיוק! רק בלוקים שמחוברים לשרשרת משפיעים על העמוד. 🎉':'נסו שוב — חשבו מה גורם לבלוק להשתתף בתוכנית.';}));
+    let touchX=null;document.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});document.addEventListener('touchend',event=>{if(touchX===null)return;const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>60)move(delta<0?1:-1);touchX=null},{passive:true});render();
+  </script>
+</body>
+</html>
