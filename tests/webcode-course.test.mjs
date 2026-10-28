@@ -110,7 +110,7 @@ lessons4to24.forEach(lessonItem => {
   assert.ok(!lessonItem.exercises[0].prompt.includes('הריצו'), `lesson ${lessonItem.id} exercise 1 is not a fake run-the-already-running-preview task`);
   assert.ok(lessonItem.exercises[0].check.blockTypes?.length, `lesson ${lessonItem.id} exercise 1 requires a real block action`);
   const blockChecks = lessonItem.exercises.filter(ex => ex.check.blockTypes?.length);
-  assert.ok(blockChecks.length >= (lessonItem.id === 4 ? 5 : [6, 7, 8, 9].includes(lessonItem.id) ? 5 : 6), `lesson ${lessonItem.id} requires connected Blockly blocks in most exercises`);
+  assert.ok(blockChecks.length >= (lessonItem.id === 4 ? 5 : lessonItem.id === 12 ? 4 : [6, 7, 8, 9].includes(lessonItem.id) ? 5 : 6), `lesson ${lessonItem.id} requires connected Blockly blocks in its build exercises`);
   const final = lessonItem.exercises.at(-1).check;
   if (lessonItem.id !== 4) {
     assert.ok(final.requiresCodePeek || final.changedAny?.length || final.debugCodeIncludes?.length || final.answerIncludes, `lesson ${lessonItem.id} final exercise requires a varied code-understanding task`);
@@ -265,6 +265,7 @@ assert.ok(lesson8EndBlock.args0[0].text === 'כל הכבוד 🎉', 'lesson 8 en
 for (const lesson of lessons.slice(3, 15)) {
   for (const block of lesson.blocklyBlocks || []) {
     if (block.hideFromToolbox) continue;
+    if (lesson.id === 12) continue; // Lesson 12 uses its dedicated connected-chain generator, not starter find/replace.
     if (lesson.id === 11 && block.target === 'css') continue;
     const targetSource = block.target === 'css' ? lesson.starter.css : block.target === 'js' ? lesson.starter.js : lesson.starter.html;
     const finds = Array.isArray(block.find) ? block.find : [block.find];
@@ -327,7 +328,7 @@ const lesson12 = lessons[11];
 assert.equal(lesson12.durationMinutes, 90, 'lesson 12 is framed as 90 minutes with optional deeper code practice');
 assert.ok(lesson12.title.includes('מיני־פרויקט'), 'lesson 12 is a mini project');
 assert.ok(lesson12.starter.js.includes('function updateScreen'), 'lesson 12 consolidates screen updates');
-assert.ok(lesson12.starter.js.includes('const target = 5'), 'lesson 12 has project target');
+assert.ok(lesson12.starter.js.includes('const target = 6'), 'lesson 12 has project target');
 assert.ok(lesson12.exercises.length >= 8, 'lesson 12 includes many exercises');
 assert.ok(lesson12.vocabulary.some(v => v[0] === 'project'), 'lesson 12 vocabulary includes project');
 
@@ -486,7 +487,7 @@ assert.ok(hub.includes('continueWebCode') && hub.includes('readLastWebCodeLocati
 assert.ok(loadedLessonsCode.includes('upgradeAllLessonsChallengeDepthV95') && loadedLessonsCode.includes('אתגר הרחבה') && loadedLessonsCode.includes('סבב שיפור') && loadedLessonsCode.includes('אתגר מסכם'), 'loaded lesson asset contains the broader WebCode challenge-depth upgrade');
 assert.ok(!loadedLessonsCode.includes('בלוק מרכזי') && loadedLessonsCode.includes('בלוק שכבר מחובר בתוך השרשרת של התוכנית'), 'code-peek tasks explain the required connected block without vague central-block wording');
 assert.ok(!loadedLessonsCode.includes('צריך להיות background: ולא background בלי נקודתיים') && !loadedLessonsCode.includes('תקנו ל־background: #eff6ff; עם נקודתיים') && loadedLessonsCode.includes('חסר בה סימן חשוב של CSS'), 'CSS debug challenge asks learners to diagnose the missing syntax instead of giving the exact answer');
-for (const lessonItem of loadedLessons) { const codeWordCount = lessonItem.exercises.filter(ex => ex.check?.requiresCodeLineAnswer).length; const allowedCodeWordCount = lessonItem.id === 11 ? 3 : 1; assert.ok(codeWordCount <= allowedCodeWordCount, `lesson ${lessonItem.id} has the approved number of code-word-from-line exercises`); }
+for (const lessonItem of loadedLessons) { const codeWordCount = lessonItem.exercises.filter(ex => ex.check?.requiresCodeLineAnswer).length; const allowedCodeWordCount = [11, 12].includes(lessonItem.id) ? 3 : 1; assert.ok(codeWordCount <= allowedCodeWordCount, `lesson ${lessonItem.id} has the approved number of code-word-from-line exercises`); }
 assert.ok(loadedLessonsCode.includes('limitCodeWordExercisesV117'), 'lesson cleanup limits repeated code-word exercises across the course');
 assert.ok(play.includes('function choiceBoxHtml') && play.includes('function hasChoiceAnswer') && play.includes('hasChoiceAnswer(c.choiceAnswer)'), 'player supports checkbox/radio choice answers');
 assert.ok(play.includes('rule.exact') && play.includes('Object.entries(rule.exact)'), 'choice validation supports exact answers for multi-part scenario questions');
@@ -520,9 +521,9 @@ assert.ok(lesson1FinalChoice.check.choiceAnswer?.exact?.['problem-title'] === 'h
 assert.ok(lesson1FinalChoice.choiceBox.groups.every(group => group.options.map(option => option.label).join('|') === 'HTML|CSS|JavaScript'), 'lesson 1 exercise 15 choice labels are only HTML/CSS/JavaScript without giving away what to do');
 assert.ok(lesson1FinalChoice.prompt.includes('אין פירוט באפשרויות'), 'lesson 1 exercise 15 prompt makes students infer which code family handles each situation');
 assert.ok(lesson1FinalChoice.title.includes('איפה צריך לשנות') && lesson1FinalChoice.choiceBox.groups.every(group => group.label.includes('איפה צריך לשנות?')) && !lesson1FinalChoice.choiceBox.groups.some(group => group.label.includes('מה כדאי לשנות') || group.label.includes('איפה נטפל') || group.label.includes('מה מתאים')), 'lesson 1 exercise 15 asks where to change, not what to change');
-assert.ok(loadedLessons.slice(1).every(lesson => lesson.durationMinutes === 90 && (lesson.id === 11 || lesson.exercises.some(exercise => exercise.optional && exercise.extension))), 'lessons 2-30 keep a 90-minute core; lesson 11 uses the approved 9-exercise custom code-entry flow');
-assert.ok(loadedLessons.slice(1).every(lesson => lesson.id === 11 || lesson.exercises.some(ex => ex.optional && ex.extension)), 'each lesson after lesson 1 keeps deeper-code extension exercises except lesson 11 approved custom flow');
-assert.ok(loadedLessons.slice(1).every(lesson => lesson.id === 11 || (lesson.exercises.some(ex => ex.matchBox) && lesson.exercises.some(ex => ex.choiceBox) && lesson.exercises.some(ex => ex.debugCode))), 'deeper-code upgrades include concept matching, scenario choices, and bug fixing; lesson 11 uses dedicated selected-line code-entry checks');
+assert.ok(loadedLessons.slice(1).every(lesson => lesson.durationMinutes === 90 && ([11, 12].includes(lesson.id) || lesson.exercises.some(exercise => exercise.optional && exercise.extension))), 'lessons 2-30 keep a 90-minute core; lessons 11-12 use approved custom project flows');
+assert.ok(loadedLessons.slice(1).every(lesson => [11, 12].includes(lesson.id) || lesson.exercises.some(ex => ex.optional && ex.extension)), 'each lesson after lesson 1 keeps deeper-code extension exercises except approved custom project flows');
+assert.ok(loadedLessons.slice(1).every(lesson => [11, 12].includes(lesson.id) || (lesson.exercises.some(ex => ex.matchBox) && lesson.exercises.some(ex => ex.choiceBox) && lesson.exercises.some(ex => ex.debugCode))), 'deeper-code upgrades include concept matching, scenario choices, and bug fixing; lessons 11-12 use dedicated project code-entry checks');
 assert.ok(loadedLessons.find(lesson => lesson.id === 2).exercises.some(ex => ex.title.includes('CSS')) && loadedLessons.find(lesson => lesson.id === 16).exercises.some(ex => ex.title.includes('JavaScript')), 'deeper-code upgrades are themed to each lesson focus');
 assert.ok(!loadedLessons[0].exercises.some(ex => ex.title === 'משימת סיכום — האתר השלם שלי' || ex.title === 'משימת סיכום — בלוק הופך לקוד' || ex.title === 'משימת סיכום — מפת הקוד של האתר'), 'old duplicate/free-text summaries were replaced');
 assert.ok(!loadedLessonsCode.includes('%TEXT') && !loadedLessonsCode.includes('%R') && loadedLessonsCode.includes('blocklyMessageFromLabel'), 'advanced English Blockly labels use valid numeric Blockly placeholders so toolbox blocks render');
@@ -550,7 +551,7 @@ assert.ok(childFacingNotes.every(text => !/button ולא botton|לדוגמה: bu
 const lesson1AnyCodeWord = loadedLessons[0].exercises.find(ex => ex.id === 8);
 assert.ok(lesson1AnyCodeWord?.check?.requiresCodeLineAnswer && !lesson1AnyCodeWord.check.jsIncludes && !lesson1AnyCodeWord.check.blockTypes && !lesson1AnyCodeWord.check.nonEmptyBlocklyFields && !/button|background/.test(`${lesson1AnyCodeWord.prompt} ${lesson1AnyCodeWord.hint} ${lesson1AnyCodeWord.check.codeLineAnswerFeedback}`), 'lesson 1 any-code-word task has no hidden title/JS prerequisites or answer examples');
 assert.ok(!play.includes('selected.line ? `<code>') && play.includes('נבחרה שורת') && play.includes('עכשיו כתבו בתיבה מילה או תגית שראיתם באזור הקוד'), 'selected generated-code status remains visible without copying the code line into the exercise card');
-assert.ok(play.includes('web_action_message') && play.includes('__webcodeButtonMessage') && play.includes('window.webcodeCurrentButtonMessage') && play.includes('window.parent?.webcodeCurrentButtonMessage?.()') && play.includes('field.setValue(String(target.value ||'), 'preview button click reads the latest action-message text directly from Blockly, even if the iframe was not rebuilt');
+assert.ok(play.includes('web_action_message') && play.includes('__webcodeButtonMessage') && play.includes('window.webcodeCurrentButtonMessage') && play.includes('window.parent?.webcodeCurrentButtonMessage?.()') && play.includes('commitOpenBlocklyTextEditor()') && play.includes("getFieldValue?.('TEXT')"), 'preview button click reads the latest action-message text directly from Blockly, even if the iframe was not rebuilt');
 assert.ok(play.includes('window.webcodeCurrentActionBackground') && play.includes('window.parent?.webcodeCurrentActionBackground?.()') && play.includes('let liveBackground') && play.includes('bgMap[liveBackground]'), 'preview button click reads the latest action-background choice directly from Blockly, even if the iframe was not rebuilt');
 assert.ok(play.includes('.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important') && !play.includes('.blocklyDropDownDiv{position:fixed!important'), 'Blockly dropdown menus keep default attached behavior');
 assert.ok(!play.includes('installBlocklyMenuLayerGuard') && !play.includes('blockly-menu-open') && !play.includes('document.body.appendChild(menu)') && !play.includes('code-peek[open]{max-height:92px'), 'player uses simple stable Blockly dropdown behavior without experimental code-drawer overlay hacks');
@@ -572,7 +573,7 @@ assert.ok(play.includes('function editableFieldRulesForExercise') && play.includ
 assert.ok(play.includes("message0:'כפתור %1'") && !play.includes("message0:'כפתור %1 מציג הודעה %2'"), 'generic button block should only define the visible button label, not the click message');
 assert.ok(play.includes('function installBlocklyTextEditorInputSync') && play.includes("document.addEventListener('input'") && play.includes('updatePreviewTextFromBlocklyEdit(activeBlocklyTextEdit.blockId, activeBlocklyTextEdit.fieldName, event.target.value)') && play.includes('if(pendingBlocklyFieldUpdate || isBlocklyFieldEditorOpen()){'), 'typing inside Blockly text editor updates preview from native input events without iframe reload and suppresses focus/highlight listeners');
 assert.ok(play.includes('hasExactBlockTypeCounts(c.exactBlockTypeCounts)'), 'player supports rejecting added duplicate blocks when an exercise must change a starter block');
-assert.ok(play.includes('ensureRequiredStarterBlocks(id)') && play.includes('connectNewBlockInChain(block, rule.after)'), 'locked starter-change exercises add required blocks only when missing and connect them into the code chain');
+assert.ok(play.includes('function ensureRequiredStarterBlocks(id = activeExercise') && play.includes('connectNewBlockInChain(block, rule.after)'), 'locked starter-change exercises add required blocks only when missing and connect them into the code chain');
 assert.ok(play.includes('ensureRequiredStarterBlocks(activeExercise);') && play.includes('ensureExerciseBaseline(id)') && play.includes("'web_action_background.BG': firstBlocklyFieldValue('web_action_background', 'BG')"), 'lesson 3 exercise 6 inserts missing required block before capturing the user workspace as the entry baseline');
 assert.ok(play.includes('hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline)') && play.includes('exerciseResetXml()'), 'lesson 3 exercise 6 checks/resets against the entry baseline, not lesson starter XML');
 assert.ok(play.includes('field.setEnabled(enabled)') && !play.includes('setEditable?.(!locked)'), 'lesson 3 field lock uses field enable state, not blanket block edit lock');
