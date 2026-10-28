@@ -7917,6 +7917,305 @@ function resetAdventure() {
   }
   addLesson11TargetAndStudentPreviewSplitV417();
 
+  function addLesson12TargetModelPreviewOnly(){
+    const lesson = lessons.find(item => Number(item.id) === 12);
+    if(!lesson) return;
+    const compactTargetCss = `
+html, body { width:100%; height:100%; min-height:0; overflow:hidden; }
+body { margin:0; height:100vh; min-height:0; display:flex; align-items:center; justify-content:center; padding:0; background:transparent; box-sizing:border-box; }
+.project-game { width:min(92vw, 420px); max-height:calc(100vh - 10px); margin:0 auto; padding:clamp(12px, 3.2vw, 22px); border-radius:24px; overflow:hidden; box-sizing:border-box; }
+.project-game h1 { font-size:clamp(1.25rem, 5vw, 2rem); margin:.15rem 0 .45rem; }
+.project-game p { margin:.35rem 0; font-size:clamp(.86rem, 3.1vw, 1rem); }
+.project-game button { margin:4px; padding:8px 12px; font-size:.84rem; line-height:1.1; }
+`;
+    lesson.targetModel = {
+      html: lesson.starter?.html || '',
+      css: `${lesson.starter?.css || ''}
+${compactTargetCss}`,
+      js: lesson.starter?.js || '',
+      label: 'דגם מטרה — מיני־פרויקט משחק עובד'
+    };
+  }
+  addLesson12TargetModelPreviewOnly();
+
+  function allowLesson12CodeWordFromAnyGeneratedTabV422(){
+    const lesson = lessons.find(item => Number(item.id) === 12);
+    const ex8 = lesson?.exercises?.find(item => Number(item.id) === 8);
+    const rule = ex8?.check?.requiresCodeLineAnswer;
+    if(!rule) return;
+    delete rule.tab;
+    rule.tabs = ['html', 'css', 'js'];
+    rule.requiredSnippets = ['main', 'h1', 'p', 'span', 'id', 'class', 'background', 'const', 'let', 'target', 'lives', 'timeLeft', 'winMessage'];
+    ex8.check.codeLineAnswerFeedback = 'כמעט. כתבו מילה אמיתית מתוך השורה שסומנה — HTML, CSS או JavaScript, לפי הבלוק שלחצתם עליו.';
+  }
+  allowLesson12CodeWordFromAnyGeneratedTabV422();
+
+  function renameLesson12ToPizzaStandV423(){
+    const lesson = lessons.find(item => Number(item.id) === 12);
+    if(!lesson) return;
+    lesson.title = 'מיני־פרויקט דוכן פיצות — משלבים כמה חוקים';
+    lesson.story = 'בונים דוכן פיצות קטן: כמה הזמנות צריך להכין, כמה סבלנות יש ללקוחות, כמה זמן נשאר, ומה קורה כשהדוכן מצליח.';
+    lesson.mission = 'לבנות פרויקט הזמנות קטן בעזרת בלוקים: תוכן, חוקים, זמן, הצלחה ועיצוב — סביב דוכן פיצות.';
+    lesson.aiHelper = [
+      'הציעו שם לדוכן פיצות של תלמיד בכיתה ד׳.',
+      'הציעו הודעת הצלחה קצרה כשכל ההזמנות מוכנות.',
+      'עזרו לי להסביר מה ההבדל בין יעד הזמנות, סבלנות וזמן הכנה.'
+    ];
+    lesson.starter = {
+      html: '<main class="project-game">\n  <h1>דוכן הפיצות שלי</h1>\n  <p>יעד הזמנות: <span id="targetText">6</span></p>\n  <p>הוכנו: <span id="scoreText">0</span></p>\n  <button onclick="startGame()">▶️ פתחו דוכן</button>\n  <button onclick="makeOrder()">🍕 הכינו הזמנה</button>\n  <button onclick="resetGame()">🔁 איפוס</button>\n  <p id="message">פתחו את הדוכן והכינו את ההזמנות.</p>\n</main>',
+      css: 'body {\n  font-family: Arial, sans-serif;\n  direction: rtl;\n  text-align: center;\n  background: linear-gradient(135deg, #fff7ed, #dcfce7);\n}\n\n.project-game {\n  background: white;\n  width: min(92vw, 420px);\n  max-width: min(92vw, 420px);\n  margin: 0 auto;\n  padding: clamp(12px, 3.2vw, 22px);\n  border-radius: 30px;\n  box-shadow: 0 16px 35px #fed7aa;\n}\n\nspan {\n  display: inline-block;\n  min-width: 36px;\n  background: #fef3c7;\n  border-radius: 999px;\n  padding: 5px 10px;\n  font-weight: bold;\n}\n\nbutton {\n  margin: 7px;\n  padding: 13px 18px;\n  border: 0;\n  border-radius: 999px;\n  background: #ea580c;\n  color: white;\n  font-weight: bold;\n}\n\n.win { background: #dcfce7; border: 3px solid #22c55e; }',
+      js: 'let score = 0;\nconst target = 6;\n\nfunction startGame() {\n  score = 0;\n  updateScreen();\n  document.querySelector(".project-game").classList.remove("win");\n  document.getElementById("message").textContent = "הדוכן נפתח! הכינו 6 הזמנות.";\n}\n\nfunction makeOrder() {\n  score = score + 1;\n  updateScreen();\n  if (score >= target) {\n    document.getElementById("message").textContent = "כל הכבוד! כל ההזמנות מוכנות! 🎉";\n    document.querySelector(".project-game").classList.add("win");\n  }\n}\n\nfunction resetGame() {\n  score = 0;\n  updateScreen();\n  document.querySelector(".project-game").classList.remove("win");\n  document.getElementById("message").textContent = "פתחו את הדוכן והכינו את ההזמנות.";\n}\n\nfunction updateScreen() {\n  document.getElementById("targetText").textContent = target;\n  document.getElementById("scoreText").textContent = score;\n}'
+    };
+    const byType = Object.fromEntries((lesson.blocklyBlocks || []).map(block => [block.type, block]));
+    if(byType.lesson_12_name){
+      Object.assign(byType.lesson_12_name, { label:'שם דוכן', message:'שם דוכן %1', find:'דוכן הפיצות שלי', replace:'{{TEXT}}', highlight:'{{TEXT}}', hint:'בלוק HTML שנותן שם לדוכן ההזמנות.' });
+      const field = byType.lesson_12_name.args0?.find(arg => arg.name === 'TEXT');
+      if(field) field.text = 'כתבו שם כאן';
+    }
+    if(byType.lesson_12_target){
+      Object.assign(byType.lesson_12_target, { label:'יעד הזמנות', message:'יעד הזמנות %1', find:'const target = 6;', replace:'const target = {{N}};', highlight:'const target = {{N}};', hint:'בלוק JavaScript שקובע כמה הזמנות צריך להכין להצלחה.' });
+      const field = byType.lesson_12_target.args0?.find(arg => arg.name === 'N');
+      if(field) field.options = [['6','6'],['8','8'],['10','10']];
+    }
+    if(byType.lesson_12_lives){
+      Object.assign(byType.lesson_12_lives, { label:'סבלנות בהתחלה', message:'סבלנות לקוחות בהתחלה %1', find:'let lives = 3;', replace:'let lives = {{N}};', highlight:'let lives = {{N}};', hint:'בלוק JavaScript שקובע כמה סבלנות יש ללקוחות לפני שנכשלים.' });
+      const field = byType.lesson_12_lives.args0?.find(arg => arg.name === 'N');
+      if(field) field.options = [['3','3'],['4','4'],['5','5']];
+    }
+    if(byType.lesson_12_time){
+      Object.assign(byType.lesson_12_time, { label:'זמן הכנה', message:'זמן הכנה %1 שניות', find:'let timeLeft = 30;', replace:'let timeLeft = {{N}};', highlight:'let timeLeft = {{N}};', hint:'בלוק JavaScript שקובע כמה זמן יש לדוכן להכין הזמנות.' });
+      const field = byType.lesson_12_time.args0?.find(arg => arg.name === 'N');
+      if(field) field.options = [['30','30'],['45','45'],['60','60']];
+    }
+    if(byType.lesson_12_win){
+      Object.assign(byType.lesson_12_win, { label:'הודעת הצלחה', message:'הודעת הצלחה %1 עם אימוג׳י %2', find:'כל ההזמנות מוכנות! הדוכן הצליח 🎉', replace:'{{TEXT}}', highlight:'{{TEXT}}', hint:'בלוק JavaScript שקובע מה כתוב כשהדוכן מצליח. התלמידים כותבים את הטקסט ובוחרים אימוג׳י.' });
+      byType.lesson_12_win.args0 = [
+        { type:'field_input', name:'TEXT', text:'כתבו הודעת הצלחה כאן' },
+        { type:'field_dropdown', name:'EMOJI', options:[['🎉','🎉'],['🍕','🍕'],['✅','✅'],['⭐','⭐'],['🔥','🔥'],['💡','💡'],['👏','👏'],['🏆','🏆'],['בלי אימוג׳י','']] }
+      ];
+    }
+    if(byType.lesson_12_theme){
+      Object.assign(byType.lesson_12_theme, { label:'צבע כרטיס התוכן', message:'צבע כרטיס התוכן %1', find:'#dcfce7', replace:'{{COLOR}}', highlight:'{{COLOR}}', hint:'בלוק CSS שקובע את צבע הרקע של כרטיס הדוכן — כולל אפשרות לבן.' });
+      const field = byType.lesson_12_theme.args0?.find(arg => arg.name === 'COLOR');
+      if(field) field.options = [['לבן','#ffffff'],['כתום בהיר','#fed7aa'],['ירוק בהיר','#bbf7d0'],['תכלת','#bae6fd'],['ורוד','#fbcfe8']];
+    }
+    const addTextBlock = (type, label, message, text, target, hint, colour=210) => {
+      if(lesson.blocklyBlocks?.some(block => block.type === type)) return;
+      lesson.blocklyBlocks.push({
+        type,
+        label,
+        message,
+        args0: [{ type:'field_input', name:'TEXT', text }],
+        target,
+        find: text,
+        replace: '{{TEXT}}',
+        highlight: '{{TEXT}}',
+        hint,
+        colour
+      });
+    };
+    const addDropdownBlock = (type, label, message, fieldName, options, target, hint, colour=285) => {
+      if(lesson.blocklyBlocks?.some(block => block.type === type)) return;
+      const firstValue = options?.[0]?.[1] || '';
+      lesson.blocklyBlocks.push({
+        type,
+        label,
+        message,
+        args0: [{ type:'field_dropdown', name:fieldName, options }],
+        target,
+        find: firstValue,
+        replace: `{{${fieldName}}}`,
+        highlight: `{{${fieldName}}}`,
+        hint,
+        colour
+      });
+    };
+    addTextBlock('lesson_12_add_button', 'הוסף כפתור', 'הוסף כפתור %1 עם אימוג׳י %2', 'כתבו טקסט לכפתור', 'html', 'בלוק HTML שמוסיף כפתור לדוכן. התלמידים כותבים בעצמם את הטקסט ובוחרים אימוג׳י בהמשך הבלוק. אפשר לגרור אותו כמה פעמים ולכתוב בכל פעם טקסט אחר.');
+    const addButtonBlock = lesson.blocklyBlocks?.find(block => block.type === 'lesson_12_add_button');
+    if(addButtonBlock){
+      addButtonBlock.args0 = [
+        { type:'field_input', name:'TEXT', text:'כתבו טקסט לכפתור' },
+        { type:'field_dropdown', name:'EMOJI', options:[['🍕','🍕'],['▶️','▶️'],['🔁','🔁'],['⏳','⏳'],['✅','✅'],['⭐','⭐'],['🎉','🎉'],['🔥','🔥'],['💡','💡'],['בלי אימוג׳י','']] }
+      ];
+      addButtonBlock.find = 'כתבו טקסט לכפתור';
+      addButtonBlock.replace = '{{TEXT}}';
+      addButtonBlock.highlight = '{{TEXT}}';
+    }
+    addTextBlock('lesson_12_start_message', 'הודעת פתיחה', 'הודעת פתיחה %1', 'כתבו הודעת פתיחה כאן', 'html', 'בלוק HTML שקובע מה כתוב בדוכן לפני שמתחילים.');
+    addTextBlock('lesson_12_win', 'הודעת הצלחה', 'הודעת הצלחה %1', 'כתבו הודעת הצלחה כאן', 'js', 'בלוק JavaScript שקובע מה כתוב כשהדוכן מצליח.', 120);
+    const winMessageBlock = lesson.blocklyBlocks?.find(block => block.type === 'lesson_12_win');
+    if(winMessageBlock){
+      winMessageBlock.label = 'הודעת הצלחה';
+      winMessageBlock.message = 'הודעת הצלחה %1 עם אימוג׳י %2';
+      winMessageBlock.hideFromToolbox = false;
+      winMessageBlock.args0 = [
+        { type:'field_input', name:'TEXT', text:'כתבו הודעת הצלחה כאן' },
+        { type:'field_dropdown', name:'EMOJI', options:[['🎉','🎉'],['🍕','🍕'],['✅','✅'],['⭐','⭐'],['🔥','🔥'],['💡','💡'],['👏','👏'],['🏆','🏆'],['בלי אימוג׳י','']] }
+      ];
+      winMessageBlock.find = 'כתבו הודעת הצלחה כאן';
+      winMessageBlock.replace = '{{TEXT}}';
+      winMessageBlock.highlight = '{{TEXT}}';
+    }
+    addDropdownBlock('lesson_12_button_action', 'בלחיצה על הכפתור', 'בלחיצה על הכפתור %1', 'ACTION', [['התחל פעולות','']], 'js', 'בלוק JavaScript שמסמן שהבלוקים שמתחתיו יפעלו כאשר לוחצים על הכפתור שמעליו.', 120);
+    const clickEventBlock = lesson.blocklyBlocks?.find(block => block.type === 'lesson_12_button_action');
+    if(clickEventBlock){
+      clickEventBlock.message = 'בלחיצה על הכפתור %1 בצעו %2';
+      clickEventBlock.args0 = [
+        { type:'input_dummy' },
+        { type:'input_statement', name:'DO' }
+      ];
+      clickEventBlock.find = 'click';
+      clickEventBlock.replace = '';
+      clickEventBlock.highlight = '';
+      clickEventBlock.hint = 'שימו את הבלוק מיד אחרי כפתור. לתוך הפתח שלו מכניסים את הפעולות שיקרו בלחיצה, כמו בלוק תנאי.';
+    }
+    addDropdownBlock('lesson_12_click_start', 'פתח את הדוכן', 'פתח את הדוכן', 'ON', [['הפעל','on']], 'js', 'פעולה שמאפסת ומפעילה את משחק הדוכן.', 120);
+    const startActionBlock = lesson.blocklyBlocks?.find(block => block.type === 'lesson_12_click_start');
+    if(startActionBlock){
+      startActionBlock.label = 'פתח את הדוכן';
+      startActionBlock.message = 'פתח את הדוכן';
+      startActionBlock.args0 = [];
+      startActionBlock.find = 'startGame';
+      startActionBlock.replace = '';
+      startActionBlock.highlight = '';
+    }
+    addDropdownBlock('lesson_12_click_add_order', 'הוסף הזמנה', 'הוסף הזמנה %1', 'N', [['1','1'],['2','2'],['3','3']], 'js', 'פעולה שמעלה את מספר ההזמנות המוכנות.', 120);
+    addDropdownBlock('lesson_12_click_patience', 'הורד סבלנות', 'הורד סבלנות %1', 'N', [['1','1'],['2','2'],['3','3']], 'js', 'פעולה שמורידה סבלנות ללקוחות.', 120);
+    addDropdownBlock('lesson_12_click_time', 'הורד זמן', 'הורד זמן %1 שניות', 'N', [['5','5'],['10','10'],['15','15']], 'js', 'פעולה שמורידה זמן מהשעון.', 120);
+    addTextBlock('lesson_12_click_message', 'הצג הודעה', 'הצג הודעה %1', 'כתבו הודעה כאן', 'js', 'פעולה שמחליפה את הודעת הדוכן אחרי לחיצה.', 120);
+    addDropdownBlock('lesson_12_click_reset', 'אפס את הדוכן', 'אפס את הדוכן', 'ON', [['הפעל','on']], 'js', 'פעולה שמחזירה את הדוכן להתחלה.', 120);
+    const resetActionBlock = lesson.blocklyBlocks?.find(block => block.type === 'lesson_12_click_reset');
+    if(resetActionBlock){
+      resetActionBlock.label = 'אפס את הדוכן';
+      resetActionBlock.message = 'אפס את הדוכן';
+      resetActionBlock.args0 = [];
+      resetActionBlock.find = 'resetGame';
+      resetActionBlock.replace = '';
+      resetActionBlock.highlight = '';
+    }
+    ['lesson_12_lives','lesson_12_time','lesson_12_click_patience','lesson_12_click_time'].forEach(type => {
+      const optionalBlock = lesson.blocklyBlocks?.find(block => block.type === type);
+      if(optionalBlock) optionalBlock.hideFromToolbox = true;
+    });
+    addDropdownBlock('lesson_12_action_start', 'פעולת פתיחת דוכן', 'בלחיצה על הכפתור %1', 'ON', [['הפעל','on']], 'js', 'בלוק ישן לתאימות: מפעיל פתיחת דוכן.', 120);
+    addDropdownBlock('lesson_12_action_order', 'פעולת הכנת הזמנה', 'בלחיצה על הכפתור %1', 'ON', [['הפעל','on']], 'js', 'בלוק ישן לתאימות: מפעיל הכנת הזמנה.', 120);
+    addDropdownBlock('lesson_12_action_delay', 'פעולת איחור בהזמנה', 'בלחיצה על הכפתור %1', 'ON', [['הפעל','on']], 'js', 'בלוק ישן לתאימות: מפעיל איחור בהזמנה.', 120);
+    addDropdownBlock('lesson_12_action_reset', 'פעולת איפוס', 'בלחיצה על הכפתור %1', 'ON', [['הפעל','on']], 'js', 'בלוק ישן לתאימות: מפעיל איפוס.', 120);
+    ['lesson_12_action_start','lesson_12_action_order','lesson_12_action_delay','lesson_12_action_reset'].forEach(type => {
+      const legacyActionBlock = lesson.blocklyBlocks?.find(block => block.type === type);
+      if(legacyActionBlock) legacyActionBlock.hideFromToolbox = true;
+    });
+    addDropdownBlock('lesson_12_page_layout', 'סדר טקסט במרכז', 'סדר טקסט במרכז %1', 'ON', [['הפעל','on']], 'css', 'בלוק CSS שממרכז את הטקסט ומסדר אותו בעמוד.', 285);
+    addDropdownBlock('lesson_12_page_bg', 'צבע רקע עמוד', 'צבע רקע עמוד %1', 'COLOR', [['שמנת','#fff7ed'],['לבן','#ffffff'],['ירוק בהיר','#dcfce7'],['תכלת','#e0f2fe'],['ורוד','#fdf2f8']], 'css', 'בלוק CSS ישן שנשמר לתאימות בלבד ואינו מופיע בארגז הבלוקים.', 285);
+    const hiddenPageBgBlock = lesson.blocklyBlocks?.find(block => block.type === 'lesson_12_page_bg');
+    if(hiddenPageBgBlock) hiddenPageBgBlock.hideFromToolbox = true;
+    addDropdownBlock('lesson_12_card_box', 'גודל וריווח כרטיס', 'גודל וריווח כרטיס %1', 'ON', [['הפעל','on']], 'css', 'בלוק CSS שמוסיף רוחב, שוליים פנימיים ומיקום לכרטיס הדוכן.', 285);
+    addDropdownBlock('lesson_12_card_round', 'פינות כרטיס התוכן', 'פינות כרטיס התוכן %1', 'N', [['חדות','0'],['עגולות','30']], 'css', 'בלוק CSS שקובע אם פינות כרטיס התוכן חדות או עגולות.', 285);
+    addDropdownBlock('lesson_12_card_shadow', 'צל כרטיס', 'צל כרטיס %1', 'COLOR', [['כתום','#fed7aa'],['אפור','#d1d5db'],['בלי צל','transparent']], 'css', 'בלוק CSS שמוסיף צל לכרטיס הדוכן.', 285);
+    addDropdownBlock('lesson_12_counter_style', 'עיצוב מספרים', 'עיצוב מספרים %1', 'COLOR', [['צהוב בהיר','#fef3c7'],['לבן','#ffffff'],['ירוק בהיר','#dcfce7'],['תכלת','#dbeafe']], 'css', 'בלוק CSS שמעצב את המספרים של הזמנות/סבלנות/זמן.', 285);
+    addDropdownBlock('lesson_12_button_shape', 'פינות הכפתורים', 'פינות הכפתורים %1', 'N', [['חדות','0'],['עגולות','18']], 'css', 'בלוק CSS שקובע אם פינות הכפתורים חדות או עגולות.', 285);
+    addDropdownBlock('lesson_12_button_bg', 'צבע כפתורים', 'צבע כפתורים %1', 'COLOR', [['כתום','#ea580c'],['כחול','#2563eb'],['ירוק','#16a34a'],['סגול','#7c3aed'],['לבן','#ffffff']], 'css', 'בלוק CSS שקובע את צבע הרקע של הכפתורים.', 285);
+    addDropdownBlock('lesson_12_button_text_color', 'צבע טקסט הכפתורים', 'צבע טקסט הכפתורים %1', 'COLOR', [['לבן','#ffffff'],['שחור','#111827'],['כחול כהה','#1e3a8a']], 'css', 'בלוק CSS שקובע את צבע הטקסט של הכפתורים.', 285);
+    addDropdownBlock('lesson_12_button_size', 'גודל הכפתורים', 'גודל הכפתורים %1', 'SIZE', [['רגיל','normal'],['קטן','small'],['גדול','large']], 'css', 'בלוק CSS שקובע אם הכפתורים קטנים, רגילים או גדולים.', 285);
+    addDropdownBlock('lesson_12_button_position', 'מיקום הכפתורים', 'מיקום הכפתורים %1', 'POS', [['שתי שורות במרכז','target'],['במרכז','center'],['לימין','right'],['לשמאל','left'],['אחד מתחת לשני','column']], 'css', 'בלוק CSS שקובע איפה הכפתורים יופיעו בתוך כרטיס התוכן.', 285);
+    addDropdownBlock('lesson_12_win_style', 'עיצוב הצלחה', 'עיצוב הצלחה %1', 'STYLE', [['ירוק חגיגי','green'],['זהב','gold'],['ורוד','pink'],['כחול','blue']], 'css', 'בלוק CSS שמאפשר לבחור איך הכרטיס ייראה כשהדוכן מצליח.', 285);
+
+    const successOrder = ['lesson_12_win', 'lesson_12_win_style'];
+    lesson.blocklyBlocks = (lesson.blocklyBlocks || []).sort((a, b) => {
+      const ai = successOrder.indexOf(a.type);
+      const bi = successOrder.indexOf(b.type);
+      if(ai >= 0 && bi >= 0) return ai - bi;
+      if(ai >= 0 && b.type === 'lesson_12_button_action') return -1;
+      if(bi >= 0 && a.type === 'lesson_12_button_action') return 1;
+      return 0;
+    });
+    const ex = id => lesson.exercises?.find(item => Number(item.id) === id);
+    if(ex(1)){
+      ex(1).title = 'תרגיל 1 — שם הדוכן';
+      ex(1).prompt = 'גררו וחברו את הבלוק “שם דוכן”. שנו את הטקסט שבתוך הבלוק לשם חדש משלכם, ואז בדקו בתצוגה מה נבנה.';
+      const rule = ex(1).check?.changedBlocklyFields?.find(rule => rule.type === 'lesson_12_name');
+      if(rule) rule.defaultValue = 'כתבו שם כאן';
+    }
+    if(ex(2)){
+      ex(2).title = 'תרגיל 2 — יעד הזמנות';
+      ex(2).prompt = 'גררו וחברו את הבלוק “יעד הזמנות”. בחרו כמה הזמנות צריך להכין כדי שהדוכן יצליח.';
+      const rule = ex(2).check?.changedBlocklyFields?.find(rule => rule.type === 'lesson_12_target');
+      if(rule) rule.defaultValue = '6';
+      if(ex(2).check) ex(2).check.blockFeedback = 'כמעט. גררו וחברו את הבלוק “יעד הזמנות” לשרשרת.';
+    }
+    if(ex(3)){
+      ex(3).title = 'תרגיל 3 — סבלנות הלקוחות';
+      ex(3).prompt = 'גררו וחברו את הבלוק “סבלנות לקוחות בהתחלה”. בחרו כמה סבלנות תהיה ללקוחות בתחילת המשימה.';
+    }
+    if(ex(4)){
+      ex(4).title = 'תרגיל 4 — זמן הכנה';
+      ex(4).prompt = 'גררו וחברו את הבלוק “זמן הכנה”. בחרו כמה שניות יש לדוכן כדי לעמוד בקצב ההזמנות.';
+      const rule = ex(4).check?.changedBlocklyFields?.find(rule => rule.type === 'lesson_12_time');
+      if(rule) rule.defaultValue = '30';
+    }
+    if(ex(5)){
+      ex(5).title = 'תרגיל 5 — הודעת הצלחה';
+      ex(5).prompt = 'גררו וחברו את הבלוק “הודעת הצלחה”. כתבו הודעה חדשה שתופיע כשהדוכן מכין מספיק הזמנות.';
+      const rule = ex(5).check?.changedBlocklyFields?.find(rule => rule.type === 'lesson_12_win');
+      if(rule) rule.defaultValue = 'כל הפיצות יצאו בזמן! 🎉';
+    }
+    if(ex(6)){
+      const rules = ex(6).check?.anyChangedBlocklyFields || [];
+      rules.forEach(rule => {
+        if(rule.type === 'lesson_12_name') rule.defaultValue = 'כתבו שם כאן';
+        if(rule.type === 'lesson_12_target') rule.defaultValue = '6';
+        if(rule.type === 'lesson_12_time') rule.defaultValue = '30';
+        if(rule.type === 'lesson_12_win') rule.defaultValue = 'כל הפיצות יצאו בזמן! 🎉';
+        if(rule.type === 'lesson_12_theme') rule.defaultValue = '#fed7aa';
+      });
+      ex(6).prompt = 'שנו טקסט או בחרו אפשרות בתוך אחד מבלוקי הדוכן שכבר חיברתם וראו שהתצוגה מתעדכנת לבד.';
+    }
+    if(ex(7)){
+      ex(7).prompt = 'השאירו מחוברים לפחות שני בלוקים מהדוכן והסבירו לעצמכם איך הם עובדים יחד: למשל שם הדוכן יחד עם יעד ההזמנות.';
+    }
+    if(ex(12)?.matchBox){
+      ex(12).title = 'העמקת קוד — מושגים של דוכן וקוד';
+      ex(12).prompt = 'התאימו מילים או סימני קוד מפרויקט הדוכן לתפקיד שלהן.';
+      ex(12).matchBox.title = 'מילות קוד מתוך דוכן הפיצות';
+      ex(12).matchBox.items = [
+        { id:'12-deep-a', code:'onclick', answer:'a' },
+        { id:'12-deep-b', code:'target', answer:'b' },
+        { id:'12-deep-c', code:'class="project-game"', answer:'c' }
+      ];
+      ex(12).matchBox.options = [
+        { value:'a', label:'מפעיל פעולה בלחיצה' },
+        { value:'b', label:'קובע כמה הזמנות צריך להכין' },
+        { value:'c', label:'מסמן את אזור הדוכן ב־HTML' }
+      ];
+    }
+    if(ex(13)?.choiceBox?.groups){
+      ex(13).choiceBox.groups.forEach(group => {
+        if(group.id === '12-scenario-a') group.label = 'צריך שמשהו יקרה כשמכינים הזמנה. איפה צריך לשנות?';
+        if(group.id === '12-scenario-b') group.label = 'צריך להגביל את זמן ההכנה בדוכן. איפה צריך לשנות?';
+        if(group.id === '12-scenario-c') group.label = 'צריך לבנות את אזור הדוכן במסך. איפה צריך לשנות?';
+      });
+    }
+    if(ex(14)){
+      ex(14).title = 'העמקת קוד — מתקנים באג קטן בדוכן';
+      ex(14).prompt = 'בתיבת הקוד יש טעות קטנה אחת או שתיים. תקנו רק את הטעות, בלי למחוק את כל הקוד.';
+    }
+    const compactTargetCss = `
+html, body { width:100%; height:100%; min-height:0; overflow:hidden; }
+body { margin:0; height:100vh; min-height:0; display:flex; align-items:center; justify-content:center; padding:0; background:transparent; box-sizing:border-box; }
+.project-game { width:min(92vw, 420px); max-height:calc(100vh - 10px); margin:0 auto; padding:clamp(12px, 3.2vw, 22px); border-radius:24px; overflow:hidden; box-sizing:border-box; }
+.project-game h1 { font-size:clamp(1.25rem, 5vw, 2rem); margin:.15rem 0 .45rem; }
+.project-game p { margin:.35rem 0; font-size:clamp(.86rem, 3.1vw, 1rem); }
+.project-game button { margin:4px; padding:8px 12px; font-size:.84rem; line-height:1.1; }
+`;
+    lesson.targetModel = {
+      html: lesson.starter.html,
+      css: `${lesson.starter.css}\n${compactTargetCss}`,
+      js: lesson.starter.js,
+      label: 'דגם מטרה — דוכן פיצות עובד'
+    };
+  }
+  renameLesson12ToPizzaStandV423();
+
 
   function stabilizeLesson1CodeWordExerciseV227(){
     const lesson = lessons.find(item => Number(item.id) === 1);
@@ -9147,6 +9446,194 @@ function resetAdventure() {
   }
   applyLesson11FinalCodeReadingPreviewV422();
 
+
+  function regroupLesson12TargetBuildAndCodeExercisesV424(){
+    const lesson = lessons.find(item => Number(item.id) === 12);
+    if(!lesson) return;
+    lesson.exercises = [
+      {
+        id:1,
+        minutes:'0–15',
+        title:'תרגיל 1 — בונים את שלד הדוכן',
+        prompt:'חברו לשרשרת את בלוקי התוכן הראשיים: שם דוכן ויעד הזמנות. שנו את שם הדוכן לשם משלכם ובדקו שהתצוגה מתחילה להיראות כמו דוכן.',
+        hint:'אלה הבלוקים שיוצרים את הכותרת ואת יעד ההזמנות של הדוכן.',
+        check:{
+          blockTypes:['lesson_12_name','lesson_12_target'],
+          changedBlocklyFields:[{ type:'lesson_12_name', field:'TEXT', defaultValue:'כתבו שם כאן' }],
+          blockFeedback:'כמעט. חברו את שם הדוכן ויעד ההזמנות לשרשרת.',
+          fieldFeedback:'כמעט. אחרי חיבור הבלוקים, שנו את שם הדוכן לשם משלכם.'
+        }
+      },
+      {
+        id:2,
+        minutes:'15–30',
+        title:'תרגיל 2 — מוסיפים שלושה כפתורי פעולה',
+        prompt:'הוסיפו שלושה בלוקי “הוסף כפתור”. בכל אחד משלושת הבלוקים כתבו טקסט משלכם ובחרו אימוג׳י מתאים: פתיחת הדוכן, הכנת הזמנה ואיפוס.',
+        hint:'צריך שלושה בלוקי כפתור מחוברים באותה שרשרת. ודאו ששיניתם את הטקסט בכל שלושת הכפתורים. בלוקים מנותקים לא משפיעים על התצוגה.',
+        check:{
+          blockTypes:['lesson_12_add_button'],
+          exactBlockTypeCounts:{ lesson_12_add_button:3 },
+          nonEmptyBlocklyFields:[{ type:'lesson_12_add_button', field:'TEXT', minCount:3, all:true }],
+          changedBlocklyFields:[{ type:'lesson_12_add_button', field:'TEXT', defaultValue:'כתבו טקסט לכפתור', minCount:3, all:true }],
+          blockFeedback:'כמעט. גררו וחברו שלושה בלוקי “הוסף כפתור” לשרשרת.',
+          countFeedback:'כמעט. בדגם החדש צריכים להיות שלושה כפתורים מחוברים בשרשרת: פתיחה, הזמנה ואיפוס.',
+          emptyFeedback:'כמעט. כתבו טקסט בתוך כל שלושת הכפתורים — לא להשאיר שדה ריק.',
+          fieldFeedback:'כמעט. החליפו את הטקסט “כתבו טקסט לכפתור” בכל שלושת הכפתורים: פתיחה, הכנת הזמנה ואיפוס.'
+        }
+      },
+      {
+        id:3,
+        minutes:'30–43',
+        title:'תרגיל 3 — מעצבים את כרטיס התוכן',
+        prompt:'חברו את בלוקי עיצוב הכרטיס: סדר טקסט במרכז, צבע כרטיס התוכן, גודל וריווח כרטיס, פינות כרטיס התוכן, צל כרטיס ועיצוב מספרים.',
+        hint:'הבלוקים האלה הם CSS: הם לא מוסיפים תוכן חדש, אלא משנים את המראה של הכרטיס, יעד ההזמנות והמספרים.',
+        check:{
+          blockTypes:['lesson_12_page_layout','lesson_12_theme','lesson_12_card_box','lesson_12_card_round','lesson_12_card_shadow','lesson_12_counter_style'],
+          generatedBlockOutputs:[
+            { type:'lesson_12_theme', target:'css' },
+            { type:'lesson_12_card_box', target:'css' },
+            { type:'lesson_12_counter_style', target:'css' }
+          ],
+          blockFeedback:'כמעט. חסר אחד מבלוקי עיצוב כרטיס התוכן.',
+          generatedFeedback:'כמעט. הבלוקים מחוברים, אבל עוד לא רואים את קוד ה־CSS שלהם. ודאו שהם מחוברים לשרשרת.'
+        }
+      },
+      {
+        id:4,
+        minutes:'43–56',
+        title:'תרגיל 4 — מעצבים את הכפתורים',
+        prompt:'חברו את בלוקי עיצוב הכפתורים: פינות הכפתורים, צבע כפתורים, צבע טקסט הכפתורים, גודל הכפתורים ומיקום הכפתורים. התבוננו בדגם המטרה ובחרו בעצמכם את האפשרויות שיקרבו את העיצוב שלכם אליו.',
+        hint:'השוו לדגם את הצבע, הצורה, הגודל והסידור של הכפתורים, ונסו אפשרויות עד שתגיעו לעיצוב המתאים.',
+        check:{
+          blockTypes:['lesson_12_button_shape','lesson_12_button_bg','lesson_12_button_text_color','lesson_12_button_size','lesson_12_button_position'],
+          blockFeedback:'כמעט. חסר אחד מבלוקי עיצוב הכפתורים. חברו את כולם והשוו את התוצאה לדגם המטרה.'
+        }
+      },
+      {
+        id:5,
+        minutes:'56–66',
+        title:'תרגיל 5 — מפעילים את הכפתורים',
+        prompt:'חברו לכל אחד משלושת הכפתורים בלוק “בלחיצה על הכפתור”: בראשון הכניסו “פתח את הדוכן” וגם “הצג הודעה”, בשני “הוסף הזמנה”, ובשלישי “אפס את הדוכן”. אחרי שלושת הכפתורים חברו בשרשרת הראשית בלוק “הצג הודעה” עם ההנחיה הקבועה שמופיעה מתחת לכפתורים. אחריו חברו “הודעת הצלחה” ו“עיצוב הצלחה”. לבסוף בדקו בתצוגה: פתחו את הדוכן, הכינו הזמנות עד היעד וראו את הודעת ההצלחה.',
+        hint:'צריכים להיות שני בלוקי “הצג הודעה”: אחד בתוך פעולת כפתור הפתיחה, ואחד בשרשרת הראשית אחרי הכפתורים. לא צריך בלוק תנאי — ההצלחה מופעלת אוטומטית כשמגיעים ליעד.',
+        check:{
+          lesson12SuccessSetup:true,
+          lesson12ActionSetup:true,
+          exactBlockTypeCounts:{ lesson_12_button_action:3, lesson_12_click_message:2 },
+          nonEmptyBlocklyFields:[
+            { type:'lesson_12_click_message', field:'TEXT', minCount:2, all:true },
+            { type:'lesson_12_win', field:'TEXT', minCount:1, all:true }
+          ],
+          requiresPreviewMessageFromBlockOutput:[{ type:'lesson_12_win' }],
+          successSetupFeedback:'כמעט. אחרי שלושת הכפתורים חברו בשרשרת הראשית “הצג הודעה”, “הודעת הצלחה” ו“עיצוב הצלחה”, בסדר הזה. אין צורך בבלוק תנאי.',
+          actionSetupFeedback:'כמעט. בדקו את פעולות הכפתורים: בכפתור הפתיחה צריכים להיות “פתח את הדוכן” וגם “הצג הודעה”, בכפתור ההזמנה “הוסף הזמנה”, ובכפתור האיפוס “אפס את הדוכן”.',
+          pageMessageFeedback:'כמעט. אחרי שלושת הכפתורים חברו בשרשרת הראשית בלוק “הצג הודעה”. זו ההנחיה הקבועה שמופיעה מתחת לכפתורים.',
+          countFeedback:'כמעט. צריכים להיות שלושה בלוקי “בלחיצה על הכפתור” ושני בלוקי “הצג הודעה”: אחד בתוך כפתור הפתיחה ואחד בשרשרת הראשית.',
+          emptyFeedback:'כמעט. כתבו טקסט בשתי ההודעות וגם בהודעת ההצלחה.',
+          previewMessageFeedback:'כמעט. עכשיו בדקו בתצוגה: לחצו על כפתור הפתיחה, ואז לחצו על כפתור “הכינו הזמנה” עד שמגיעים ליעד ורואים את הודעת ההצלחה.'
+        }
+      },
+      {
+        id:6,
+        minutes:'66–74',
+        title:'כניסה לקוד 1 — HTML שבונה תוכן',
+        prompt:'פתחו “לראות קוד שנוצר”, לחצו על בלוק תוכן מחובר — שם דוכן, כפתור או בלוק “הצג הודעה” שבשרשרת הראשית — וכתבו מילה אחת מתוך שורת ה־HTML שסומנה.',
+        hint:'HTML יוצר את הדברים שמופיעים בעמוד: כותרת, פסקה וכפתורים.',
+        requiresCodePeek:true,
+        answerBoxes:[{ id:'code-word', label:'מילה מתוך שורת ה־HTML', placeholder:'כתבו כאן מילה מתוך השורה' }],
+        answerBoxTitle:'קוראים שורת HTML שנוצרה מבלוק',
+        answerBoxNote:'לחצו על בלוק מחובר, הסתכלו על השורה שסומנה, וכתבו מילה שמופיעה בה.',
+        check:{
+          requiresCodePeek:true,
+          requiresCodeSelectionTabs:['html'],
+          requiresCodeSelectionBlockTypes:['lesson_12_name','lesson_12_add_button','lesson_12_click_message'],
+          requiresCodeLineAnswer:{ answerField:'code-word', tabs:['html'], blockTypes:['lesson_12_name','lesson_12_add_button','lesson_12_click_message'], allowAnyWordFromSelectedLine:true, requiredSnippets:['main','h1','button','p','class','onclick','message','project-game'] },
+          codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.',
+          codeSelectionFeedback:'כמעט. לחצו על בלוק תוכן מחובר כדי לסמן שורת HTML.',
+          codeLineAnswerFeedback:'כמעט. כתבו מילה אמיתית מתוך השורה שסומנה.'
+        }
+      },
+      {
+        id:7,
+        minutes:'74–82',
+        title:'כניסה לקוד 2 — CSS שמחליט על עיצוב',
+        prompt:'לחצו על בלוק עיצוב מחובר. מצאו את שורת ה־CSS שנוצרה וכתבו ממנה מילה אחת.',
+        hint:'CSS משנה מראה: צבעים, גודל, ריווח, צורה ומיקום.',
+        answerBoxes:[{ id:'code-word', label:'מילה מתוך שורת ה־CSS', placeholder:'כתבו כאן מילה מתוך השורה' }],
+        answerBoxTitle:'קוראים שורת CSS שנוצרה מבלוק',
+        answerBoxNote:'בחרו בלוק עיצוב מחובר וכתבו מילה מתוך השורה שסומנה.',
+        check:{
+          requiresCodePeek:true,
+          requiresCodeSelectionTabs:['css'],
+          requiresCodeSelectionBlockTypes:['lesson_12_theme','lesson_12_card_box','lesson_12_button_size','lesson_12_button_position','lesson_12_button_bg'],
+          requiresCodeLineAnswer:{ answerField:'code-word', tabs:['css'], blockTypes:['lesson_12_theme','lesson_12_card_box','lesson_12_button_size','lesson_12_button_position','lesson_12_button_bg'], allowAnyWordFromSelectedLine:true, requiredSnippets:['background','width','padding','font-size','display','grid','center','button','project-game','button-row'] },
+          codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.',
+          codeSelectionFeedback:'כמעט. לחצו על בלוק עיצוב מחובר כדי לסמן שורת CSS.',
+          codeLineAnswerFeedback:'כמעט. כתבו מילה מתוך שורת ה־CSS שסומנה.'
+        }
+      },
+      {
+        id:8,
+        minutes:'82–90',
+        title:'כניסה לקוד 3 — JavaScript של חוקי הדוכן',
+        prompt:'לחצו על בלוק חוק מחובר. מצאו את שורת ה־JavaScript שנוצרה וכתבו ממנה מילה אחת.',
+        hint:'JavaScript מפעיל את ההתנהגות והפעולות של הדוכן.',
+        answerBoxes:[{ id:'code-word', label:'מילה מתוך שורת ה־JavaScript', placeholder:'כתבו כאן מילה מתוך השורה' }],
+        answerBoxTitle:'קוראים שורת JavaScript שנוצרה מבלוק',
+        answerBoxNote:'בחרו בלוק חוק מחובר וכתבו מילה מתוך השורה שסומנה.',
+        check:{
+          requiresCodePeek:true,
+          requiresCodeSelectionTabs:['js'],
+          requiresCodeSelectionBlockTypes:['lesson_12_target','lesson_12_win','lesson_12_button_action','lesson_12_click_start','lesson_12_click_add_order','lesson_12_click_reset'],
+          requiresCodeLineAnswer:{ answerField:'code-word', tabs:['js'], blockTypes:['lesson_12_target','lesson_12_win','lesson_12_button_action','lesson_12_click_start','lesson_12_click_add_order','lesson_12_click_reset'], allowAnyWordFromSelectedLine:true, requiredSnippets:['let','const','target','winMessage','score','message','function','startGame','makeOrder','resetGame','buttonAction'] },
+          codePeekFeedback:'כמעט. קודם פתחו את “לראות קוד שנוצר”.',
+          codeSelectionFeedback:'כמעט. לחצו על בלוק חוק מחובר כדי לסמן שורת JavaScript.',
+          codeLineAnswerFeedback:'כמעט. כתבו מילה מתוך שורת ה־JavaScript שסומנה.'
+        }
+      },
+      {
+        id:9,
+        minutes:'90–100',
+        title:'העמקת קוד — מושגים של דוכן וקוד',
+        prompt:'התאימו מילים או סימני קוד מפרויקט הדוכן לתפקיד שלהן בגרסה החדשה עם שלושה כפתורים.',
+        hint:'חפשו בקוד מילים מוכרות וחשבו מה התפקיד שלהן בדוכן.',
+        matchBox:{
+          title:'מילות קוד מתוך דוכן הפיצות',
+          items:[
+            { id:'12-deep-a', code:'onclick', answer:'a' },
+            { id:'12-deep-b', code:'target', answer:'b' },
+            { id:'12-deep-c', code:'class="project-game"', answer:'c' }
+          ],
+          options:[
+            { value:'a', label:'מפעיל פעולה בלחיצה' },
+            { value:'b', label:'קובע כמה הזמנות צריך להכין' },
+            { value:'c', label:'מסמן את אזור הדוכן ב־HTML' }
+          ]
+        },
+        check:{
+          matchAnswers:{ '12-deep-a':'a', '12-deep-b':'b', '12-deep-c':'c' },
+          matchFeedback:'כמעט. חשבו מה כל מילה עושה בתוך הדוכן: לחיצה, יעד הזמנות או סימון אזור בעמוד.'
+        }
+      },
+      {
+        id:10,
+        minutes:'100–110',
+        title:'העמקת קוד — מתקנים באג קטן בדוכן',
+        prompt:'בתיבת הקוד יש טעות קטנה אחת או שתיים. תקנו רק את הטעות, בלי למחוק את כל הקוד.',
+        hint:'בדקו שמות מאפייני CSS וסימני פיסוק קטנים.',
+        debugCode:{
+          language:'CSS',
+          starter:'.project-game {\n  backgroun: white;\n}\n\nbutton {\n  border-radus: 18px;\n}',
+          resetLabel:'↺ קוד התחלה'
+        },
+        check:{
+          debugCodeIncludes:['background: white','border-radius: 18px'],
+          debugCodeExcludes:['backgroun:','border-radus:'],
+          debugCodeFeedback:'תקנו את שתי טעויות ההקלדה הקטנות ב־CSS.'
+        }
+      }
+    ];
+  }
+  regroupLesson12TargetBuildAndCodeExercisesV424();
 
   window.WEBCODE_LESSONS = lessons;
   window.getWebCodeLesson = function (id) {
