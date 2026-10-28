@@ -8,16 +8,22 @@
   <script src="js/vendor/blockly/blockly.min.js"></script>
   <script src="js/vendor/blockly/msg/he.js"></script>
   <style>
-    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.lesson-outline{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.9);padding:.45rem .9rem;display:flex;align-items:center;gap:.55rem;overflow-x:auto;box-shadow:0 4px 14px rgba(15,23,42,.12);z-index:4}.lesson-outline-title{font-weight:900;color:#1e3a8a;white-space:nowrap}.lesson-outline-items{display:flex;gap:.32rem;align-items:center;min-width:max-content}.lesson-outline-chip{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:999px;min-width:34px;height:32px;padding:0 .45rem;font-size:.82rem;font-weight:900;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.lesson-outline-chip:hover{border-color:#2563eb;background:#dbeafe}.lesson-outline-chip.current{border-color:#fb923c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(251,146,60,.22)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.score-chip{background:#ecfeff;color:#155e75;border:1px solid #67e8f9}.total-score-chip{background:#fef3c7;color:#92400e;border-color:#fbbf24}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem;min-width:0}.exercise-top>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem;min-width:0;max-width:100%}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls.special-message-controls{display:grid;gap:.55rem}.exercise-actions-main{display:flex;gap:.55rem;flex-wrap:wrap}.starter-reset-row{display:flex;justify-content:flex-start}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.code-answer-box{min-width:0;max-width:100%}.code-answer-box input{max-width:100%;min-width:0}.code-answer-box small{display:block;margin-top:.45rem;color:#64748b;font-weight:800;overflow-wrap:anywhere;word-break:break-word}.choice-box{display:grid;gap:.7rem}.choice-group{border:2px solid #bfdbfe;border-radius:18px;padding:.72rem;margin:0;background:rgba(255,255,255,.75)}.choice-group legend{font-weight:900;color:#1d4ed8;padding:0 .35rem}.choice-option{display:flex;align-items:center;gap:.45rem;margin:.42rem 0;font-weight:900;color:#334155}.choice-option input{width:1.05rem;height:1.05rem;accent-color:#2563eb}.match-box{display:grid;gap:.7rem;min-width:0;max-width:100%;overflow:hidden}.match-rows{display:grid;gap:.55rem;min-width:0;max-width:100%}.match-row{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(96px,.9fr);align-items:center;gap:.38rem;min-width:0;max-width:100%}.match-code{background:#07111f;color:#e5f3ff;border-radius:12px;padding:.5rem .58rem;font:900 .82rem/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left;white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}.match-arrow{font-weight:900;color:#1d4ed8;text-align:center}.match-row select{width:100%;min-width:0;max-width:100%;border:1px solid #93c5fd;border-radius:12px;padding:.52rem .46rem;font-family:inherit;font-weight:900;background:white;color:#1e3a8a;overflow-wrap:anywhere}.selected-code-line{margin-top:.65rem;padding:.62rem .7rem;border-radius:14px;background:#f8fafc;border:1px solid #bfdbfe;color:#1e3a8a;font-weight:900}.selected-code-line code{display:block;direction:ltr;text-align:left;margin-top:.25rem;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important;direction:rtl}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.blocklyScrollbarVertical,.blocklyScrollbarHorizontal,.blocklyScrollbarHandle,.blocklyScrollbarBackground{pointer-events:all!important}.blocklyScrollbarHandle{cursor:grab!important}.blocklyScrollbarHandle:active{cursor:grabbing!important}.blocklySvg{touch-action:none}.blocklyBlockCanvas,.blocklyBubbleCanvas,.blocklyScrollbarCanvas{pointer-events:all!important}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.code-peek-actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1e293b;color:#ffedd5;padding:.55rem .8rem;font-weight:900}.code-peek-actions button{border:0;border-radius:999px;background:#fb7185;color:white;padding:.42rem .75rem;font-family:inherit;font-weight:900;cursor:pointer}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{position:absolute;top:0;right:-.68rem;bottom:0;width:1.36rem;z-index:4;cursor:col-resize;display:flex;align-items:center;justify-content:center;touch-action:none}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.score-modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem}.score-modal{width:min(440px,100%);background:white;border-radius:28px;box-shadow:0 28px 80px rgba(15,23,42,.35);padding:1.15rem;direction:rtl;border:3px solid #67e8f9}.score-modal h2{margin:.1rem 0 .35rem;color:#155e75;font-size:1.35rem}.score-modal-total{font-size:2.15rem;font-weight:900;color:#0f766e;margin:.35rem 0 .65rem}.score-row{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #e2e8f0;padding:.52rem 0;font-weight:900}.score-row span:first-child{color:#334155}.score-row span:last-child{direction:ltr;color:#1d4ed8;white-space:nowrap}.score-modal-note{background:#f0fdfa;border-radius:16px;padding:.65rem;color:#115e59;font-weight:800;line-height:1.45;margin-top:.45rem}.score-modal-actions{display:flex;justify-content:flex-start;margin-top:.9rem}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.lesson-outline{align-items:flex-start}.lesson-outline-items{overflow-x:auto}.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.match-row{grid-template-columns:minmax(0,1fr) 16px minmax(82px,.82fr);gap:.3rem}.match-code{font-size:.76rem;padding:.45rem .5rem}.match-row select{font-size:.82rem;padding:.48rem .38rem}.match-arrow{font-size:.8rem}.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
+    *{box-sizing:border-box}:root{--ink:#0f172a;--blue:#2563eb;--orange:#f97316;--green:#22c55e;--red:#ef4444}body{margin:0;height:100vh;overflow:hidden;font-family:Rubik,Arial,sans-serif;direction:rtl;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#7c2d12);color:var(--ink);display:flex;flex-direction:column}.topbar{background:rgba(255,255,255,.97);box-shadow:0 5px 22px rgba(0,0,0,.18);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:center;z-index:5}.brand{font-weight:900;font-size:1.08rem;white-space:nowrap}.lesson-title{text-align:center;font-weight:900;color:#1e3a8a}.lesson-outline{background:rgba(255,255,255,.94);border-bottom:1px solid rgba(226,232,240,.9);padding:.45rem .9rem;display:flex;align-items:center;gap:.55rem;overflow-x:auto;box-shadow:0 4px 14px rgba(15,23,42,.12);z-index:4}.lesson-outline-title{font-weight:900;color:#1e3a8a;white-space:nowrap}.lesson-outline-items{display:flex;gap:.32rem;align-items:center;min-width:max-content}.lesson-outline-chip{border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:999px;min-width:34px;height:32px;padding:0 .45rem;font-size:.82rem;font-weight:900;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.lesson-outline-chip:hover{border-color:#2563eb;background:#dbeafe}.lesson-outline-chip.current{border-color:#fb923c;background:#fff7ed;color:#9a3412;box-shadow:0 0 0 3px rgba(251,146,60,.22)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.btn{border:0;border-radius:999px;padding:.62rem .95rem;font-family:inherit;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:.32rem}.btn:disabled{background:#e5e7eb!important;color:#94a3b8!important;cursor:not-allowed;filter:grayscale(1);opacity:.72;box-shadow:none}.run{background:#00e096;color:#052e16}.check{background:#facc15;color:#422006}.reset{background:#fb7185;color:white}.share{background:#38bdf8;color:#082f49}.link{background:#eef2ff;color:#3730a3}.main{flex:1;min-height:0;display:grid;grid-template-columns:360px minmax(0,1fr) var(--preview-width,420px);gap:1rem;padding:1rem}.panel{background:rgba(255,255,255,.96);border-radius:26px;box-shadow:0 18px 48px rgba(0,0,0,.2);min-height:0;overflow:hidden;display:flex;flex-direction:column}.lesson-toggle{border:0;background:linear-gradient(135deg,#fff7ed,#eff6ff);padding:.9rem 1rem;font-family:inherit;font-weight:900;color:#1e3a8a;display:flex;align-items:center;justify-content:space-between;gap:.8rem;cursor:pointer;text-align:right;border-bottom:1px solid #fed7aa}.lesson-toggle span:first-child{display:flex;align-items:center;gap:.45rem}.lesson-toggle-icon{background:#1e3a8a;color:white;border-radius:999px;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}.lesson-collapsible{display:flex;flex-direction:column;min-height:0;overflow:hidden}.main.lesson-collapsed{grid-template-columns:74px minmax(0,1.35fr) var(--preview-width,460px)}.lesson-panel.collapsed{min-height:0}.lesson-panel.collapsed .lesson-collapsible{display:none}.lesson-panel.collapsed .lesson-toggle{height:100%;min-height:360px;writing-mode:vertical-rl;text-orientation:mixed;justify-content:center;border-bottom:0}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:column}.lesson-panel.collapsed .lesson-toggle-icon{writing-mode:horizontal-tb}.info{padding:1rem;border-bottom:1px solid #e5e7eb}.info h1{font-size:1.35rem;margin:.2rem 0}.info p{margin:.25rem 0;line-height:1.55}.compact-info{padding:.8rem 1rem}.compact-info h1{font-size:1.05rem}.compact-info p{font-size:.9rem;color:#475569}.hidden-chip{display:none!important}.chip{display:inline-flex;background:#fff7ed;color:#9a3412;border-radius:999px;padding:.32rem .65rem;font-weight:900;font-size:.78rem;margin:.12rem}.score-chip{background:#ecfeff;color:#155e75;border:1px solid #67e8f9}.total-score-chip{background:#fef3c7;color:#92400e;border-color:#fbbf24}.exercise-list{overflow:auto;padding:1rem;display:grid;gap:.65rem}.exercise{background:#f8fafc;border:2px solid #e5e7eb;border-radius:18px;padding:.75rem;line-height:1.45;cursor:pointer;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise.active{border-color:#f97316;background:#fff7ed}.exercise.done{border-color:#22c55e;background:#f0fdf4}.exercise.locked{opacity:.58;cursor:not-allowed}.exercise b{display:block;color:#1e3a8a}.hint{font-size:.88rem;color:#64748b;margin-top:.35rem}.exercise-top{display:flex;align-items:start;justify-content:space-between;gap:.75rem;min-width:0}.exercise-top>div{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.exercise-bottom{display:grid;gap:.65rem;margin-top:.8rem;min-width:0;max-width:100%}.exercise-controls{display:flex;gap:.55rem;flex-wrap:wrap}.exercise-controls.special-message-controls{display:grid;gap:.55rem}.exercise-actions-main{display:flex;gap:.55rem;flex-wrap:wrap}.starter-reset-row{display:flex;justify-content:flex-start}.exercise-controls .btn{box-shadow:none}.exercise-feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.exercise-feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.exercise-feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.code-answer-box{min-width:0;max-width:100%}.code-answer-box input{max-width:100%;min-width:0}.code-answer-box small{display:block;margin-top:.45rem;color:#64748b;font-weight:800;overflow-wrap:anywhere;word-break:break-word}.choice-box{display:grid;gap:.7rem}.choice-group{border:2px solid #bfdbfe;border-radius:18px;padding:.72rem;margin:0;background:rgba(255,255,255,.75)}.choice-group legend{font-weight:900;color:#1d4ed8;padding:0 .35rem}.choice-option{display:flex;align-items:center;gap:.45rem;margin:.42rem 0;font-weight:900;color:#334155}.choice-option input{width:1.05rem;height:1.05rem;accent-color:#2563eb}.match-box{display:grid;gap:.7rem;min-width:0;max-width:100%;overflow:hidden}.match-rows{display:grid;gap:.55rem;min-width:0;max-width:100%}.match-row{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(96px,.9fr);align-items:center;gap:.38rem;min-width:0;max-width:100%}.match-code{background:#07111f;color:#e5f3ff;border-radius:12px;padding:.5rem .58rem;font:900 .82rem/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;text-align:left;white-space:normal;overflow-wrap:anywhere;word-break:break-word;max-width:100%;min-width:0}.match-arrow{font-weight:900;color:#1d4ed8;text-align:center}.match-row select{width:100%;min-width:0;max-width:100%;border:1px solid #93c5fd;border-radius:12px;padding:.52rem .46rem;font-family:inherit;font-weight:900;background:white;color:#1e3a8a;overflow-wrap:anywhere}.selected-code-line{margin-top:.65rem;padding:.62rem .7rem;border-radius:14px;background:#f8fafc;border:1px solid #bfdbfe;color:#1e3a8a;font-weight:900}.selected-code-line code{display:block;direction:ltr;text-align:left;margin-top:.25rem;color:#0f172a;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}.exercise-meta{color:#64748b;font-weight:900}.exercise-status{background:#eef2ff;color:#3730a3;border-radius:999px;padding:.3rem .65rem;font-size:.78rem;font-weight:900;white-space:nowrap}.editor-panel{background:linear-gradient(135deg,#fff7ed,#eff6ff)}.blocks-stage{flex:1;min-height:0;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.75rem}.blocks-intro{background:white;border:2px dashed #fb923c;border-radius:22px;padding:.85rem;line-height:1.5;font-weight:800;color:#7c2d12}.blocks-intro small{display:block;color:#475569;font-weight:700;margin-top:.25rem}.blocks-stage.real-blockly-stage{padding:0;gap:0}.real-blockly{display:none;flex:1;min-height:430px;background:white;border:0;border-radius:0;overflow:hidden;box-shadow:none}.real-blockly.active{display:flex;flex-direction:column;min-height:100%}.blockly-top{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.65rem .85rem;background:#fff7ed;border-bottom:1px solid #fed7aa;font-weight:900;color:#7c2d12}.blockly-top small{font-weight:800;color:#475569}.blockly-live{background:#dcfce7;color:#166534;border-radius:999px;padding:.25rem .6rem;font-size:.82rem}#blocklyDiv{flex:1;min-height:0;width:100%;direction:ltr}.blocklyDropDownDiv,.blocklyWidgetDiv,.blocklyTooltipDiv{z-index:99999!important;direction:rtl}.blocklyToolboxDiv{direction:rtl}.blocklyTreeLabel{font-family:Rubik,Arial,sans-serif}.blocklyFlyoutLabelText{font-family:Rubik,Arial,sans-serif;font-weight:900;fill:#7c2d12}.blocklyFlyoutBackground{fill:#f8fafc;fill-opacity:1}.blocklyScrollbarVertical,.blocklyScrollbarHorizontal,.blocklyScrollbarHandle,.blocklyScrollbarBackground{pointer-events:all!important}.blocklyScrollbarHandle{cursor:grab!important}.blocklyScrollbarHandle:active{cursor:grabbing!important}.blocklySvg{touch-action:none}.blocklyBlockCanvas,.blocklyBubbleCanvas,.blocklyScrollbarCanvas{pointer-events:all!important}.code-peek:not([open]){flex:0 0 auto}.code-peek{border-top:1px solid #fed7aa;background:#0f172a;color:white}.code-peek summary{cursor:pointer;padding:.75rem 1rem;font-weight:900;background:#1e293b;color:#ffedd5}.code-peek[open]{max-height:44%;display:flex;flex-direction:column}.code-peek[open] .code-box{display:flex;flex:1;min-height:260px;flex-direction:column}.code-peek-actions{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:#1e293b;color:#ffedd5;padding:.55rem .8rem;font-weight:900}.code-peek-actions button{border:0;border-radius:999px;background:#fb7185;color:white;padding:.42rem .75rem;font-family:inherit;font-weight:900;cursor:pointer}.editor-tabs{display:flex;background:#0f172a;padding:.45rem;gap:.4rem}.editor-tabs button{flex:1;border:0;border-radius:12px;padding:.6rem;font-weight:900;cursor:pointer;background:#334155;color:white}.editor-tabs button.active{background:#fb923c;color:#111827}.editor{flex:1;min-height:0;display:none}.editor.active{display:block}textarea{width:100%;height:100%;min-height:260px;resize:none;border:0;outline:0;padding:1rem;font:600 15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;direction:ltr;text-align:left;background:#07111f;color:#e5f3ff}.preview-panel{position:relative}.preview-resize{display:none!important}.preview-resize::before{content:"";width:7px;height:86px;border-radius:999px;background:linear-gradient(180deg,#fb923c,#2563eb);box-shadow:0 0 0 4px rgba(255,255,255,.88),0 8px 22px rgba(15,23,42,.22)}.preview-resize:hover::before,.preview-resize.dragging::before{background:linear-gradient(180deg,#f97316,#1d4ed8);width:9px}.preview-resize-hint{font-size:.78rem;color:#64748b;font-weight:800}.preview-head{padding:.8rem 1rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:.5rem;align-items:center;font-weight:900}.preview-wrap{flex:1;min-height:0;background:white}iframe{width:100%;height:100%;border:0;background:white}.feedback{background:white;border:2px solid #fed7aa;border-radius:18px;color:#7c2d12;padding:.7rem .85rem;font-weight:900;line-height:1.45}.feedback.good{border-color:#86efac;background:#f0fdf4;color:#15803d}.feedback.bad{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.score-modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.58);z-index:999999;display:flex;align-items:center;justify-content:center;padding:1rem}.score-modal{width:min(440px,100%);background:white;border-radius:28px;box-shadow:0 28px 80px rgba(15,23,42,.35);padding:1.15rem;direction:rtl;border:3px solid #67e8f9}.score-modal h2{margin:.1rem 0 .35rem;color:#155e75;font-size:1.35rem}.score-modal-total{font-size:2.15rem;font-weight:900;color:#0f766e;margin:.35rem 0 .65rem}.score-row{display:flex;justify-content:space-between;gap:.75rem;border-top:1px solid #e2e8f0;padding:.52rem 0;font-weight:900}.score-row span:first-child{color:#334155}.score-row span:last-child{direction:ltr;color:#1d4ed8;white-space:nowrap}.score-modal-note{background:#f0fdfa;border-radius:16px;padding:.65rem;color:#115e59;font-weight:800;line-height:1.45;margin-top:.45rem}.score-modal-actions{display:flex;justify-content:flex-start;margin-top:.9rem}.helper{background:linear-gradient(135deg,#eff6ff,#fff7ed);border-radius:18px;padding:.8rem;margin-top:.7rem;line-height:1.5;min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.helper b{color:#1d4ed8}.bridge{margin-top:.8rem;display:grid;gap:.5rem}.bridge-title{font-weight:900;color:#7c2d12}.bridge-block{border:0;border-radius:16px;background:linear-gradient(135deg,#ffedd5,#dbeafe);padding:.7rem;text-align:right;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:0 5px 0 rgba(15,23,42,.08)}.bridge-block small{display:block;font-weight:700;color:#475569;margin-top:.22rem;line-height:1.35}.bridge-empty{display:none}@media(max-width:1100px){.lesson-outline{align-items:flex-start}.lesson-outline-items{overflow-x:auto}.preview-resize{display:none}body{height:auto;min-height:100vh;overflow:auto}.topbar{grid-template-columns:1fr}.lesson-title{text-align:right}.main,.main.lesson-collapsed{display:flex;flex-direction:column;padding:.75rem}.panel{min-height:360px}.lesson-panel.collapsed{min-height:58px}.lesson-panel.collapsed .lesson-toggle{height:auto;min-height:58px;writing-mode:horizontal-tb;justify-content:space-between}.lesson-panel.collapsed .lesson-toggle span:first-child{flex-direction:row}.panel.editor-panel{min-height:620px}.main.lesson-collapsed .panel.editor-panel{min-height:72vh}.panel.preview-panel{min-height:420px}.main.lesson-collapsed .panel.preview-panel{min-height:58vh}.actions .btn{flex:1}}@media(max-width:560px){.match-row{grid-template-columns:minmax(0,1fr) 16px minmax(82px,.82fr);gap:.3rem}.match-code{font-size:.76rem;padding:.45rem .5rem}.match-row select{font-size:.82rem;padding:.48rem .38rem}.match-arrow{font-size:.8rem}.main{padding:.55rem}.topbar{padding:.55rem}.btn{font-size:.86rem;padding:.55rem .7rem}.panel{border-radius:20px}textarea{font-size:13px}}
   </style>
 
   <style>
     /* Lesson 11 generated-code panel fixes: keep code compact and Blockly scrollable while open. */
     .code-peek[open]{flex:0 0 auto!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:hidden!important;}
     .code-peek[open] summary{display:none!important;}
-    .editor-panel.code-open .blocks-stage.real-blockly-stage{overflow:hidden!important;min-height:0!important;overscroll-behavior:contain!important;}
-    .editor-panel.code-open .real-blockly.active{min-height:0!important;flex:1 1 auto!important;overflow:hidden!important;}
-    .editor-panel.code-open #blocklyDiv{min-height:0!important;height:100%!important;overflow:hidden!important;}
+    .editor-panel.code-open .blocks-stage.real-blockly-stage{overflow:hidden!important;min-height:0!important;flex:1 1 0!important;overscroll-behavior:contain!important;}
+    .editor-panel.code-open .real-blockly.active{min-height:0!important;flex:1 1 0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;}
+    .editor-panel.code-open #blocklyDiv{min-height:0!important;height:auto!important;flex:1 1 0!important;overflow:visible!important;}
+    .editor-panel.code-open #blocklyDiv .blocklySvg{overflow:visible!important;}
+    .editor-panel.code-open #blocklyDiv .blocklyScrollbarHorizontal,
+    .editor-panel.code-open #blocklyDiv .blocklyScrollbarVertical,
+    .editor-panel.code-open #blocklyDiv .blocklyScrollbarHandle,
+    .editor-panel.code-open #blocklyDiv .blocklyScrollbarBackground{display:block!important;visibility:visible!important;pointer-events:all!important;}
+
     .code-peek[open] .code-box{display:grid!important;grid-template-rows:auto auto auto!important;height:auto!important;min-height:0!important;overflow:hidden!important;background:#07111f!important;}
     .code-peek[open] .code-peek-actions{grid-row:1!important;padding:.45rem .75rem!important;min-height:0!important;}
     .code-peek[open] .code-peek-actions #codePeekTitle{font-size:1rem!important;line-height:1.2!important;}
@@ -27,6 +33,9 @@
     .code-peek[open] .editor.active{display:block!important;height:auto!important;min-height:0!important;overflow:hidden!important;scrollbar-width:auto!important;overscroll-behavior:contain!important;}
     .code-peek[open] .editor.active textarea{box-sizing:border-box!important;display:block!important;width:100%!important;height:clamp(120px,18vh,170px)!important;min-height:120px!important;max-height:170px!important;margin:0!important;overflow-y:auto!important;overflow-x:auto!important;overscroll-behavior:contain!important;padding:1rem!important;background:#07111f!important;color:#e5f3ff!important;resize:none!important;}
     textarea::selection{background:#2563eb!important;color:#ffffff!important;}
+
+    .blockly-helper-btn{border:0;border-radius:999px;background:#fef3c7;color:#92400e;padding:.34rem .62rem;font-family:inherit;font-weight:900;cursor:pointer;box-shadow:inset 0 0 0 1px #f59e0b;white-space:nowrap;}
+    .blockly-helper-btn:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.5);}
   </style>
 
   <style>
@@ -39,8 +48,16 @@
     .preview-subhead{position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:2;padding:.48rem 1rem;font-weight:900;color:#9a3412;background:rgba(255,247,237,.96);border:1px solid #fed7aa;border-radius:999px;font-size:.98rem;display:flex;align-items:center;justify-content:center;gap:.25rem;white-space:nowrap;box-shadow:0 8px 18px rgba(15,23,42,.12);}
     .student-preview-box .preview-subhead{color:#075985;background:rgba(240,249,255,.97);border-color:#bae6fd;}
     .preview-wrap.target-split iframe{flex:1;min-height:0;width:100%;height:100%;}
+    .preview-empty-state{position:absolute;inset:52px 14px 14px;z-index:3;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;border-radius:18px;background:rgba(255,255,255,.92);color:#1e3a8a;font-weight:900;line-height:1.45;box-shadow:inset 0 0 0 2px #bfdbfe;}
+    .preview-empty-state[hidden]{display:none!important;}
     .target-preview-box iframe{background:transparent!important;box-shadow:none!important;margin-top:36px;height:calc(100% - 36px)!important;}
     .student-preview-box iframe{margin-top:36px;height:calc(100% - 36px)!important;background:transparent!important;box-shadow:none!important;}
+    .preview-wrap.target-split.lesson12-fit{gap:.72rem;padding:.72rem;overflow-y:auto;}
+    .preview-wrap.target-split.lesson12-fit .target-preview-box,
+    .preview-wrap.target-split.lesson12-fit .student-preview-box{aspect-ratio:1/1;padding:14px;border-radius:22px;overflow:hidden;}
+    .preview-wrap.target-split.lesson12-fit .preview-subhead{top:9px;font-size:.82rem;padding:.34rem .72rem;}
+    .preview-wrap.target-split.lesson12-fit .target-preview-box iframe,
+    .preview-wrap.target-split.lesson12-fit .student-preview-box iframe{margin-top:28px;height:calc(100% - 28px)!important;overflow:hidden;}
     .preview-wrap:not(.target-split) .student-preview-box{display:contents;}
     @media(max-width:1100px){.preview-wrap.target-split{gap:.75rem;padding:.75rem}.target-preview-box,.student-preview-box{width:100%;aspect-ratio:1/1}.preview-subhead{font-size:.9rem;top:14px}.target-preview-box iframe{margin-top:32px;height:calc(100% - 32px)!important}.student-preview-box iframe{margin-top:32px;height:calc(100% - 32px)!important}}
   </style>
@@ -86,8 +103,7 @@
       </details>
     </section>
     <section class="panel preview-panel" id="previewPanel">
-      <div class="preview-resize" id="previewResize" role="separator" aria-orientation="vertical" aria-label="גררו כדי להרחיב או להצר את התצוגה"></div>
-      <div class="preview-head"><span id="previewPanelTitle">👀 תצוגה חיה</span><span class="preview-resize-hint">↔ גרירה להרחבה</span><span class="chip score-chip" id="score">⭐ שיעור: 0 נק׳</span><span class="chip score-chip total-score-chip" id="courseScore">🏆 סה״כ: 0 נק׳</span><span class="chip" id="progress">0/0 הושלמו</span></div>
+      <div class="preview-head"><span id="previewPanelTitle">👀 תצוגה חיה</span><span class="chip score-chip" id="score">⭐ שיעור: 0 נק׳</span><span class="chip score-chip total-score-chip" id="courseScore">🏆 סה״כ: 0 נק׳</span><span class="chip" id="progress">0/0 הושלמו</span></div>
       <div class="preview-wrap" id="previewWrap">
         <div class="target-preview-box" id="targetPreviewBox" hidden>
           <div class="preview-subhead">🎯 דגם מטרה</div>
@@ -95,6 +111,7 @@
         </div>
         <div class="student-preview-box">
           <div class="preview-subhead" id="studentPreviewLabel" hidden>🧑‍💻 האתר שלי שנבנה מהבלוקים</div>
+          <div class="preview-empty-state" id="previewEmptyState" hidden>חברו בלוקים כדי לבנות את האתר. CSS יופיע רק מבלוקי עיצוב שהתלמיד בוחר.</div>
           <iframe id="preview" title="תצוגת התוצר"></iframe>
         </div>
       </div>
@@ -140,7 +157,7 @@
       });
     })();
   </script>
-  <script src="js/webcode-lessons.js?v=20261008-score-modal-for-code-exercises"></script>
+  <script src="js/webcode-lessons.js?v=20261028-lesson12-ex8-no-word-examples"></script>
   <script>
     if(!window.getWebCodeLesson){
       window.WEBCODE_LESSONS = [{ id:1, title:'בונים עמוד אמיתי עם Blockly', concept:'בלוקים שבונים אתר', durationMinutes:90, realBlocklyBuilder:true, story:'בונים אתר בעזרת בלוקים ורואים את התוצאה מיד.', mission:'גררו בלוקים לשרשרת כדי לבנות עמוד אישי.', starter:{ html:'', css:'', js:'' }, exercises:[
@@ -172,23 +189,46 @@
     const scoreStorageKey = `webcodeScoreState:stable:${lesson.id}`;
     const lastLocationKey = 'webcodeLastLocation:stable';
     let stateReady = false;
+    let suppressInitialResetSave = resetRequested;
     let codePeekOpened = false;
     let lastGeneratedCodeSelection = null;
     let previewClicks = [];
     let pendingBlocklyFieldUpdate = false;
     let pendingBlocklyFieldFlushTimer = null;
+    let lesson12PreviewRefreshTimer = null;
     let activeBlocklyTextEdit = null;
+    let userBlocklyEdited = false;
+    let exerciseSelectionRevision = 0;
     const $ = id => document.getElementById(id);
     function savedBlocklyBlockCount(state){
       const xml = String(state?.blocklyXml || '');
       return (xml.match(/<block\b/g) || []).length;
     }
+    function lesson12LegacyButtonTypes(){
+      return ['lesson_12_open_button', 'lesson_12_order_button', 'lesson_12_reset_button', 'lesson_12_delay_button'];
+    }
+    function lessonBlocklyKnownTypes(){
+      const types = new Set((lesson.blocklyBlocks || []).map(block => block.type));
+      if(Number(lesson.id) === 12) lesson12LegacyButtonTypes().forEach(type => types.add(type));
+      return types;
+    }
     function savedBlocklyConnectedWorkCount(state){
       const xml = String(state?.blocklyXml || '');
       const blockCount = savedBlocklyBlockCount(state);
-      if(Number(lesson.id) !== 11) return blockCount;
-      const startOnlyCount = (xml.match(/type=(['"])(lesson_11_start_screen|lesson_11_room_one|lesson_11_room_two|lesson_11_win_end|lesson_11_funny_end)\1/g) || []).length;
-      return Math.max(0, blockCount - startOnlyCount);
+      if(Number(lesson.id) === 11){
+        const startOnlyCount = (xml.match(/type=(['"])(lesson_11_start_screen|lesson_11_room_one|lesson_11_room_two|lesson_11_win_end|lesson_11_funny_end)\1/g) || []).length;
+        return Math.max(0, blockCount - startOnlyCount);
+      }
+      if(lesson.blocklyLessonBuilder){
+        try {
+          const dom = new DOMParser().parseFromString(xml, 'text/xml');
+          const pageStart = Array.from(dom.querySelectorAll('block')).find(block => block.getAttribute('type') === 'page_start');
+          if(!pageStart) return 0;
+          const lessonTypes = lessonBlocklyKnownTypes();
+          return Array.from(pageStart.querySelectorAll('next block')).filter(block => lessonTypes.has(block.getAttribute('type'))).length;
+        } catch(error) {}
+      }
+      return blockCount;
     }
     function isLegacyLesson11SeededState(state){
       if(Number(lesson.id) !== 11) return false;
@@ -216,7 +256,7 @@
       if(!xml.includes('<block')) return false;
       if(Number(lesson.id) === 11) return savedBlocklyConnectedWorkCount(state) > 0;
       if(lesson.blocklyLessonBuilder){
-        const lessonTypes = (lesson.blocklyBlocks || []).map(block => block.type);
+        const lessonTypes = Array.from(lessonBlocklyKnownTypes());
         return lessonTypes.some(type => xml.includes(`type="${type}"`) || xml.includes(`type='${type}'`));
       }
       return !/^<xml[^>]*>\s*<\/xml>\s*$/i.test(xml.trim());
@@ -226,6 +266,12 @@
     }
     function saveLastLocation(){
       try { localStorage.setItem(lastLocationKey, JSON.stringify({ lessonId:Number(lesson.id), activeExercise:Number(activeExercise) || 1, savedAt:Date.now() })); } catch(error) {}
+    }
+    function lastLocationExercise(){
+      const location = parseStoredState(lastLocationKey);
+      if(Number(location?.lessonId) !== Number(lesson.id)) return 0;
+      const id = Number(location?.activeExercise) || 0;
+      return (lesson.exercises || []).some(exercise => Number(exercise.id) === id) ? id : 0;
     }
     function parseStoredState(key){
       try { return JSON.parse(localStorage.getItem(key) || 'null') || null; }
@@ -259,15 +305,26 @@
       if(!seen.has(scoreStorageKey)) total += currentScoreTotal();
       return total;
     }
+    function clearGeneratedCodeStateForLesson12(state){
+      if(Number(lesson.id) !== 12) return state;
+      const keep = state && typeof state === 'object' ? { ...state } : {};
+      keep.html = '';
+      keep.css = '';
+      keep.js = '';
+      return keep;
+    }
     function sanitizeResetState(saved){
-      if(!resetRequested) return saved;
+      if(!resetRequested) return clearGeneratedCodeStateForLesson12(saved);
       const keep = saved && typeof saved === 'object' ? { ...saved } : {};
       keep.done = [];
       keep.highestUnlockedExercise = requestedExercise || 1;
       keep.activeExercise = requestedExercise || 1;
       keep.checkMemory = { score: normalizeStoredScore(null) };
       keep.codePeekOpened = false;
-      return keep;
+      if(Number(lesson.id) === 12){
+        keep.blocklyXml = webBuilderStarterXml();
+      }
+      return clearGeneratedCodeStateForLesson12(keep);
     }
     function loadSavedState(){
       if(Number(lesson.id) === 11 && params.get('restoreLastGood') === '1') return sanitizeResetState({ blocklyXml: lesson.restoreLastGoodBlocklyXml || webBuilderStarterXml(), savedAt: Date.now() });
@@ -319,6 +376,7 @@
     }
     function saveLessonState(){
       if(!stateReady) return;
+      if(suppressInitialResetSave){ suppressInitialResetSave = false; return; }
       const state = {
         html: $('htmlCode')?.value || '',
         css: $('cssCode')?.value || '',
@@ -333,6 +391,7 @@
       };
       const existingStable = parseStoredState(stableStorageKey);
       if(lesson.realBlocklyBuilder && hasSavedBlocklyWork(existingStable) && !hasSavedBlocklyWork(state)) return;
+      if(lesson.realBlocklyBuilder && lesson.blocklyLessonBuilder && !userBlocklyEdited && savedBlocklyConnectedWorkCount(existingStable) > savedBlocklyConnectedWorkCount(state)) return;
       const serialized = JSON.stringify(state);
       localStorage.setItem(storageKey, serialized);
       localStorage.setItem(stableStorageKey, serialized);
@@ -354,6 +413,10 @@
       }
       highestUnlockedExercise = Math.max(1, Math.min(lesson.exercises.length, Number(saved.highestUnlockedExercise) || 1));
       activeExercise = Math.max(1, Math.min(lesson.exercises.length, Number(saved.activeExercise) || 1));
+      if(!requestedExercise){
+        const lastExercise = lastLocationExercise();
+        if(lastExercise && canOpenExercise(lastExercise)) activeExercise = lastExercise;
+      }
       if(requestedExercise){
         const requestedExists = lesson.exercises.some(ex => Number(ex.id) === requestedExercise);
         if(requestedExists){
@@ -412,6 +475,11 @@
         $('htmlCode').value = saved.html || '';
         $('cssCode').value = saved.css || '';
         $('jsCode').value = saved.js || '';
+        if(Number(lesson.id) === 12){
+          $('htmlCode').value = '';
+          $('cssCode').value = '';
+          $('jsCode').value = '';
+        }
       } else {
         $('htmlCode').value = saved.html || lesson.starter.html;
         $('cssCode').value = saved.css || lesson.starter.css;
@@ -419,7 +487,7 @@
       }
       ['htmlCode','cssCode','jsCode'].forEach(id => $(id).addEventListener('input', saveLessonState));
       initBlocklyStageWheelScroll();
-      initBlocklyScrollbarDragFallback();
+      // Disabled: native Blockly handles scrolling; custom pointer capture caused stuck drag states.
       $('codePeek').addEventListener('toggle', () => { codePeekOpened = Boolean($('codePeek').open); applyCodePeekHeight(); syncCodeEditorHeight(); refreshBlocklyLayout(); saveLessonState(); });
       window.addEventListener('resize', syncCodeEditorHeight);
       initPreviewResize(); selectExercise(activeExercise); renderBridgeBlocks(); if(!lesson.realBlocklyBuilder) runCode(); renderProgress(); stateReady = true; saveLessonState();
@@ -447,11 +515,28 @@
       const panel = document.querySelector('.editor-panel');
       if(panel) panel.classList.toggle('code-open', Boolean($('codePeek')?.open));
     }
+    function syncBlocklyDivHeightToPanel(){
+      const div = $('blocklyDiv');
+      const container = document.querySelector('.real-blockly.active');
+      if(!div || !container) return;
+      const top = container.querySelector('.blockly-top');
+      const height = Math.max(180, Math.floor(container.getBoundingClientRect().height - (top?.getBoundingClientRect().height || 0)));
+      if(Number.isFinite(height)) div.style.height = `${height}px`;
+    }
     function refreshBlocklyLayout(){
       syncCodeOpenClass();
       if(!window.Blockly || !blocklyWorkspace) return;
+      if(isBlocklyDragActive()){
+        pendingBlocklyLayoutRefreshAfterDrag = true;
+        return;
+      }
       [0, 60, 160, 320].forEach(delay => setTimeout(() => {
+        if(isBlocklyDragActive()){
+          pendingBlocklyLayoutRefreshAfterDrag = true;
+          return;
+        }
         try {
+          syncBlocklyDivHeightToPanel();
           Blockly.svgResize(blocklyWorkspace);
           blocklyWorkspace.resizeContents?.();
           blocklyWorkspace.scrollbar?.resize?.();
@@ -459,10 +544,37 @@
         catch(error) { console.warn('Blockly resize failed', error); }
       }, delay));
     }
+    function flushDeferredBlocklyLayoutRefresh(){
+      if(!pendingBlocklyLayoutRefreshAfterDrag) return;
+      pendingBlocklyLayoutRefreshAfterDrag = false;
+      setTimeout(refreshBlocklyLayout, 80);
+    }
+    function scheduleLesson12PreviewRefresh(delay=180){
+      if(Number(lesson.id) !== 12 || !blocklyWorkspace || !blocklyReady) return;
+      if(lesson12PreviewRefreshTimer) clearTimeout(lesson12PreviewRefreshTimer);
+      lesson12PreviewRefreshTimer = setTimeout(() => {
+        lesson12PreviewRefreshTimer = null;
+        if(isBlocklyDragActive()){
+          scheduleLesson12PreviewRefresh(220);
+          return;
+        }
+        try {
+          pendingBlocklyFieldUpdate = false;
+          if(pendingBlocklyFieldFlushTimer){ clearTimeout(pendingBlocklyFieldFlushTimer); pendingBlocklyFieldFlushTimer = null; }
+          generateCodeFromBlockly({ preservePreviewClicks:true });
+          saveLessonState();
+        } catch(error) { console.warn('Lesson 12 preview refresh failed', error); }
+      }, delay);
+    }
     function applyCodePeekHeight(){
       syncCodeOpenClass();
       syncCodeEditorHeight();
       refreshBlocklyLayout();
+      [80, 220, 520, 900].forEach(delay => setTimeout(() => {
+        if(window.Blockly && blocklyWorkspace && !isBlocklyDragActive()){
+          try { syncBlocklyDivHeightToPanel(); Blockly.svgResize(blocklyWorkspace); blocklyWorkspace.resizeContents?.(); blocklyWorkspace.scrollbar?.resize?.(); } catch(error) {}
+        }
+      }, delay));
     }
     function initBlocklyStageWheelScroll(){
       const stage = $('blocksStage');
@@ -487,7 +599,7 @@
           el.style.pointerEvents = 'all';
           if(el.classList?.contains('blocklyScrollbarHandle')) el.style.cursor = 'grab';
         });
-        if(window.Blockly && blocklyWorkspace){
+        if(window.Blockly && blocklyWorkspace && !isBlocklyDragActive()){
           try { Blockly.svgResize(blocklyWorkspace); blocklyWorkspace.scrollbar?.resize?.(); } catch(error) {}
         }
       };
@@ -526,6 +638,8 @@
         if(!$('codePeek')?.open) return;
         const scrollbar = verticalScrollbarElement(event.target);
         if(!scrollbar || event.button !== 0) return;
+        if(!event.target?.closest?.('.blocklyScrollbarHandle,.blocklyScrollbarBackground')) return;
+        if(event.target.closest?.('.blocklyBlockCanvas,.blocklyDraggable,.blocklyBlockDragSurface')) return;
         const rect = scrollbar.getBoundingClientRect();
         if(!rect.height) return;
         const handle = scrollbar.querySelector?.('.blocklyScrollbarHandle');
@@ -540,24 +654,32 @@
         event.preventDefault();
         event.stopPropagation();
       }, { capture:true });
+      const clearDrag = () => {
+        if(!drag) return;
+        document.querySelectorAll('.manual-scroll-dragging').forEach(el => el.classList.remove('manual-scroll-dragging'));
+        drag = null;
+        refreshBlocklyLayout();
+      };
       root.addEventListener('pointermove', event => {
         if(!drag || drag.pointerId !== event.pointerId) return;
+        if(event.buttons === 0){ clearDrag(); return; }
         setBlocklyVerticalScrollRatio(drag.startRatio + ((event.clientY - drag.startY) / drag.travel));
         event.preventDefault();
         event.stopPropagation();
       }, { capture:true });
       const end = event => {
         if(!drag || drag.pointerId !== event.pointerId) return;
-        document.querySelectorAll('.manual-scroll-dragging').forEach(el => el.classList.remove('manual-scroll-dragging'));
-        drag = null;
-        refreshBlocklyLayout();
+        clearDrag();
       };
       root.addEventListener('pointerup', end, { capture:true });
       root.addEventListener('pointercancel', end, { capture:true });
+      root.addEventListener('pointerleave', event => { if(drag && event.buttons === 0) clearDrag(); }, { capture:true });
+      window.addEventListener('blur', clearDrag);
     }
 
     function targetPreviewDocument(bodyHtml, cssText, jsText=''){
-      const previewBase = `html{width:100%;min-height:100%;overflow-x:hidden}body{max-width:100%;min-height:100vh;margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}main,.card,.profile-card,.page-card{max-width:calc(100vw - 24px)}`;
+      const lesson12Fit = Number(lesson.id) === 12 ? 'html,body{width:100%;height:100%;min-height:0;overflow:hidden!important}body{display:flex;align-items:center;justify-content:center;padding:0}' : '';
+      const previewBase = `html{width:100%;min-height:100%;overflow-x:hidden}body{max-width:100%;min-height:100vh;margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}main,.card,.profile-card,.page-card{max-width:calc(100vw - 24px)}${lesson12Fit}`;
       const script = jsText ? `<script>${String(jsText).replaceAll('</script', '<\/script')}<\/script>` : '';
       return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${previewBase}</style><style>${cssText || ''}</style></head><body>${bodyHtml || ''}${script}</body></html>`;
     }
@@ -567,7 +689,10 @@
       const box = $('targetPreviewBox');
       const label = $('studentPreviewLabel');
       const title = $('previewPanelTitle');
-      if(wrap) wrap.classList.toggle('target-split', hasTarget);
+      if(wrap){
+        wrap.classList.toggle('target-split', hasTarget);
+        wrap.classList.toggle('lesson12-fit', hasTarget && Number(lesson.id) === 12);
+      }
       if(box) box.hidden = !hasTarget;
       if(label) label.hidden = !hasTarget;
       if(title) title.textContent = hasTarget ? '👀 דגם מטרה + התצוגה שלי' : '👀 תצוגה חיה';
@@ -672,7 +797,7 @@
       if(restorePersistedCodeSelection(activeExercise)) return true;
       return captureManualCodeSelection();
     }
-    function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => { Blockly.svgResize(blocklyWorkspace); alignBlocklyStarterBlocksRight(); }, 120); }
+    function toggleLessonPanel(){ const panel=$('lessonPanel'); const button=panel.querySelector('.lesson-toggle'); const collapsed=panel.classList.toggle('collapsed'); document.querySelector('.main').classList.toggle('lesson-collapsed', collapsed); button.setAttribute('aria-expanded', String(!collapsed)); $('lessonToggleIcon').textContent = collapsed ? '⌄' : '⌃'; if(window.Blockly && blocklyWorkspace) setTimeout(() => { Blockly.svgResize(blocklyWorkspace); alignBlocklyStarterBlocksRight(); revealLessonBlocklyStackInView(); }, 120); }
     function codePeekDescription(){ return lesson.realBlocklyBuilder ? 'זה הקוד שנוצר מהבלוקים שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.' : 'זה קוד האתר שלך: HTML למבנה, CSS לעיצוב, JavaScript לפעולה.'; }
     function updateCodePeekTitle(){ const title = $('codePeekTitle'); if(title) title.textContent = '👀 הצצה לקוד שנוצר — לא חובה לפתוח בהתחלה'; }
     function showGeneratedCode(){ flushBlocklyFieldUpdate(); codePeekOpened = true; $('codePeek').open = true; updateCodePeekTitle(); applyCodePeekHeight(); refreshBlocklyLayout(); saveLessonState(); $('codePeek').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('feedback').className='feedback'; $('feedback').textContent='מחכה לביצוע התרגיל וללחיצה על “בדיקה”.'; }
@@ -693,6 +818,27 @@
     function codeTargetForBlock(block){
       if(!block) return null;
       const type = block.type;
+      if(Number(lesson.id) === 12){
+        const field = name => String(block.getFieldValue?.(name) || '');
+        if(type === 'lesson_12_name') return { tab:'html', snippets:[`<h1>${esc(field('TEXT'))}</h1>`, field('TEXT'), '<h1>'], label:'שם הדוכן ב־HTML' };
+        if(type === 'lesson_12_target') return { tab:'js', snippets:[`const target = ${field('N')};`, 'const target'], label:'יעד ההזמנות ב־JavaScript' };
+        if(type === 'lesson_12_add_button') return { tab:'html', snippets:[field('TEXT'), '<button', 'onclick="buttonAction'], label:'כפתור בדוכן ב־HTML' };
+        if(type === 'lesson_12_start_message') return { tab:'html', snippets:['id="message"', field('TEXT')], label:'הודעת הפתיחה ב־HTML' };
+        if(type === 'lesson_12_win') return { tab:'js', snippets:['const winMessage', field('TEXT'), 'finishWin'], label:'הודעת ההצלחה ב־JavaScript' };
+        if(type === 'lesson_12_button_action') return { tab:'js', snippets:['function buttonAction', 'buttonAction'], label:'אירוע לחיצה ב־JavaScript' };
+        if(type === 'lesson_12_click_start') return { tab:'js', snippets:['startGame();', 'function startGame'], label:'פעולת פתיחת הדוכן ב־JavaScript' };
+        if(type === 'lesson_12_click_add_order') return { tab:'js', snippets:[`makeOrder(${field('N') || '1'});`, 'makeOrder('], label:'פעולת הוספת הזמנה ב־JavaScript' };
+        if(type === 'lesson_12_click_reset') return { tab:'js', snippets:['resetGame();', 'function resetGame'], label:'פעולת איפוס הדוכן ב־JavaScript' };
+        if(type === 'lesson_12_click_message') return { tab:'js', snippets:['showMessage(', field('TEXT')], label:'הצגת הודעה בלחיצה ב־JavaScript' };
+        if(type === 'lesson_12_page_layout') return { tab:'css', snippets:['body {', 'direction: rtl', 'text-align: center'], label:'פריסת העמוד ב־CSS' };
+        if(type === 'lesson_12_theme') return { tab:'css', snippets:[`background: ${field('COLOR')}`, 'background:'], label:'צבע כרטיס התוכן ב־CSS' };
+        if(type === 'lesson_12_card_box') return { tab:'css', snippets:['width: min(92vw, 420px)', 'padding: clamp'], label:'גודל כרטיס התוכן ב־CSS' };
+        if(type === 'lesson_12_card_round') return { tab:'css', snippets:[`border-radius: ${field('N')}`, 'border-radius:'], label:'פינות כרטיס התוכן ב־CSS' };
+        if(type === 'lesson_12_card_shadow') return { tab:'css', snippets:['box-shadow:', field('COLOR')], label:'צל כרטיס התוכן ב־CSS' };
+        if(type === 'lesson_12_counter_style') return { tab:'css', snippets:['span {', `background: ${field('COLOR')}`, 'min-width: 36px'], label:'עיצוב המונים ב־CSS' };
+        if(['lesson_12_button_shape','lesson_12_button_bg','lesson_12_button_text_color','lesson_12_button_size','lesson_12_button_position'].includes(type)) return { tab:'css', snippets:['.project-game button {', '.button-row', 'padding:', 'font-size:', 'grid-template-columns', 'background-color:', '!important'], label:'עיצוב הכפתורים ב־CSS' };
+        if(type === 'lesson_12_win_style') return { tab:'css', snippets:['.win {', 'border: 3px solid', 'background:'], label:'עיצוב מצב הצלחה ב־CSS' };
+      }
       const lessonSpec = lessonBlocklyBlockSpec(type);
       const currentCheck = currentExercise()?.check || {};
       const expectsHtmlLine = lesson.id === 4 && currentCheck.requiresCodeLineAnswer?.tab === 'html' && currentCheck.requiresCodeSelectionBlockTypes?.includes(type);
@@ -778,6 +924,9 @@
 
     let blocklyWorkspace = null;
     let blocklyReady = false;
+    let blocklyPointerDragActive = false;
+    let pendingBlocklyLayoutRefreshAfterDrag = false;
+    function isBlocklyDragActive(){ return Boolean(blocklyPointerDragActive || document.querySelector('.blocklyDragging,.blocklyBlockDragSurface')); }
     function defineWebBuilderBlocks(){
       if(window.__webBuilderBlocksDefined || !window.Blockly) return;
       const webEmojiOptions = [
@@ -926,6 +1075,11 @@
       if(Number(lesson.id) === 11){
         text = text.replace(/type=(['"])page_start\1/g, 'type=$1lesson_11_start_screen$1');
       }
+      if(Number(lesson.id) === 12){
+        lesson12LegacyButtonTypes().forEach(type => {
+          text = text.replaceAll(`type="${type}"`, 'type="lesson_12_add_button"').replaceAll(`type='${type}'`, "type='lesson_12_add_button'");
+        });
+      }
       return text;
     }
     function webBuilderStarterXml(){
@@ -962,9 +1116,29 @@
     function isBlocklyFieldChangeEvent(event){
       return Boolean(window.Blockly && event?.type === Blockly.Events.BLOCK_CHANGE && (event.element === 'field' || event.name));
     }
+    function isBlocklyWidgetOpen(){
+      const visible = el => {
+        if(!el) return false;
+        const rect = el.getBoundingClientRect?.();
+        const style = getComputedStyle(el);
+        return style.display !== 'none' && style.visibility !== 'hidden' && (rect?.width || rect?.height);
+      };
+      return Array.from(document.querySelectorAll('.blocklyDropDownDiv,.blocklyWidgetDiv')).some(visible);
+    }
+    function scheduleSafeBlocklyFieldFlush(delay=420){
+      if(pendingBlocklyFieldFlushTimer) clearTimeout(pendingBlocklyFieldFlushTimer);
+      pendingBlocklyFieldFlushTimer = setTimeout(() => {
+        if(isBlocklyDragActive() || isBlocklyFieldEditorOpen() || isBlocklyWidgetOpen()){
+          scheduleSafeBlocklyFieldFlush(260);
+          return;
+        }
+        flushBlocklyFieldUpdate({ preservePreviewClicks:true });
+      }, delay);
+    }
     function scheduleBlocklyFieldFlush(event){
       pendingBlocklyFieldUpdate = true;
       if(event?.blockId && event?.name) updatePreviewTextFromBlocklyEdit(event.blockId, event.name, event.newValue ?? '');
+      if(Number(lesson.id) === 12) scheduleSafeBlocklyFieldFlush(420);
     }
     function textInputFieldsForBlock(block){
       const fields = [];
@@ -1000,6 +1174,7 @@
         if(!activeBlocklyTextEdit) return;
         pendingBlocklyFieldUpdate = true;
         updatePreviewTextFromBlocklyEdit(activeBlocklyTextEdit.blockId, activeBlocklyTextEdit.fieldName, event.target.value);
+        if(Number(lesson.id) === 12) scheduleSafeBlocklyFieldFlush(520);
       }, true);
       document.addEventListener('focusout', event => {
         if(!isBlocklyTextEditorElement(event.target)) return;
@@ -1058,7 +1233,11 @@
       const block = blocklyWorkspace.getBlockById?.(activeBlocklyTextEdit.blockId);
       const field = block?.getField?.(activeBlocklyTextEdit.fieldName);
       if(field?.setValue) {
-        try { field.setValue(String(target.value || '')); } catch(error) {}
+        try {
+          const nextValue = String(target.value || '');
+          const currentValue = String(field.getValue?.() ?? field.getText?.() ?? '');
+          if(currentValue !== nextValue) field.setValue(nextValue);
+        } catch(error) {}
       }
     }
     function flushBlocklyFieldUpdate(options={}){
@@ -1216,6 +1395,53 @@
       }
       try { Blockly.svgResize(blocklyWorkspace); } catch(error) {}
     }
+    function revealLessonBlocklyStackInView(force=false){
+      if(!lesson.blocklyLessonBuilder || !blocklyWorkspace || !window.Blockly) return false;
+      const start = blocklyWorkspace.getTopBlocks(false).find(block => block.type === 'page_start') || blocklyWorkspace.getAllBlocks(false).find(block => block.type === 'page_start');
+      const root = start?.getSvgRoot?.();
+      const area = $('blocklyDiv');
+      if(!start || !root || !area) return false;
+      try { Blockly.svgResize(blocklyWorkspace); } catch(error) {}
+      const blockRect = root.getBoundingClientRect();
+      const areaRect = area.getBoundingClientRect();
+      const visible = blockRect.right > areaRect.left + 36 && blockRect.left < areaRect.right - 36 && blockRect.bottom > areaRect.top + 36 && blockRect.top < areaRect.bottom - 36;
+      if(!force && visible) return false;
+      try {
+        if(typeof blocklyWorkspace.centerOnBlock === 'function') blocklyWorkspace.centerOnBlock(start.id);
+        else if(typeof blocklyWorkspace.scrollCenter === 'function') blocklyWorkspace.scrollCenter();
+        return true;
+      } catch(error) { return false; }
+    }
+    function reconnectScatteredLessonBlocks(){
+      if(!lesson.blocklyLessonBuilder || Number(lesson.id) === 11 || !blocklyWorkspace || !window.Blockly) return false;
+      const lessonTypes = new Set((lesson.blocklyBlocks || []).map(block => block.type));
+      const start = blocklyWorkspace.getTopBlocks(false).find(block => block.type === 'page_start') || blocklyWorkspace.getAllBlocks(false).find(block => block.type === 'page_start');
+      if(!start) return false;
+      const connected = new Set();
+      let tail = start;
+      let current = start.getNextBlock?.();
+      while(current){ connected.add(current.id); tail = current; current = current.getNextBlock?.(); }
+      const loose = blocklyWorkspace.getTopBlocks(false)
+        .filter(block => block !== start && lessonTypes.has(block.type) && !connected.has(block.id))
+        .sort((a, b) => {
+          const pa = a.getRelativeToSurfaceXY?.() || {x:0,y:0};
+          const pb = b.getRelativeToSurfaceXY?.() || {x:0,y:0};
+          return (pa.y - pb.y) || (pa.x - pb.x);
+        });
+      if(!loose.length) return false;
+      loose.forEach(block => {
+        try {
+          const connection = tail.nextConnection;
+          if(connection && block.previousConnection){
+            connection.connect(block.previousConnection);
+            tail = block;
+            while(tail.getNextBlock?.()) tail = tail.getNextBlock();
+          }
+        } catch(error) {}
+      });
+      normalizeLessonBlocklyStack();
+      return true;
+    }
     function renderRealBlocklyBuilder(){
       if(!window.Blockly){ $('blocksIntro').innerHTML = '⚠️ Blockly לא נטען<small>אם אין אינטרנט רגעי, אפשר עדיין להשתמש בכפתורי הגיבוי למטה.</small>'; return; }
       $('blocksIntro').style.display = 'none';
@@ -1226,7 +1452,17 @@
       defineWebBuilderBlocks();
       defineLessonBlocklyBlocks();
       if(blocklyWorkspace) return;
-      blocklyWorkspace = Blockly.inject('blocklyDiv',{rtl:true,trashcan:true,scrollbars:true,toolbox:webBuilderToolbox(),zoom:{controls:true,wheel:true,startScale:.85,maxScale:1.35,minScale:.45}});
+      blocklyWorkspace = Blockly.inject('blocklyDiv',{
+        rtl:true,
+        trashcan:true,
+        toolbox:webBuilderToolbox(),
+        move:{
+          scrollbars:{horizontal:true,vertical:true},
+          drag:true,
+          wheel:true
+        },
+        zoom:{controls:true,wheel:true,startScale:.85,maxScale:1.35,minScale:.45}
+      });
       reinforceBlocklyScrollbars();
       installBlocklyTextEditorInputSync();
       keepBlocklyFlyoutSizeFixed(blocklyWorkspace);
@@ -1239,7 +1475,8 @@
       try { Blockly.Xml.domToWorkspace(parseBlocklyXml(migrateBlocklyXmlForCurrentLesson(saved.blocklyXml || webBuilderStarterXml())), blocklyWorkspace); }
       catch(error){ Blockly.Xml.domToWorkspace(parseBlocklyXml(migrateBlocklyXmlForCurrentLesson(webBuilderStarterXml())), blocklyWorkspace); }
       const repairedLessonStart = ensureLessonPageStart();
-      if(repairedLessonStart) normalizeLessonBlocklyStack();
+      const reconnectedScattered = reconnectScatteredLessonBlocks();
+      if(repairedLessonStart || reconnectedScattered) normalizeLessonBlocklyStack();
       if(!hasRenderablePageBlocks()){
         blocklyWorkspace.clear();
         Blockly.Xml.domToWorkspace(parseBlocklyXml(migrateBlocklyXmlForCurrentLesson(webBuilderStarterXml())), blocklyWorkspace);
@@ -1247,21 +1484,44 @@
       }
       enforceSinglePageStart();
       refreshPageStartToolbox();
-      setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 80);
-      setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); }, 300);
+      setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); revealLessonBlocklyStackInView(); }, 80);
+      setTimeout(() => { alignBlocklyStarterBlocksRight(); normalizeLessonBlocklyStack(); revealLessonBlocklyStackInView(); }, 300);
+      setTimeout(() => { revealLessonBlocklyStackInView(); }, 800);
+      const blocklyRoot = $('blocklyDiv');
+      blocklyRoot?.addEventListener('pointerdown', event => {
+        if(event.button !== 0) return;
+        if(event.target?.closest?.('.blocklyScrollbarVertical,.blocklyScrollbarHorizontal,.blocklyToolboxDiv,.blocklyFlyout')) return;
+        if(!event.target?.closest?.('.blocklyDraggable,.blocklyPath,.blocklyText,.blocklyEditableText')) return;
+        blocklyPointerDragActive = true;
+      }, { capture:true });
+      const finishBlocklyPointerDrag = () => {
+        if(!blocklyPointerDragActive) return;
+        blocklyPointerDragActive = false;
+        flushDeferredBlocklyLayoutRefresh();
+      };
+      window.addEventListener('pointerup', finishBlocklyPointerDrag, { capture:true });
+      window.addEventListener('mouseup', finishBlocklyPointerDrag, { capture:true });
+      window.addEventListener('pointercancel', finishBlocklyPointerDrag, { capture:true });
+      blocklyRoot?.addEventListener('mouseleave', event => { if(event.buttons === 0) finishBlocklyPointerDrag(); }, { capture:true });
+      document.addEventListener('visibilitychange', () => { if(document.hidden) finishBlocklyPointerDrag(); });
+      window.addEventListener('blur', finishBlocklyPointerDrag);
       blocklyWorkspace.addChangeListener(event => {
         if(!blocklyReady) return;
         if(isBlocklyFieldChangeEvent(event)){
           lastGeneratedCodeSelection = null;
           scheduleBlocklyFieldFlush(event);
+          scheduleLesson12PreviewRefresh(220);
           return;
         }
         if(pendingBlocklyFieldUpdate || isBlocklyFieldEditorOpen()){
+          scheduleLesson12PreviewRefresh(260);
           return;
         }
-        if(event.type === Blockly.Events.SELECTED && event.newElementId){
-          if(!isBlocklyFieldEditorOpen()) enableEditableWorkspaceFields();
-          highlightGeneratedCodeForBlock(event.newElementId);
+        if(event.type === Blockly.Events.SELECTED){
+          if(event.newElementId){
+            if(!isBlocklyFieldEditorOpen()) enableEditableWorkspaceFields();
+            highlightGeneratedCodeForBlock(event.newElementId);
+          }
           return;
         }
         if(event.isUiEvent){
@@ -1269,13 +1529,16 @@
           return;
         }
         lastGeneratedCodeSelection = null;
+        userBlocklyEdited = true;
         enforceSinglePageStart();
         ensureLessonPageStart();
         applyStarterExerciseLocks();
         enableEditableWorkspaceFields();
         generateCodeFromBlockly();
         refreshPageStartToolbox();
-        scheduleFixedFlyoutRefresh();
+        enableSimpleBlocklyDragDetach();
+        if(isBlocklyDragActive()) pendingBlocklyLayoutRefreshAfterDrag = true;
+        else scheduleFixedFlyoutRefresh();
         saveLessonState();
         setTimeout(saveLessonState, 60);
       });
@@ -1306,7 +1569,7 @@
       if(next && block.nextConnection) block.nextConnection.connect(next.previousConnection);
       return true;
     }
-    function applyExerciseBlocklyStarter(id = activeExercise){
+    function applyExerciseBlocklyStarter(id = activeExercise, options = {}){
       if(!blocklyWorkspace || !window.Blockly) return false;
       const ex = lesson.exercises?.find(item => item.id === id);
       if(!ex?.blocklyStarterXml) return false;
@@ -1322,10 +1585,10 @@
       lastGeneratedCodeSelection = null;
       previewClicks = [];
       generateCodeFromBlockly();
-      saveLessonState();
+      if(options.save !== false) saveLessonState();
       return true;
     }
-    function ensureRequiredStarterBlocks(id = activeExercise){
+    function ensureRequiredStarterBlocks(id = activeExercise, options = {}){
       if(!blocklyWorkspace || !window.Blockly) return false;
       const ex = lesson.exercises?.find(item => item.id === id);
       const required = ex?.check?.ensureStarterBlocks || [];
@@ -1338,7 +1601,10 @@
         block.render?.();
         changed = connectNewBlockInChain(block, rule.after) || changed;
       });
-      if(changed){ generateCodeFromBlockly(); saveLessonState(); }
+      if(changed){
+        generateCodeFromBlockly();
+        if(options.save !== false) saveLessonState();
+      }
       return changed;
     }
     function ensureStarterLockBaseline(id = activeExercise){
@@ -1372,6 +1638,21 @@
     function enableEditableWorkspaceFields(){
       if(!blocklyWorkspace) return;
       (blocklyWorkspace.getAllBlocks(false) || []).forEach(enableEditableFieldsInBlock);
+      enableSimpleBlocklyDragDetach();
+    }
+    function enableSimpleBlocklyDragDetach(){
+      if(!blocklyWorkspace) return;
+      (blocklyWorkspace.getAllBlocks(false) || []).forEach(block => {
+        if(!block || block.type === 'page_start' || block.__simpleDragDetachEnabled) return;
+        const strategy = block.getDragStrategy?.();
+        if(!strategy || typeof strategy.shouldHealStack !== 'function') return;
+        const originalShouldHealStack = strategy.shouldHealStack.bind(strategy);
+        strategy.shouldHealStack = event => {
+          if(typeof PointerEvent !== 'undefined' && event instanceof PointerEvent) return true;
+          return originalShouldHealStack(event);
+        };
+        block.__simpleDragDetachEnabled = true;
+      });
     }
     function setBlockTreeFree(block){
       if(!block) return;
@@ -1441,6 +1722,20 @@
       $('feedback').className='feedback good';
       $('feedback').textContent = lesson.id === 4 ? 'קוד ההתחלה של האתגר חזר. עכשיו תקנו את הבלוק המחובר לערך המדויק.' : activeExercise === 6 ? 'הקוד ההתחלתי חזר. עכשיו אפשר לשנות רק את הרקע בתוך בלוק “בלחיצה שנה רקע”.' : 'הקוד ההתחלתי חזר. עכשיו אפשר לשנות את ההודעה בתוך בלוק הכפתור.';
     }
+    function collectStatementTree(block, blocks, seen){
+      let current = block;
+      while(current){
+        if(!seen.has(current.id)){
+          blocks.push(current);
+          seen.add(current.id);
+          (current.inputList || []).forEach(input => {
+            const child = input?.connection?.targetBlock?.();
+            if(child) collectStatementTree(child, blocks, seen);
+          });
+        }
+        current = current.getNextBlock?.();
+      }
+    }
     function collectPageBlocks(){
       if(!blocklyWorkspace) return [];
       if(lesson.id === 11){
@@ -1460,8 +1755,19 @@
       }
       const start = blocklyWorkspace.getTopBlocks(false).find(b => b.type === 'page_start');
       const blocks = [];
-      let current = start && start.getNextBlock();
-      while(current){ blocks.push(current); current = current.getNextBlock(); }
+      const seen = new Set();
+      collectStatementTree(start && start.getNextBlock(), blocks, seen);
+      return blocks;
+    }
+    function lesson12MainChainBlocks(){
+      if(!blocklyWorkspace || Number(lesson.id) !== 12) return [];
+      const start = blocklyWorkspace.getTopBlocks(false).find(block => block.type === 'page_start');
+      const blocks = [];
+      let current = start?.getNextBlock?.();
+      while(current){
+        blocks.push(current);
+        current = current.getNextBlock?.();
+      }
       return blocks;
     }
     function generateLesson4ChallengeCode(blocks){
@@ -1482,6 +1788,323 @@
       $('jsCode').value = `function makeGreeting() {\n  const name = document.getElementById("nameInput").value;\n  const topic = document.getElementById("hobbyInput").value;\n  document.getElementById("result").textContent = name + ", ${String(sentence || '').replaceAll('"','\\"')} " + topic + " ${String(ending || '').replaceAll('"','\\"')}";\n}`;
       runCode(true);
       saveLessonState();
+    }
+    function generateLesson12GameCode(blocks, options={}){
+      const sourceBlocks = [];
+      const seenSourceBlocks = new Set();
+      (blocks || []).forEach(block => {
+        if(!block || seenSourceBlocks.has(block.id)) return;
+        sourceBlocks.push(block);
+        seenSourceBlocks.add(block.id);
+      });
+      const find = type => {
+        const matches = sourceBlocks.filter(block => block.type === type);
+        return matches.length ? matches[0] : null;
+      };
+      const has = type => Boolean(find(type));
+      const text = (type, field, fallback='') => {
+        const value = find(type)?.getFieldValue?.(field);
+        return value === undefined ? fallback : String(value || '');
+      };
+      const lines = [];
+      if(has('lesson_12_name')) lines.push(`  <h1>${esc(text('lesson_12_name', 'TEXT', ''))}</h1>`);
+      const stats = [];
+      if(has('lesson_12_lives')) stats.push(`סבלנות: <span id="livesText">${esc(text('lesson_12_lives', 'N', ''))}</span>`);
+      if(has('lesson_12_time')) stats.push(`זמן הכנה: <span id="timeText">${esc(text('lesson_12_time', 'N', ''))}</span>`);
+      if(has('lesson_12_target')) lines.push(`  <p>יעד הזמנות: <span id="targetText">${esc(text('lesson_12_target', 'N', ''))}</span></p>`);
+      if(has('lesson_12_target') || stats.length) lines.push(`  <p>${has('lesson_12_target') ? 'הוכנו: <span id="scoreText">0</span>' : ''}${has('lesson_12_target') && stats.length ? ' | ' : ''}${stats.join(' | ')}</p>`);
+      const legacyButtonActions = {
+        lesson_12_open_button: 'startGame',
+        lesson_12_order_button: 'makeOrder',
+        lesson_12_reset_button: 'resetGame',
+        lesson_12_delay_button: 'delayOrder'
+      };
+      const buttonBlocks = sourceBlocks.filter(block => block.type === 'lesson_12_add_button' || legacyButtonActions[block.type]);
+      const legacyActionForBlockType = {
+        lesson_12_action_start: 'startGame',
+        lesson_12_action_order: 'makeOrder',
+        lesson_12_action_reset: 'resetGame',
+        lesson_12_action_delay: 'delayOrder'
+      };
+      const buttonTypes = new Set(['lesson_12_add_button', ...Object.keys(legacyButtonActions)]);
+      const isClickEventBlock = block => block?.type === 'lesson_12_button_action';
+      const isLegacyActionBlock = block => Boolean(legacyActionForBlockType[block?.type]);
+      const instructionFromBlock = block => {
+        if(!block) return null;
+        if(block.type === 'lesson_12_click_start') return { kind:'startGame' };
+        if(block.type === 'lesson_12_click_add_order') return { kind:'makeOrder', amount:Number(block.getFieldValue?.('N') || 1) || 1 };
+        if(block.type === 'lesson_12_click_patience') return { kind:'delayOrder', patience:Number(block.getFieldValue?.('N') || 1) || 1, time:0 };
+        if(block.type === 'lesson_12_click_time') return { kind:'delayOrder', patience:0, time:Number(block.getFieldValue?.('N') || 5) || 5 };
+        if(block.type === 'lesson_12_click_message') return { kind:'showMessage', text:String(block.getFieldValue?.('TEXT') || '') };
+        if(block.type === 'lesson_12_click_reset') return { kind:'resetGame' };
+        if(isLegacyActionBlock(block)) return { kind:legacyActionForBlockType[block.type] };
+        return null;
+      };
+      const instructionKind = instruction => instruction?.kind || '';
+      const instructionsInSegment = (startBlock, stopAtNextButton=true) => {
+        const instructions = [];
+        let cursor = startBlock;
+        while(cursor && (!stopAtNextButton || !buttonTypes.has(cursor.type)) && !isClickEventBlock(cursor) && !isLegacyActionBlock(cursor)){
+          const instruction = instructionFromBlock(cursor);
+          if(instruction) instructions.push(instruction);
+          cursor = cursor.getNextBlock?.();
+        }
+        return instructions;
+      };
+      const sourceSegmentAfterButton = block => {
+        const startIndex = sourceBlocks.findIndex(item => item.id === block.id);
+        if(startIndex < 0) return [];
+        const segment = [];
+        for(let index = startIndex + 1; index < sourceBlocks.length; index += 1){
+          const item = sourceBlocks[index];
+          if(buttonTypes.has(item.type)) break;
+          segment.push(item);
+        }
+        return segment;
+      };
+      const instructionsForButton = (block, index=0) => {
+        if(legacyButtonActions[block.type]) return [{ kind:legacyButtonActions[block.type] }];
+        const next = block?.getNextBlock?.();
+        if(isLegacyActionBlock(next)) return [instructionFromBlock(next)].filter(Boolean);
+        let instructions = [];
+        if(isClickEventBlock(next)){
+          instructions = instructionsInSegment(next.getInputTargetBlock?.('DO') || next.getNextBlock?.());
+          const oldAction = String(next.getFieldValue?.('ACTION') || '');
+          if(!instructions.length && oldAction) instructions.push({ kind:oldAction });
+        }
+        if(!instructions.length){
+          const segment = sourceSegmentAfterButton(block);
+          const wrapper = segment.find(isClickEventBlock);
+          if(wrapper){
+            instructions = instructionsInSegment(wrapper.getInputTargetBlock?.('DO'));
+            if(!instructions.length){
+              const wrapperIndex = segment.findIndex(item => item.id === wrapper.id);
+              for(let offset = wrapperIndex + 1; offset < segment.length; offset += 1){
+                const instruction = instructionFromBlock(segment[offset]);
+                if(instruction) instructions.push(instruction);
+                if(instruction) break;
+              }
+            }
+          }
+        }
+        if(!instructions.length){
+          const defaultOrder = ['startGame', 'makeOrder', 'resetGame'];
+          if(defaultOrder[index]) instructions.push({ kind:defaultOrder[index] });
+        }
+        return instructions;
+      };
+      const buttonPlans = buttonBlocks.map((block, index) => instructionsForButton(block, index));
+      const connectedActions = buttonPlans.flat().map(instructionKind).filter(Boolean);
+      const buttons = buttonBlocks.map((block, index) => {
+        const instructions = buttonPlans[index] || [];
+        const textLabel = String(block.getFieldValue?.('TEXT') || '');
+        const emoji = block.type === 'lesson_12_add_button' ? String(block.getFieldValue?.('EMOJI') || '') : '';
+        const label = [emoji, textLabel].filter(Boolean).join(' ').trim();
+        const onclick = instructions.length ? ` onclick="buttonAction${index + 1}()"` : '';
+        return `  <button${onclick}>${esc(label)}</button>`;
+      });
+      const firstButtonIndex = sourceBlocks.findIndex(block => buttonTypes.has(block.type));
+      const lastButtonIndex = sourceBlocks.reduce((last, block, index) => buttonTypes.has(block.type) ? index : last, -1);
+      const mainChainMessageBlock = sourceBlocks.find(block => {
+        if(block.type !== 'lesson_12_click_message') return false;
+        const surroundParent = block.getSurroundParent?.();
+        return !isClickEventBlock(surroundParent);
+      });
+      const mainChainMessageIndex = mainChainMessageBlock ? sourceBlocks.findIndex(block => block.id === mainChainMessageBlock.id) : -1;
+      const startMessage = has('lesson_12_start_message')
+        ? text('lesson_12_start_message', 'TEXT', '')
+        : String(mainChainMessageBlock?.getFieldValue?.('TEXT') || '');
+      const messageHtml = startMessage ? `  <p id="message">${esc(startMessage)}</p>`
+        : (has('lesson_12_win') || sourceBlocks.some(block => block.type === 'lesson_12_click_message') ? `  <p id="message"></p>` : '');
+      const messageAfterButtons = mainChainMessageIndex >= 0 && lastButtonIndex >= 0 && mainChainMessageIndex > lastButtonIndex;
+      if(messageHtml && !messageAfterButtons) lines.push(messageHtml);
+      if(buttons.length) lines.push(`  <div class="button-row">
+${buttons.join('\n')}
+  </div>`);
+      if(messageHtml && messageAfterButtons) lines.push(messageHtml);
+      const html = lines.length ? `<main class="project-game">
+${lines.join('\n')}
+</main>` : '';
+      const cssParts = [];
+      if(has('lesson_12_page_layout')){
+        cssParts.push(`body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  text-align: center;
+}`);
+      }
+      if(has('lesson_12_theme')){
+        cssParts.push(`.project-game {
+  background: ${esc(text('lesson_12_theme', 'COLOR', '#ffffff'))};
+}`);
+      }
+      if(has('lesson_12_card_box')){
+        cssParts.push(`.project-game {
+  width: min(92vw, 420px);
+  max-width: min(92vw, 420px);
+  margin: 0 auto;
+  padding: clamp(12px, 3.2vw, 22px);
+}`);
+      }
+      if(has('lesson_12_card_round')){
+        cssParts.push(`.project-game {
+  border-radius: ${esc(text('lesson_12_card_round', 'N', '30'))}px;
+}`);
+      }
+      if(has('lesson_12_card_shadow')){
+        cssParts.push(`.project-game {
+  box-shadow: 0 16px 35px ${esc(text('lesson_12_card_shadow', 'COLOR', '#fed7aa'))};
+}`);
+      }
+      if(has('lesson_12_counter_style')){
+        cssParts.push(`span {
+  display: inline-block;
+  min-width: 36px;
+  background: ${esc(text('lesson_12_counter_style', 'COLOR', '#fef3c7'))};
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-weight: bold;
+}`);
+      }
+      if(has('lesson_12_start_message') || has('lesson_12_win') || sourceBlocks.some(block => block.type === 'lesson_12_click_message')){
+        cssParts.push(`#message {
+  margin: 10px auto;
+  max-width: 92%;
+  line-height: 1.35;
+  font-weight: bold;
+  color: #0f172a;
+}`);
+      }
+      const buttonRules = [];
+      if(has('lesson_12_button_shape')) buttonRules.push(`  border-radius: ${esc(text('lesson_12_button_shape', 'N', '999'))}px;`);
+      if(has('lesson_12_button_bg')) buttonRules.push(`  appearance: none;`, `  -webkit-appearance: none;`, `  border: 0;`, `  background: ${esc(text('lesson_12_button_bg', 'COLOR', '#ea580c'))} !important;`, `  background-color: ${esc(text('lesson_12_button_bg', 'COLOR', '#ea580c'))} !important;`);
+      if(has('lesson_12_button_text_color')) buttonRules.push(`  color: ${esc(text('lesson_12_button_text_color', 'COLOR', '#ffffff'))};`, `  font-weight: bold;`);
+      if(has('lesson_12_button_size')){
+        const size = text('lesson_12_button_size', 'SIZE', 'normal');
+        if(size === 'small') buttonRules.push(`  padding: 7px 11px;`, `  font-size: 0.78rem;`);
+        else if(size === 'large') buttonRules.push(`  padding: 14px 22px;`, `  font-size: 1rem;`);
+        else buttonRules.push(`  padding: 8px 12px;`, `  font-size: 0.84rem;`, `  line-height: 1.1;`);
+      }
+      if(buttonRules.length) cssParts.push(`.project-game button,
+.project-game .button-row button {
+${buttonRules.join('\n')}
+}`);
+      if(has('lesson_12_button_position')){
+        const position = text('lesson_12_button_position', 'POS', 'center');
+        if(position === 'target'){
+          cssParts.push(`.button-row {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  align-items: center;
+  gap: 10px 18px;
+}
+.button-row button:nth-child(3):last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+}`);
+        } else {
+          const justify = position === 'left' ? 'flex-end' : position === 'right' ? 'flex-start' : 'center';
+          const direction = position === 'column' ? 'column' : 'row';
+          cssParts.push(`.button-row {
+  display: flex;
+  flex-direction: ${direction};
+  justify-content: ${justify};
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}`);
+        }
+      }
+      if(has('lesson_12_win_style')){
+        const style = text('lesson_12_win_style', 'STYLE', 'green');
+        const winStyles = {
+          green: ['#dcfce7', '#22c55e'],
+          gold: ['#fef3c7', '#f59e0b'],
+          pink: ['#fce7f3', '#ec4899'],
+          blue: ['#dbeafe', '#2563eb']
+        };
+        const [winBg, winBorder] = winStyles[style] || winStyles.green;
+        cssParts.push(`.win {
+  background: ${winBg};
+  border: 3px solid ${winBorder};
+}`);
+      }
+      let css = cssParts.join('\n\n');
+      const targetValue = text('lesson_12_target', 'N', '6');
+      const livesValue = text('lesson_12_lives', 'N', '3');
+      const timeValue = text('lesson_12_time', 'N', '30');
+      const winTextRaw = text('lesson_12_win', 'TEXT', 'כל הכבוד! כל ההזמנות מוכנות!');
+      const winEmoji = text('lesson_12_win', 'EMOJI', has('lesson_12_win') ? '🎉' : '');
+      const winText = [winTextRaw, winEmoji].filter(Boolean).join(' ').trim() || 'כל הכבוד! כל ההזמנות מוכנות! 🎉';
+      const initialMessage = startMessage || 'פתחו את הדוכן ובנו את חוקי ההזמנות שלכם.';
+      const needsGameJs = has('lesson_12_target') || has('lesson_12_lives') || has('lesson_12_time') || has('lesson_12_win') || connectedActions.length;
+      const jsLines = [];
+      if(needsGameJs){
+        jsLines.push(`let score = 0;`);
+        jsLines.push(`let standOpen = false;`);
+        jsLines.push(`let timerId = null;`);
+        if(has('lesson_12_lives')) jsLines.push(`let lives = ${livesValue};`);
+        if(has('lesson_12_time')) jsLines.push(`let timeLeft = ${timeValue};`);
+        if(has('lesson_12_target')) jsLines.push(`const target = ${targetValue};`);
+        if(has('lesson_12_win')) jsLines.push(`const winMessage = ${jsLiteral(winText)};`);
+        jsLines.push('', `function showMessage(text) {`, `  const message = document.getElementById("message");`, `  if (message) message.textContent = text;`, `}`);
+        jsLines.push('', `function updateScreen() {`, `  const targetText = document.getElementById("targetText");`, `  if (targetText) targetText.textContent = target;`, `  const scoreText = document.getElementById("scoreText");`, `  if (scoreText) scoreText.textContent = score;`, `  const livesText = document.getElementById("livesText");`, `  if (livesText) livesText.textContent = lives;`, `  const timeText = document.getElementById("timeText");`, `  if (timeText) timeText.textContent = timeLeft;`, `}`);
+        jsLines.push('', `function stopTimer() {`, `  if (timerId) clearInterval(timerId);`, `  timerId = null;`, `}`);
+        jsLines.push('', `function finishWin() {`, `  stopTimer();`, `  document.querySelector(".project-game").classList.remove("lose");`, `  document.querySelector(".project-game").classList.add("win");`, `  showMessage(${has('lesson_12_win') ? 'winMessage' : jsLiteral(winText)});`, `}`);
+        jsLines.push('', `function finishLose(text) {`, `  stopTimer();`, `  document.querySelector(".project-game").classList.remove("win");`, `  document.querySelector(".project-game").classList.add("lose");`, `  showMessage(text);`, `}`);
+        if(connectedActions.includes('startGame')){
+          jsLines.push('', `function startGame() {`, `  score = 0;`, `  standOpen = true;`);
+          if(has('lesson_12_lives')) jsLines.push(`  lives = ${livesValue};`);
+          if(has('lesson_12_time')) jsLines.push(`  timeLeft = ${timeValue};`);
+          jsLines.push(`  document.querySelector(".project-game").classList.remove("win", "lose");`, `  updateScreen();`, `  showMessage("הדוכן פתוח! התחילו להכין הזמנות.");`);
+          if(has('lesson_12_time')) jsLines.push(`  stopTimer();`, `  timerId = setInterval(function() {`, `    if (!standOpen) return;`, `    timeLeft = timeLeft - 1;`, `    updateScreen();`, `    if (timeLeft <= 0) finishLose("נגמר הזמן להכנת הפיצות.");`, `  }, 1000);`);
+          jsLines.push(`}`);
+        }
+        if(connectedActions.includes('makeOrder')){
+          jsLines.push('', `function makeOrder(amount = 1) {`, `  if (!standOpen) {`, `    showMessage("קודם פתחו את הדוכן.");`, `    return;`, `  }`, `  if (document.querySelector(".project-game").classList.contains("win")) return;`, `  if (document.querySelector(".project-game").classList.contains("lose")) return;`, `  score = score + amount;`, `  showMessage("פיצה מוכנה! הזמנה נוספה לדוכן.");`, `  updateScreen();`);
+          if(has('lesson_12_target')) jsLines.push(`  if (score >= target) finishWin();`);
+          jsLines.push(`}`);
+        }
+        if(connectedActions.includes('delayOrder')){
+          jsLines.push('', `function delayOrder(patienceLoss = 1, timeLoss = 5) {`, `  if (!standOpen) {`, `    showMessage("קודם פתחו את הדוכן.");`, `    return;`, `  }`, `  if (document.querySelector(".project-game").classList.contains("win")) return;`, `  if (document.querySelector(".project-game").classList.contains("lose")) return;`);
+          if(has('lesson_12_lives')) jsLines.push(`  lives = lives - patienceLoss;`);
+          if(has('lesson_12_time')) jsLines.push(`  timeLeft = Math.max(0, timeLeft - timeLoss);`);
+          jsLines.push(`  showMessage("איחור בהזמנה — הלקוחות פחות סבלניים.");`, `  updateScreen();`);
+          if(has('lesson_12_lives')) jsLines.push(`  if (lives <= 0) finishLose("הלקוחות איבדו סבלנות. נסו שוב.");`);
+          if(has('lesson_12_time')) jsLines.push(`  else if (timeLeft <= 0) finishLose("נגמר הזמן להכנת הפיצות.");`);
+          jsLines.push(`}`);
+        }
+        if(connectedActions.includes('resetGame')){
+          jsLines.push('', `function resetGame() {`, `  stopTimer();`, `  score = 0;`, `  standOpen = false;`);
+          if(has('lesson_12_lives')) jsLines.push(`  lives = ${livesValue};`);
+          if(has('lesson_12_time')) jsLines.push(`  timeLeft = ${timeValue};`);
+          jsLines.push(`  document.querySelector(".project-game").classList.remove("win", "lose");`, `  updateScreen();`, `  showMessage(${jsLiteral(initialMessage)});`, `}`);
+        }
+      }
+      if(needsGameJs){
+        buttonPlans.forEach((instructions, index) => {
+          if(!instructions.length) return;
+          const orderedInstructions = [
+            ...instructions.filter(instruction => instruction.kind !== 'showMessage'),
+            ...instructions.filter(instruction => instruction.kind === 'showMessage')
+          ];
+          jsLines.push('', `window.buttonAction${index + 1} = function buttonAction${index + 1}() {`);
+          orderedInstructions.forEach(instruction => {
+            if(instruction.kind === 'startGame') jsLines.push(`  startGame();`);
+            if(instruction.kind === 'makeOrder') jsLines.push(`  makeOrder(${Number(instruction.amount || 1)});`);
+            if(instruction.kind === 'delayOrder') jsLines.push(`  delayOrder(${Number(instruction.patience || 1)}, ${Number(instruction.time || 5)});`);
+            if(instruction.kind === 'showMessage') jsLines.push(`  showMessage(${jsLiteral(instruction.text || '')});`);
+            if(instruction.kind === 'resetGame') jsLines.push(`  resetGame();`);
+          });
+          jsLines.push(`}`);
+        });
+      }
+      $('htmlCode').value = html;
+      $('cssCode').value = css;
+      $('jsCode').value = jsLines.join('\n');
+      runCode(true, { skipBlocklyFlush: true, preservePreviewClicks: options.preservePreviewClicks });
+      if(options.save !== false) saveLessonState();
     }
     function generateLesson11AdventureCode(blocks, options={}){
       const screenStarts = new Set(['lesson_11_start_screen','lesson_11_room_one','lesson_11_room_two','lesson_11_win_end','lesson_11_funny_end']);
@@ -1685,6 +2308,7 @@
         return;
       }
       if(lesson.id === 11){ generateLesson11AdventureCode(blocks, options); return; }
+      if(lesson.id === 12){ generateLesson12GameCode(blocks, options); return; }
       let html = lesson.starter?.html || '';
       let css = lesson.starter?.css || '';
       let js = lesson.starter?.js || '';
@@ -1941,14 +2565,18 @@ ${block.replace}`; changed = true; }
       } catch(error) { return ''; }
     }
     function previewDocument(bodyHtml, cssText, jsText='', restoreScreenId=''){
-      const previewBase = `html{width:100%;min-height:100%;overflow-x:hidden}body{max-width:100%;min-height:100vh;margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}main,.card,.profile-card,.page-card{max-width:calc(100vw - 24px)}`;
+      const lesson12Fit = Number(lesson.id) === 12 ? 'html,body{width:100%;min-height:100%;overflow-x:hidden!important}body{padding:0}' : '';
+      const previewBase = `html{width:100%;min-height:100%;overflow-x:hidden}body{max-width:100%;min-height:100vh;margin:0;overflow-x:hidden}*,*::before,*::after{box-sizing:border-box}img,video,canvas,svg{max-width:100%;height:auto}main,.card,.profile-card,.page-card{max-width:calc(100vw - 24px)}${lesson12Fit}`;
       const errorBridge = `<script>window.onerror=function(message,source,line,column){parent.postMessage({type:'webcode-error',message:String(message),line:line,column:column},'*');};<\/script>`;
       const clickBridge = `<script>document.addEventListener('click',function(event){var button=event.target&&event.target.closest&&event.target.closest('button');if(button){var clickedText=String(button.textContent||'').trim();var scoreBeforeEl=document.getElementById('scoreText');var livesBeforeEl=document.getElementById('livesText');var scoreBefore=scoreBeforeEl?String(scoreBeforeEl.textContent||'').trim():'';var livesBefore=livesBeforeEl?String(livesBeforeEl.textContent||'').trim():'';function report(){var message=document.getElementById('message');var feedback=document.getElementById('feedback');var emoji=document.getElementById('heroEmoji');var card=document.querySelector('.page-card,.cookie-game,.city-game,.reaction-game,.hero-lab,.adventure-app,.project-game');var result=document.getElementById('result');var inputValues={};document.querySelectorAll('input[id]').forEach(function(input){inputValues[input.id]=String(input.value||'').trim();});var scoreText=document.getElementById('scoreText');var livesText=document.getElementById('livesText');var timeText=document.getElementById('timeText');var itemButton=document.getElementById('itemButton');parent.postMessage({type:'webcode-preview-click',tag:'button',text:clickedText,messageText:message?String(message.textContent||'').trim():'',feedbackText:feedback?String(feedback.textContent||'').trim():'',feedbackClass:feedback?String(feedback.className||''):'',emojiText:emoji?String(emoji.textContent||'').trim():'',cardClass:card?String(card.className||''):'',resultText:result?String(result.textContent||'').trim():'',scoreText:scoreText?String(scoreText.textContent||'').trim():'',scoreBefore:scoreBefore,livesText:livesText?String(livesText.textContent||'').trim():'',livesBefore:livesBefore,timeText:timeText?String(timeText.textContent||'').trim():'',itemText:itemButton?String(itemButton.textContent||'').trim():'',inputValues:inputValues},'*');}setTimeout(report,0);setTimeout(report,1100);setTimeout(report,6200);setTimeout(report,11200);setTimeout(report,21200);}},true);<\/script>`;
       const script = jsText ? `<script>${safeScript(jsText)}<\/script>` : '';
+      const lesson12FitStyle = Number(lesson.id) === 12 ? `<style id="webcode-preview-fit-style">html.webcode-fit-compact,html.webcode-fit-compact body{width:100%;height:100%;min-height:0;overflow:hidden!important}html.webcode-fit-compact body{display:flex;align-items:center;justify-content:center;margin:0;padding:0}:where(.webcode-fit-compact) .project-game{width:min(92vw,420px);max-width:min(92vw,420px);min-height:clamp(210px,52vw,246px);margin-left:auto;margin-right:auto;box-sizing:border-box;transform:none}</style>` : '';
+      const lesson12FitScript = Number(lesson.id) === 12 ? `<script>(function(){function prepare(){document.documentElement.style.height='100%';document.body.style.minHeight='0';document.body.style.height='100vh';document.body.style.margin='0';document.body.style.display='flex';document.body.style.alignItems='center';document.body.style.justifyContent='center';}function fit(){var card=document.querySelector('.project-game');if(!card)return;prepare();document.documentElement.classList.add('webcode-fit-compact');document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';card.style.transform='none';card.style.transformOrigin='center center';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else fit();window.addEventListener('resize',fit);setTimeout(fit,60);setTimeout(fit,260);setTimeout(fit,700);try{new ResizeObserver(fit).observe(document.body);}catch(e){}})();<\/script>` : '';
       const restoreScreen = restoreScreenId ? `<script>(function(){var id=${JSON.stringify(restoreScreenId)};function restore(){var target=document.getElementById(id);if(!target)return;document.querySelectorAll('.screen').forEach(function(screen){screen.classList.remove('active');});target.classList.add('active');}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',restore);else restore();})();<\/script>` : '';
-      return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${previewBase}</style><style>${cssText}</style></head><body>${bodyHtml}${errorBridge}${clickBridge}${script}${restoreScreen}</body></html>`;
+      return `<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>${previewBase}</style>${lesson12FitStyle}<style>${cssText}</style></head><body>${bodyHtml}${errorBridge}${clickBridge}${script}${lesson12FitScript}${restoreScreen}</body></html>`;
     }
-    function runCode(silent=false, options={}){ if(!options.skipBlocklyFlush && lesson.realBlocklyBuilder && blocklyWorkspace) flushBlocklyFieldUpdate(options); if(!options.preservePreviewClicks) previewClicks = []; const restoreScreenId = currentPreviewScreenId(); const syntaxError = validateJavaScriptSyntax($('jsCode').value); if(syntaxError){ $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת סינטקס ב־JavaScript: ${syntaxError.message}. רמז: ${debugHint(syntaxError.message)}`; $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value, '', restoreScreenId); return; } $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value, $('jsCode').value, restoreScreenId); if(!silent){ $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; } }
+    function updatePreviewEmptyState(){ const empty = $('previewEmptyState'); if(!empty) return; const noStudentCode = Number(lesson.id) === 12 && !$('htmlCode').value.trim() && !$('cssCode').value.trim() && !$('jsCode').value.trim(); empty.hidden = !noStudentCode; }
+    function runCode(silent=false, options={}){ if(!options.skipBlocklyFlush && lesson.realBlocklyBuilder && blocklyWorkspace) flushBlocklyFieldUpdate(options); if(!options.preservePreviewClicks) previewClicks = []; const restoreScreenId = currentPreviewScreenId(); const syntaxError = validateJavaScriptSyntax($('jsCode').value); if(syntaxError){ $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת סינטקס ב־JavaScript: ${syntaxError.message}. רמז: ${debugHint(syntaxError.message)}`; $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value, '', restoreScreenId); updatePreviewEmptyState(); return; } $('preview').srcdoc = previewDocument($('htmlCode').value, $('cssCode').value, $('jsCode').value, restoreScreenId); updatePreviewEmptyState(); if(!silent){ $('feedback').className='feedback good'; $('feedback').textContent='הרצה בוצעה. בדקו בתצוגה אם זה נראה ועובד כמו שרציתם.'; } }
     window.addEventListener('message', event => { if(!event.data) return; if(event.data.type === 'webcode-preview-click'){ previewClicks.push({ exerciseId:activeExercise, tag:event.data.tag, text:event.data.text, messageText:event.data.messageText, feedbackText:event.data.feedbackText, feedbackClass:event.data.feedbackClass, emojiText:event.data.emojiText, cardClass:event.data.cardClass, resultText:event.data.resultText, scoreText:event.data.scoreText, scoreBefore:event.data.scoreBefore, livesText:event.data.livesText, livesBefore:event.data.livesBefore, timeText:event.data.timeText, itemText:event.data.itemText, inputValues:event.data.inputValues || {} }); return; } if(event.data.type !== 'webcode-error') return; $('feedback').className='feedback bad'; $('feedback').textContent = `שגיאת קוד קטנה: ${event.data.message}. רמז: ${debugHint(event.data.message)}`; });
     function resetCode(){ if(!confirm('לאפס לקוד ההתחלתי של השיעור?')) return; if(lesson.realBlocklyBuilder && blocklyWorkspace && window.Blockly){ blocklyReady = false; blocklyWorkspace.clear(); Blockly.Xml.domToWorkspace(parseBlocklyXml(webBuilderStarterXml()), blocklyWorkspace); setTimeout(alignBlocklyStarterBlocksRight, 80); setTimeout(alignBlocklyStarterBlocksRight, 300); blocklyReady = true; generateCodeFromBlockly(); } else { $('htmlCode').value=lesson.starter.html; $('cssCode').value=lesson.starter.css; $('jsCode').value=lesson.starter.js; runCode(); } done.clear(); Object.keys(checkMemory).forEach(key => delete checkMemory[key]); codePeekOpened = false; lastGeneratedCodeSelection = null; highestUnlockedExercise = 1; renderProgress(); selectExercise(1); saveLessonState(); }
     function includesAll(text, list){ return (list||[]).every(x => text.includes(x)); }
@@ -1995,11 +2623,21 @@ ${block.replace}`; changed = true; }
     function hasChangedBlocklyFields(rules){
       if(!rules?.length) return true;
       if(!blocklyWorkspace) return false;
-      return rules.every(rule => collectPageBlocks().some(block => {
-        if(block.type !== rule.type) return false;
-        const value = block.getFieldValue(rule.field);
-        return value !== undefined && String(value).trim() !== String(rule.defaultValue ?? '').trim();
-      }));
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const matches = blocks.filter(block => block.type === rule.type);
+        if(rule.all){
+          if(matches.length < Number(rule.minCount || 1)) return false;
+          return matches.every(block => {
+            const value = block.getFieldValue(rule.field);
+            return value !== undefined && String(value).trim() !== String(rule.defaultValue ?? '').trim();
+          });
+        }
+        return matches.some(block => {
+          const value = block.getFieldValue(rule.field);
+          return value !== undefined && String(value).trim() !== String(rule.defaultValue ?? '').trim();
+        });
+      });
     }
     function hasBlocklyFieldsContaining(rules){
       if(!rules?.length) return true;
@@ -2029,17 +2667,18 @@ ${block.replace}`; changed = true; }
       return value === undefined ? '' : String(value).trim();
     }
     function ensureExerciseBaseline(id){
-      if(!blocklyWorkspace || !window.Blockly) return;
+      if(!blocklyWorkspace || !window.Blockly) return false;
       const ex = lesson.exercises?.find(item => item.id === id);
-      if(!(lesson.id === 3 && id === 6) && !ex?.blocklyStarterXml) return;
+      if(!(lesson.id === 3 && id === 6) && !ex?.blocklyStarterXml) return false;
       if(!checkMemory.exerciseBaselines) checkMemory.exerciseBaselines = {};
-      if(checkMemory.exerciseBaselines[id]) return;
+      if(checkMemory.exerciseBaselines[id]) return false;
       checkMemory.exerciseBaselines[id] = {
         blocklyXml: currentBlocklyXml(),
         fields: { 'web_action_background.BG': firstBlocklyFieldValue('web_action_background', 'BG') }
       };
       if(!checkMemory.starterLockBaselines) checkMemory.starterLockBaselines = {};
       checkMemory.starterLockBaselines[id] = { ids: starterChainBlocks().map(block => block.id) };
+      return true;
     }
     function hasGeneratedBlockOutputs(rules){
       if(!rules?.length) return true;
@@ -2464,11 +3103,47 @@ ${block.replace}`; changed = true; }
     function hasNonEmptyBlocklyFields(rules){
       if(!rules?.length) return true;
       if(!blocklyWorkspace) return false;
-      return rules.every(rule => collectPageBlocks().some(block => {
-        if(block.type !== rule.type) return false;
-        const value = block.getFieldValue(rule.field);
-        return value !== undefined && String(value).trim().length > 0;
-      }));
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const matches = blocks.filter(block => block.type === rule.type);
+        if(rule.all){
+          if(matches.length < Number(rule.minCount || 1)) return false;
+          return matches.every(block => {
+            const value = block.getFieldValue(rule.field);
+            return value !== undefined && String(value).trim().length > 0;
+          });
+        }
+        return matches.some(block => {
+          const value = block.getFieldValue(rule.field);
+          return value !== undefined && String(value).trim().length > 0;
+        });
+      });
+    }
+    function hasAllNonEmptyBlocklyFields(rules){
+      if(!rules?.length) return true;
+      if(!blocklyWorkspace) return false;
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const matches = blocks.filter(block => block.type === rule.type);
+        if(matches.length < Number(rule.minCount || 1)) return false;
+        return matches.every(block => {
+          const value = block.getFieldValue(rule.field);
+          return value !== undefined && String(value).trim().length > 0;
+        });
+      });
+    }
+    function hasAllChangedBlocklyFields(rules){
+      if(!rules?.length) return true;
+      if(!blocklyWorkspace) return false;
+      const blocks = collectPageBlocks();
+      return rules.every(rule => {
+        const matches = blocks.filter(block => block.type === rule.type);
+        if(matches.length < Number(rule.minCount || 1)) return false;
+        return matches.every(block => {
+          const value = block.getFieldValue(rule.field);
+          return value !== undefined && String(value).trim() !== String(rule.defaultValue ?? '').trim();
+        });
+      });
     }
     function normalizeQualityText(value){
       return String(value || '').replace(/[\u0591-\u05C7]/g, '').replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
@@ -2540,6 +3215,55 @@ ${block.replace}`; changed = true; }
       }));
     }
     function blockOrderSignature(){ return collectPageBlocks().map(block => block.type).join('>'); }
+    function lesson12ActionSetupStatus(){
+      const wrappers = collectPageBlocks().filter(block => block.type === 'lesson_12_button_action');
+      const actionsIn = wrapper => {
+        const actions = [];
+        const seen = new Set();
+        const walk = block => {
+          let current = block;
+          while(current && !seen.has(current.id)){
+            seen.add(current.id);
+            actions.push(current.type);
+            (current.inputList || []).forEach(input => {
+              const child = input?.connection?.targetBlock?.();
+              if(child) walk(child);
+            });
+            current = current.getNextBlock?.();
+          }
+        };
+        walk(wrapper.getInputTargetBlock?.('DO'));
+        return actions;
+      };
+      if(wrappers.length !== 3) return { ok:false, reason:'count', count:wrappers.length };
+      const plans = wrappers.map(actionsIn);
+      const firstOk = plans[0].includes('lesson_12_click_start') && plans[0].includes('lesson_12_click_message');
+      const secondOk = plans[1].includes('lesson_12_click_add_order');
+      const thirdOk = plans[2].includes('lesson_12_click_reset');
+      return { ok:firstOk && secondOk && thirdOk, reason:firstOk ? (secondOk ? (thirdOk ? '' : 'reset') : 'order') : 'start', plans };
+    }
+    function hasLesson12ActionSetup(required){
+      if(!required) return true;
+      return lesson12ActionSetupStatus().ok;
+    }
+    function hasLesson12SuccessSetup(required){
+      if(!required) return true;
+      const mainTypes = new Set(lesson12MainChainBlocks().map(block => block.type));
+      return lesson12PageMessageSetupStatus().ok && mainTypes.has('lesson_12_win') && mainTypes.has('lesson_12_win_style');
+    }
+    function lesson12PageMessageSetupStatus(){
+      const main = lesson12MainChainBlocks();
+      const lastButtonIndex = main.reduce((last, block, index) => block.type === 'lesson_12_add_button' ? index : last, -1);
+      const successIndex = main.findIndex(block => block.type === 'lesson_12_win');
+      const messageIndex = main.findIndex((block, index) => block.type === 'lesson_12_click_message' && index > lastButtonIndex);
+      if(messageIndex < 0) return { ok:false, reason:'missing' };
+      if(successIndex >= 0 && messageIndex > successIndex) return { ok:false, reason:'order' };
+      return { ok:true, reason:'' };
+    }
+    function hasLesson12PageMessageSetup(required){
+      if(!required) return true;
+      return lesson12PageMessageSetupStatus().ok;
+    }
     function checkFooterAtEndExercise(ex, c){
       const blocks = collectPageBlocks();
       const footer = blocks.find(block => block.type === 'web_footer');
@@ -2608,7 +3332,19 @@ ${block.replace}`; changed = true; }
       if(!hasLesson11SequenceBlockTypes(c.lesson11SequenceBlockTypes)) return c.sequenceFeedback || c.blockFeedback || `כמעט. רמז: ${ex.hint}`;
       if(!hasExactBlockTypeCounts(c.exactBlockTypeCounts)) return c.countFeedback || `כמעט. רמז: ${ex.hint}`;
       if(!hasOrderedBlockTypes(c.orderedBlockTypes)) return c.orderFeedback || `כמעט. רמז: ${ex.hint}`;
+      if(!hasLesson12ActionSetup(c.lesson12ActionSetup)){
+        const status = lesson12ActionSetupStatus();
+        if(status.reason === 'count') return c.actionSetupFeedback || `כמעט. צריכים להיות שלושה בלוקי “בלחיצה על הכפתור” — אחד לכל כפתור.`;
+        if(status.reason === 'start') return c.actionSetupFeedback || 'כמעט. בתוך בלוק הלחיצה של כפתור הפתיחה צריכים להיות גם “פתח את הדוכן” וגם “הצג הודעה”.';
+        if(status.reason === 'order') return c.actionSetupFeedback || 'כמעט. בתוך בלוק הלחיצה של כפתור ההזמנה צריך להיות “הוסף הזמנה”.';
+        if(status.reason === 'reset') return c.actionSetupFeedback || 'כמעט. בתוך בלוק הלחיצה של כפתור האיפוס צריך להיות “אפס את הדוכן”.';
+        return c.actionSetupFeedback || 'כמעט. בדקו שהפעולות נמצאות בתוך הפתחים הלבנים של בלוקי הלחיצה.';
+      }
+      if(!hasLesson12PageMessageSetup(c.lesson12PageMessageSetup)) return c.pageMessageFeedback || 'כמעט. חברו בלוק “הצג הודעה” בשרשרת הראשית אחרי שלושת הכפתורים.';
+      if(!hasLesson12SuccessSetup(c.lesson12SuccessSetup)) return c.successSetupFeedback || 'כמעט. חברו לתוכנית את “הודעת הצלחה” ואת “עיצוב הצלחה”.';
       if(!hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields)) return c.emptyFeedback || 'כמעט. השאירו טקסט בתוך הבלוק — אי אפשר להשלים עם טקסט ריק.';
+      if(!hasAllNonEmptyBlocklyFields(c.allNonEmptyBlocklyFields)) return c.emptyFeedback || 'כמעט. מלאו טקסט בכל הבלוקים הנדרשים.';
+      if(!hasAllChangedBlocklyFields(c.allChangedBlocklyFields)) return c.allChangedFieldFeedback || c.fieldFeedback || 'כמעט. שנו את הטקסט בכל הבלוקים הנדרשים.';
       if(!hasQualityBlocklyFields(c.qualityBlocklyFields)) return c.qualityFeedback || 'כמעט. הטקסט קיים, אבל הוא עדיין כללי מדי. כתבו משהו ברור שמתאים לרעיון של העמוד.';
       if(!hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups)) return c.relatedTextFeedback || 'כמעט. נסו שהכותרת, הפסקה וקוביות המידע ידברו על אותו רעיון.';
       if(!hasUnchangedBlocklyFields(c.unchangedBlocklyFields)) return c.unchangedFieldFeedback || 'כמעט. שדה שלא היה צריך להשתנות השתנה. לחצו איפוס/קוד התחלה ונסו שוב.';
@@ -2701,7 +3437,10 @@ ${block.replace}`; changed = true; }
         : '➡️ עוברים תרגיל רק אחרי בדיקה מוצלחת: לוחצים על “לתרגיל הבא”.';
       $('exercises').innerHTML = `<article class="exercise active ${isDone ? 'done' : ''}" id="ex-${ex.id}"><div class="exercise-top"><div><b>${esc(displayTitle)}</b></div><span class="exercise-status">${displayNumber}/${lesson.exercises.length}</span></div><p>${esc(ex.prompt)}</p>${debugBox}${answerBox}${choiceBox}${matchBox}${hintHtml}${earned}<div class="hint">${navigationHint}</div><div class="exercise-bottom">${controls}<div class="feedback exercise-feedback" id="feedback">גררו בלוק, בדקו את התצוגה ולחצו בדיקה.</div></div></article>`;
     }
-    function goPreviousExercise(){ if(activeExercise > 1) selectExercise(activeExercise - 1); }
+    function goPreviousExercise(){
+      const previous = previousExerciseBefore(activeExercise);
+      if(previous) selectExercise(previous.id);
+    }
     function continueExercise(){
       const current = currentExercise();
       const next = nextExerciseAfter(current.id);
@@ -2712,6 +3451,38 @@ ${block.replace}`; changed = true; }
     function goCourseHome(){ location.href = 'webcode.html'; }
     function courseLessonCount(){ return Array.isArray(window.WEBCODE_LESSONS) ? window.WEBCODE_LESSONS.length : lesson.id; }
     function goNextLesson(){ location.href = `webcode-play.html?lesson=${Math.min(courseLessonCount(), lesson.id + 1)}`; }
+    function resetExerciseScrollPosition(){
+      const exercises = $('exercises');
+      if(!exercises) return;
+      exercises.scrollTop = 0;
+      if(typeof exercises.scrollTo === 'function') exercises.scrollTo({ top: 0, left: exercises.scrollLeft, behavior: 'auto' });
+    }
+    function finishExerciseSelection(id, revision){
+      if(revision !== exerciseSelectionRevision || Number(activeExercise) !== Number(id)) return;
+      const starterChanged = applyExerciseBlocklyStarter(id, { save: false });
+      const requiredBlocksChanged = ensureRequiredStarterBlocks(id, { save: false });
+      const baselineChanged = ensureExerciseBaseline(id);
+      const workspaceChanged = starterChanged || requiredBlocksChanged;
+      if(workspaceChanged || isStarterStructureLockedExercise()){
+        applyStarterExerciseLocks();
+        enableEditableWorkspaceFields();
+      }
+      if(workspaceChanged || baselineChanged) saveLessonState();
+    }
+    function scheduleExerciseSelectionWork(id, revision){
+      let started = false;
+      const runOnce = () => {
+        if(started) return;
+        started = true;
+        finishExerciseSelection(id, revision);
+      };
+      const fallback = setTimeout(runOnce, 120);
+      if(typeof requestAnimationFrame !== 'function') return;
+      requestAnimationFrame(() => setTimeout(() => {
+        clearTimeout(fallback);
+        runOnce();
+      }, 0));
+    }
     function selectExercise(id){
       if(!canOpenExercise(id)){
         $('feedback').className='feedback bad';
@@ -2720,21 +3491,18 @@ ${block.replace}`; changed = true; }
       }
       persistCurrentCodeSelection();
       activeExercise = id;
-      restorePersistedCodeSelection(id);
+      const revision = ++exerciseSelectionRevision;
+      const restoredCodeSelection = restorePersistedCodeSelection(id);
       saveLastLocation();
-      applyExerciseBlocklyStarter(id);
-      ensureRequiredStarterBlocks(id);
-      ensureExerciseBaseline(id);
       previewClicks = [];
-      if(!restorePersistedCodeSelection(id)) lastGeneratedCodeSelection = null;
+      if(!restoredCodeSelection) lastGeneratedCodeSelection = null;
       renderCurrentExercise();
+      resetExerciseScrollPosition();
       const ex=currentExercise();
       $('feedback').className='feedback';
       $('feedback').textContent = done.has(ex.id) ? `תרגיל ${exerciseDisplayNumber(ex)} כבר הושלם. אפשר ללחוץ “לתרגיל הבא” או לשדרג.` : `עכשיו עובדים על: ${exerciseDisplayTitle(ex)}`;
-      applyStarterExerciseLocks();
-      enableEditableWorkspaceFields();
       renderProgress();
-      saveLessonState();
+      scheduleExerciseSelectionWork(id, revision);
     }
     function checkExercise(){
       if(lesson.realBlocklyBuilder && blocklyWorkspace) flushBlocklyFieldUpdate({ preservePreviewClicks: true });
@@ -2745,7 +3513,7 @@ ${block.replace}`; changed = true; }
       const completedTitle = ex.title;
       const c = ex.check || {};
       const special = c.footerMustBeLast ? checkFooterAtEndExercise(ex, c) : null;
-      const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasLesson11SequenceBlockTypes(c.lesson11SequenceBlockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasRequiredCodeSelection(c) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasAnswerIncludes(c.answerIncludes) && hasAnswerFieldIncludes(c.answerFieldIncludes) && hasChoiceAnswer(c.choiceAnswer) && hasMatchAnswers(c.matchAnswers) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny));
+      const ok = special ? special.ok : includesAll($('htmlCode').value,c.htmlIncludes) && includesAll($('cssCode').value,c.cssIncludes) && excludesAll($('htmlCode').value,c.htmlExcludes) && excludesAll($('cssCode').value,c.cssExcludes) && excludesAll($('jsCode').value,c.jsExcludes) && hasBlockTypes(c.blockTypes) && hasLesson11SequenceBlockTypes(c.lesson11SequenceBlockTypes) && hasExactBlockTypeCounts(c.exactBlockTypeCounts) && hasOrderedBlockTypes(c.orderedBlockTypes) && hasLesson12ActionSetup(c.lesson12ActionSetup) && hasLesson12SuccessSetup(c.lesson12SuccessSetup) && hasNonEmptyBlocklyFields(c.nonEmptyBlocklyFields) && hasQualityBlocklyFields(c.qualityBlocklyFields) && hasRelatedBlocklyTextGroups(c.relatedBlocklyTextGroups) && hasUnchangedBlocklyFields(c.unchangedBlocklyFields) && hasExactBlocklyFields(c.exactBlocklyFields) && hasChangedBlocklyFields(c.changedBlocklyFields) && hasBlocklyFieldsContaining(c.blocklyFieldsContaining) && hasAnyChangedBlocklyField(c.anyChangedBlocklyFields) && hasGeneratedBlockOutputs(c.generatedBlockOutputs) && hasChangedBlocklyFieldsFromBaseline(c.changedBlocklyFieldsFromBaseline) && (!c.requiresCodePeek || isCodePeekOpen()) && hasRequiredCodeSelection(c) && hasCodeLineAnswer(c.requiresCodeLineAnswer) && hasAnswerIncludes(c.answerIncludes) && hasAnswerFieldIncludes(c.answerFieldIncludes) && hasChoiceAnswer(c.choiceAnswer) && hasMatchAnswers(c.matchAnswers) && hasPreviewButtonClick(c.requiresPreviewButtonClick) && hasPreviewClickText(c.requiresPreviewButtonText) && hasPreviewResultFromBlockOutput(c.requiresPreviewResultFromBlockOutput) && hasPreviewMessageFromBlockOutput(c.requiresPreviewMessageFromBlockOutput) && hasPreviewMessageChanged(c.requiresPreviewMessageChangedFrom) && hasPreviewEmojiChanged(c.requiresPreviewEmojiChangedFrom) && hasPreviewCardClass(c.requiresPreviewCardClass) && hasPreviewFilledInputs(c.requiresPreviewFilledInputs) && hasPreviewResultFromInputs(c.requiresPreviewResultFromInputs) && hasPreviewInputMatchesBlockFields(c.requiresPreviewInputMatchesBlockFields) && hasPreviewInputDiffersFromBlockFields(c.requiresPreviewInputDiffersFromBlockFields) && hasPreviewFeedbackClass(c.requiresPreviewFeedbackClass) && hasPreviewScoreSum(c.requiresPreviewScoreSum) && hasPreviewScoreFromBlockField(c.requiresPreviewScoreFromBlockField) && hasPreviewLivesFromBlockField(c.requiresPreviewLivesFromBlockField) && hasPreviewLivesAfterPenalty(c.requiresPreviewLivesAfterPenalty) && hasPreviewTimeFromBlockField(c.requiresPreviewTimeFromBlockField) && hasPreviewFeedbackText(c.requiresPreviewFeedbackText) && hasPreviewItemTextFromBlockOutput(c.requiresPreviewItemTextFromBlockOutput) && hasDebugCodeIncludes(c.debugCodeIncludes) && hasDebugCodeExcludes(c.debugCodeExcludes) && includesAll($('jsCode').value,c.jsIncludes) && (!c.changedAny || hasChanged(c.changedAny));
       if(ok){
         const earned = alreadyDone ? 0 : awardExerciseScore(ex.id);
         const scoreToShow = earned || scoreState().awarded[ex.id] || 0;
